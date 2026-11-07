@@ -1,0 +1,92 @@
+[
+  {
+    "path": "fuse_rms_norm_gated_per_token_quant_int8/benchmark.py",
+    "sha256": "a091795e91d39e006028926ea8b3359db67fa3622d6eb2c81b5a1a6b50928034",
+    "bytes": 4317
+  },
+  {
+    "path": "fuse_rms_norm_gated_per_token_quant_int8/fuse_rms_norm_gated_per_token_quant_int8.cu",
+    "sha256": "7ae18f3770d50e624c657890c3ac356cfe08f47f8ea891c41ef78483f0a198ae",
+    "bytes": 7814
+  },
+  {
+    "path": "fuse_rms_norm_gated_per_token_quant_int8/python_api.py",
+    "sha256": "7f63c2521895951af5a42cf4a0c5e9a1e02584fce16dbd29bb93781e6c961a91",
+    "bytes": 1452
+  },
+  {
+    "path": "fuse_rms_norm_gated_per_token_quant_int8/README.md",
+    "sha256": "41a845f25632ae94e8249622fe9e694f1f7258f0efb7a3e224c255bb87b3f9d9",
+    "bytes": 399
+  },
+  {
+    "path": "fuse_rms_norm_gated_per_token_quant_int8/reduce.h",
+    "sha256": "e4ced9f147c9629107511189fb2e3761df01ce9142da1afd3792f19cefbb20f1",
+    "bytes": 11407
+  },
+  {
+    "path": "fuse_rms_norm_gated_per_token_quant_int8/test_fuse_rms_norm_gated_per_token_quant.py",
+    "sha256": "5095c77de0b4c3035d3b5ee251b3d52182a7d13b118daf2cd2fe0c1f229767fa",
+    "bytes": 3681
+  },
+  {
+    "path": "fused_sigmoid_mul_per_token_quant/attention_sigmoid_int8_reference.py",
+    "sha256": "7ca2a16d90a836c0e0a0813db1db770a01c3027e7f2f994c57bccc95ddb66ff7",
+    "bytes": 3339
+  },
+  {
+    "path": "fused_sigmoid_mul_per_token_quant/benchmark.py",
+    "sha256": "a9fa375e0d94a2725d6e913d9a8d4064230f63f437349daf56de53f22c7776aa",
+    "bytes": 4359
+  },
+  {
+    "path": "fused_sigmoid_mul_per_token_quant/fused_sigmoid_mul_per_token_quant.cu",
+    "sha256": "1ad8574a6c72888abad8016cc37e9b216555eb8d35977cb20d47f7d207c0de5f",
+    "bytes": 15971
+  },
+  {
+    "path": "fused_sigmoid_mul_per_token_quant/python_api.py",
+    "sha256": "a662aa86bb0fd1fe5d474e23ceb4998b791b22dc934dae9f501066c7295a9ce5",
+    "bytes": 2229
+  },
+  {
+    "path": "fused_sigmoid_mul_per_token_quant/README.md",
+    "sha256": "b9f3548b2e9375125b3d7b39e6efd930bf9abece3c27a80215835374ded9e0e8",
+    "bytes": 487
+  },
+  {
+    "path": "fused_sigmoid_mul_per_token_quant/reduce.h",
+    "sha256": "e4ced9f147c9629107511189fb2e3761df01ce9142da1afd3792f19cefbb20f1",
+    "bytes": 11407
+  },
+  {
+    "path": "fused_sigmoid_mul_per_token_quant/test_fused_sigmoid_mul_per_token_quant.py",
+    "sha256": "a7496ded56f4bbc645c26cf37e79ceded1ea92eeb38554a5141d3ddfd6bff74f",
+    "bytes": 6807
+  },
+  {
+    "path": "gemma_rms_norm_dynamic_per_token_quant/gemma_rms_norm_dynamic_per_token_quant.cu",
+    "sha256": "9ca1bdd269f8e699ebef60cf58ad3f3703d9922e91fe35740074e6e0334f3953",
+    "bytes": 31679
+  },
+  {
+    "path": "gemma_rms_norm_dynamic_per_token_quant/python_api.py",
+    "sha256": "6d78f961f0b06066ed1ca252a195b5c5044a2620bce8a51a14d53079e1137535",
+    "bytes": 1134
+  },
+  {
+    "path": "gemma_rms_norm_dynamic_per_token_quant/README.md",
+    "sha256": "2e6d82d1661c88b6164db49f00ad52e183cb39766b3bc12115476634a065a1c9",
+    "bytes": 336
+  },
+  {
+    "path": "gemma_rms_norm_dynamic_per_token_quant/test_gemma_rms_norm_dynamic_per_token_quant.py",
+    "sha256": "ea111d5bcb5d4a377044f15bf4a0ef28c10261691abab6668f9a38686fbae665",
+    "bytes": 2441
+  },
+  {
+    "path": "README.md",
+    "sha256": "2e75b6bc2e18936b5ec13ce79aa88986d21e15e97488063a4fa2525604fd772d",
+    "bytes": 711
+  }
+]
