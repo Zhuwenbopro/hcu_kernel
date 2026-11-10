@@ -1,0 +1,169 @@
+{
+  "E023": {
+    "source": "kernels/x_shared_lds.cu",
+    "description": "X shared LDS, W direct REG",
+    "parent": "E016",
+    "config": {
+      "MB": 8,
+      "NB": 4,
+      "NW": 4,
+      "DEPTH": 1,
+      "WNT": 0,
+      "XNT": 0,
+      "PI": 1
+    },
+    "original_source_sha256": "bf8f26cf88befefe4b7ab5619df4256da760a5cdc47bef26105219590f20b14f",
+    "validated_resources": [
+      183,
+      16384,
+      0,
+      128,
+      256,
+      1,
+      4
+    ],
+    "mainloop_barriers_per_K64": 1,
+    "epilogue_barriers": 0
+  },
+  "E025": {
+    "source": "kernels/direct_reg_small.cu",
+    "description": "X/W direct REG, single wave",
+    "parent": "E012",
+    "config": {
+      "MB": 2,
+      "NB": 4,
+      "NW": 1,
+      "DEPTH": 1,
+      "WNT": 0,
+      "XNT": 0,
+      "PI": 1
+    },
+    "original_source_sha256": "9b93c30e8255427ac4d18ba4064bd158d08ca66a997844469ff43446b23ff5af",
+    "validated_resources": [
+      66,
+      0,
+      0,
+      32,
+      64,
+      1,
+      1
+    ],
+    "mainloop_barriers_per_K64": 0,
+    "epilogue_barriers": 0
+  },
+  "E030": {
+    "source": "kernels/direct_reg_splitk.cu",
+    "description": "X/W direct REG, two-wave K split",
+    "parent": "E028",
+    "config": {
+      "MB": 2,
+      "NB": 4,
+      "NW": 2,
+      "KS": 2,
+      "DEPTH": 1,
+      "WNT": 0,
+      "XNT": 0,
+      "PI": 1
+    },
+    "original_source_sha256": "9108f043122ce98308209f2c5c6f618888da36222200cdeab4f5cf6889eeb5c9",
+    "validated_resources": [
+      72,
+      8192,
+      0,
+      32,
+      64,
+      1,
+      2
+    ],
+    "mainloop_barriers_per_K64": 0,
+    "epilogue_barriers": 1
+  },
+  "E038": {
+    "source": "kernels/x_shared_lds_mfirst.cu",
+    "description": "M64 shared X with M-first CTAs",
+    "parent": "E027",
+    "config": {
+      "MB": 4,
+      "NB": 4,
+      "NW": 4,
+      "DEPTH": 2,
+      "WNT": 0,
+      "XNT": 0,
+      "PI": 1
+    },
+    "original_source_sha256": "2c8a64e1b555d04defbebffb0540af4ba09c334d547b2271d70096ea59964168",
+    "validated_resources": [
+      126,
+      8192,
+      0,
+      64,
+      256,
+      2,
+      4
+    ],
+    "mainloop_barriers_per_K64": 1,
+    "epilogue_barriers": 0
+  },
+  "E047": {
+    "source": "kernels/w_shared_lds.cu",
+    "description": "X direct REG, W shared LDS, M128 specialization",
+    "parent": "E046",
+    "config": {
+      "MB": 2,
+      "NB": 8,
+      "NW": 4,
+      "DEPTH": 2,
+      "WNT": 0,
+      "XNT": 0,
+      "PI": 1,
+      "OUTNT": 1
+    },
+    "original_source_sha256": "03c9fa418fb20f7113710c4d9e0058f5165f06f70c89126798586055235bd5ea",
+    "validated_resources": [
+      123,
+      16384,
+      0,
+      128,
+      128,
+      2,
+      4
+    ],
+    "mainloop_barriers_per_K64": 1,
+    "epilogue_barriers": 0,
+    "validated_resources_generic": [
+      128,
+      16384,
+      0,
+      128,
+      128,
+      2,
+      4
+    ]
+  },
+  "E048": {
+    "source": "kernels/direct_reg_matched.cu",
+    "description": "Same-tile X direct REG control for E023",
+    "parent": "E023",
+    "config": {
+      "MB": 8,
+      "NB": 4,
+      "NW": 4,
+      "DEPTH": 1,
+      "WNT": 0,
+      "XNT": 0,
+      "PI": 1
+    },
+    "original_source_sha256": "87e2ca8f716d0656887a62fec74094502386419439a7c5547bf38088d0ed9ac0",
+    "validated_resources": [
+      184,
+      0,
+      0,
+      128,
+      256,
+      1,
+      4
+    ],
+    "mainloop_barriers_per_K64": 0,
+    "epilogue_barriers": 0
+  }
+}

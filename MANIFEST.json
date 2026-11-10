@@ -1,5 +1,110 @@
 [
   {
+    "path": "README.md",
+    "sha256": "4c50e669d4120baee6cbaa979008031a52c1e7a251a47cebc738eba81d0c1d61",
+    "bytes": 957
+  },
+  {
+    "path": "decode_gemm_int8_gfx936/README.md",
+    "sha256": "4162d72ad06dbbcac58c81ea0f798030aaef96ad62458dfe8da0f253aecdaa2b",
+    "bytes": 6921
+  },
+  {
+    "path": "decode_gemm_int8_gfx936/__init__.py",
+    "sha256": "94743e57b6d04d7d27674ab6e26c70562c5df71e2b05bf126a424dd785d64292",
+    "bytes": 116
+  },
+  {
+    "path": "decode_gemm_int8_gfx936/benchmark.py",
+    "sha256": "c2a4aeb96c6aac7f37dc5886f8e9e4ce1d0bb7ba455b01f8305a3803390316e6",
+    "bytes": 8042
+  },
+  {
+    "path": "decode_gemm_int8_gfx936/build.py",
+    "sha256": "062fa68eb16f727807889caa1be13432b246a33cecb7d04b349bc3881db68cf5",
+    "bytes": 1820
+  },
+  {
+    "path": "decode_gemm_int8_gfx936/kernels/direct_reg_matched.cu",
+    "sha256": "87e2ca8f716d0656887a62fec74094502386419439a7c5547bf38088d0ed9ac0",
+    "bytes": 3432
+  },
+  {
+    "path": "decode_gemm_int8_gfx936/kernels/direct_reg_small.cu",
+    "sha256": "9b93c30e8255427ac4d18ba4064bd158d08ca66a997844469ff43446b23ff5af",
+    "bytes": 3831
+  },
+  {
+    "path": "decode_gemm_int8_gfx936/kernels/direct_reg_splitk.cu",
+    "sha256": "9108f043122ce98308209f2c5c6f618888da36222200cdeab4f5cf6889eeb5c9",
+    "bytes": 4393
+  },
+  {
+    "path": "decode_gemm_int8_gfx936/kernels/w_shared_lds.cu",
+    "sha256": "03c9fa418fb20f7113710c4d9e0058f5165f06f70c89126798586055235bd5ea",
+    "bytes": 5464
+  },
+  {
+    "path": "decode_gemm_int8_gfx936/kernels/x_shared_lds.cu",
+    "sha256": "bf8f26cf88befefe4b7ab5619df4256da760a5cdc47bef26105219590f20b14f",
+    "bytes": 3779
+  },
+  {
+    "path": "decode_gemm_int8_gfx936/kernels/x_shared_lds_mfirst.cu",
+    "sha256": "2c8a64e1b555d04defbebffb0540af4ba09c334d547b2271d70096ea59964168",
+    "bytes": 4672
+  },
+  {
+    "path": "decode_gemm_int8_gfx936/python_api.py",
+    "sha256": "e018434c3ffa9c2234afc57477defc439bc7836a17d71fda4743e0c9e61ae28f",
+    "bytes": 5925
+  },
+  {
+    "path": "decode_gemm_int8_gfx936/results/batch_sweep.csv",
+    "sha256": "5c909f533f241370183df67e6a46cd11c880bd19cf4c1e2dfa4c6e44cfe1c672",
+    "bytes": 209658
+  },
+  {
+    "path": "decode_gemm_int8_gfx936/results/independent_validation.json",
+    "sha256": "9214a50c722c7963f35958b2fbf376ad38fe3b2c0303e83dacef5fa3820e4931",
+    "bytes": 41010
+  },
+  {
+    "path": "decode_gemm_int8_gfx936/results/rebuild_validation.json",
+    "sha256": "46b2e70793e4e4db015c86e0d35caa7d21ad8bd1e9c2a15fe8b84ecb73218f27",
+    "bytes": 31920
+  },
+  {
+    "path": "decode_gemm_int8_gfx936/results/summary.json",
+    "sha256": "08064ada20b19480d5edc6a2f3150519622efe4bb0a3df9b359d11bd4b10961e",
+    "bytes": 3762
+  },
+  {
+    "path": "decode_gemm_int8_gfx936/results/x_delivery_comparison.csv",
+    "sha256": "916440fe3f8dc03a583fa79d037b2098b1dcf4405121d673453a0466ab7e5c2c",
+    "bytes": 134915
+  },
+  {
+    "path": "decode_gemm_int8_gfx936/test_decode_gemm_int8.py",
+    "sha256": "cedffa76f24e3d55b8de575b24cd2f0b7acaef82ab16ff5481bc3c8537e13bc3",
+    "bytes": 5028
+  },
+  {
+    "path": "decode_gemm_int8_gfx936/validation_utils.py",
+    "sha256": "277c8fe8399177f69b5cf72e491cda139eff24b02bb001f8b953d3fd16846224",
+    "bytes": 1083
+  },
+  {
+    "path": "decode_gemm_int8_gfx936/variants.json",
+    "sha256": "374594d26d684923be6dad711a562fdfd7656c49063b8a2ff32efc4f261dd8e0",
+    "bytes": 3382
+  },
+  {
+    "path": "fuse_rms_norm_gated_per_token_quant_int8/README.md",
+    "sha256": "41a845f25632ae94e8249622fe9e694f1f7258f0efb7a3e224c255bb87b3f9d9",
+    "bytes": 399
+  },
+  {
     "path": "fuse_rms_norm_gated_per_token_quant_int8/benchmark.py",
     "sha256": "a091795e91d39e006028926ea8b3359db67fa3622d6eb2c81b5a1a6b50928034",
     "bytes": 4317
@@ -15,19 +120,19 @@
     "bytes": 1452
   },
   {
-    "path": "fuse_rms_norm_gated_per_token_quant_int8/README.md",
-    "sha256": "41a845f25632ae94e8249622fe9e694f1f7258f0efb7a3e224c255bb87b3f9d9",
-    "bytes": 399
-  },
-  {
     "path": "fuse_rms_norm_gated_per_token_quant_int8/reduce.h",
-    "sha256": "e4ced9f147c9629107511189fb2e3761df01ce9142da1afd3792f19cefbb20f1",
-    "bytes": 11407
+    "sha256": "ffd59338d730e61d2999f2bba4f293e9299c7e723923aca811e835238ca2aab4",
+    "bytes": 11062
   },
   {
     "path": "fuse_rms_norm_gated_per_token_quant_int8/test_fuse_rms_norm_gated_per_token_quant.py",
     "sha256": "5095c77de0b4c3035d3b5ee251b3d52182a7d13b118daf2cd2fe0c1f229767fa",
     "bytes": 3681
+  },
+  {
+    "path": "fused_sigmoid_mul_per_token_quant/README.md",
+    "sha256": "b9f3548b2e9375125b3d7b39e6efd930bf9abece3c27a80215835374ded9e0e8",
+    "bytes": 487
   },
   {
     "path": "fused_sigmoid_mul_per_token_quant/attention_sigmoid_int8_reference.py",
@@ -50,14 +155,9 @@
     "bytes": 2229
   },
   {
-    "path": "fused_sigmoid_mul_per_token_quant/README.md",
-    "sha256": "b9f3548b2e9375125b3d7b39e6efd930bf9abece3c27a80215835374ded9e0e8",
-    "bytes": 487
-  },
-  {
     "path": "fused_sigmoid_mul_per_token_quant/reduce.h",
-    "sha256": "e4ced9f147c9629107511189fb2e3761df01ce9142da1afd3792f19cefbb20f1",
-    "bytes": 11407
+    "sha256": "ffd59338d730e61d2999f2bba4f293e9299c7e723923aca811e835238ca2aab4",
+    "bytes": 11062
   },
   {
     "path": "fused_sigmoid_mul_per_token_quant/test_fused_sigmoid_mul_per_token_quant.py",
@@ -65,9 +165,14 @@
     "bytes": 6807
   },
   {
+    "path": "gemma_rms_norm_dynamic_per_token_quant/README.md",
+    "sha256": "2e6d82d1661c88b6164db49f00ad52e183cb39766b3bc12115476634a065a1c9",
+    "bytes": 336
+  },
+  {
     "path": "gemma_rms_norm_dynamic_per_token_quant/gemma_rms_norm_dynamic_per_token_quant.cu",
-    "sha256": "9ca1bdd269f8e699ebef60cf58ad3f3703d9922e91fe35740074e6e0334f3953",
-    "bytes": 31679
+    "sha256": "7c499c4e010313ba7aa1627c1c1719581a50ca8227da08a3d49c4271937d0c13",
+    "bytes": 31011
   },
   {
     "path": "gemma_rms_norm_dynamic_per_token_quant/python_api.py",
@@ -75,18 +180,8 @@
     "bytes": 1134
   },
   {
-    "path": "gemma_rms_norm_dynamic_per_token_quant/README.md",
-    "sha256": "2e6d82d1661c88b6164db49f00ad52e183cb39766b3bc12115476634a065a1c9",
-    "bytes": 336
-  },
-  {
     "path": "gemma_rms_norm_dynamic_per_token_quant/test_gemma_rms_norm_dynamic_per_token_quant.py",
-    "sha256": "ea111d5bcb5d4a377044f15bf4a0ef28c10261691abab6668f9a38686fbae665",
-    "bytes": 2441
-  },
-  {
-    "path": "README.md",
-    "sha256": "2e75b6bc2e18936b5ec13ce79aa88986d21e15e97488063a4fa2525604fd772d",
-    "bytes": 711
+    "sha256": "2d734e8a3218dc529f9b5b752be9ef0f71e12a87e636a7702fb87a70b12835c0",
+    "bytes": 2373
   }
 ]

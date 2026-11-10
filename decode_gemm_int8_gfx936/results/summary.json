@@ -1,0 +1,185 @@
+{
+  "date": "2026-11-10",
+  "hardware": {
+    "gpu": "BW1000 64G",
+    "arch": "gfx936",
+    "compute_units": 80,
+    "L2_bytes": 8388608
+  },
+  "format": "INT8 X[M,K] @ INT8 W[N,K].T -> INT32 Y[M,N]; beta0; prepacked K64/PI16",
+  "metric": {
+    "useful_bytes": "M*K+N*K+4*M*N",
+    "reference_GBs": 1363.5,
+    "reference_kind": "measured D2D copy anchor, not physical HBM peak",
+    "auxiliary_weight_bytes": "N*K",
+    "physical_HBM_counters_measured": false,
+    "packing_scales_dequant_excluded": true
+  },
+  "formal_endpoints": [
+    {
+      "M": 32,
+      "N": 34816,
+      "K": 5120,
+      "primary": "E023",
+      "median_us": 131.64631843566895,
+      "total_effective_io_pct": 101.882148980897,
+      "seed_count": 3,
+      "round_count": 21,
+      "campaign": "F001"
+    },
+    {
+      "M": 128,
+      "N": 34816,
+      "K": 5120,
+      "primary": "E023",
+      "median_us": 144.02711868286133,
+      "total_effective_io_pct": 100.1823474364073,
+      "seed_count": 3,
+      "round_count": 21,
+      "campaign": "F001"
+    },
+    {
+      "M": 32,
+      "N": 17408,
+      "K": 5120,
+      "primary": "E030",
+      "median_us": 70.0959587097168,
+      "total_effective_io_pct": 95.7574888032407,
+      "seed_count": 3,
+      "round_count": 21,
+      "campaign": "F001"
+    },
+    {
+      "M": 128,
+      "N": 17408,
+      "K": 5120,
+      "primary": "E047",
+      "median_us": 74.23355102539062,
+      "total_effective_io_pct": 97.5100825971986,
+      "seed_count": 3,
+      "round_count": 21,
+      "campaign": "F002"
+    }
+  ],
+  "dense_sweep": {
+    "S001": {
+      "M": [
+        1,
+        128
+      ],
+      "N": [
+        34816,
+        17408
+      ],
+      "K": 5120,
+      "variants": [
+        "E023",
+        "E025",
+        "E030",
+        "E038",
+        "E047"
+      ],
+      "rounds": 5,
+      "graph_calls": 72,
+      "weight_copies": {
+        "34816": 36,
+        "17408": 72
+      },
+      "seed": 202611103
+    },
+    "S003": {
+      "M": [
+        128,
+        1024
+      ],
+      "N": [
+        34816,
+        17408
+      ],
+      "K": 5120,
+      "variants": [
+        "E023",
+        "E038",
+        "E047",
+        "E048"
+      ],
+      "rounds": 3,
+      "graph_calls_by_N": {
+        "34816": 36,
+        "17408": 72
+      },
+      "weight_copies": {
+        "34816": 36,
+        "17408": 72
+      },
+      "seed": 202611103
+    }
+  },
+  "checks": {
+    "dense_1_128": 1280,
+    "dense_128_1024": 7176,
+    "independent_rechecks": 288,
+    "all_exact_and_guards_pass": true
+  },
+  "extended_facts": {
+    "34816": {
+      "cases": 897,
+      "winners": {
+        "E023": 2,
+        "E038": 895
+      },
+      "io90_count": 1,
+      "best_total_io_pct_range": [
+        25.912956824671802,
+        99.51634787712995
+      ],
+      "REG_over_LDS_time_ratio_range": [
+        1.0177503783195436,
+        1.2458735471458136
+      ],
+      "X_path_class_counts": {
+        "LDS faster": 897
+      },
+      "X_path_segments": [
+        {
+          "from_M": 128,
+          "to_M": 1024,
+          "class": "LDS faster"
+        }
+      ]
+    },
+    "17408": {
+      "cases": 897,
+      "winners": {
+        "E047": 8,
+        "E038": 761,
+        "E023": 128
+      },
+      "io90_count": 1,
+      "best_total_io_pct_range": [
+        27.701937651857094,
+        97.5980591051322
+      ],
+      "REG_over_LDS_time_ratio_range": [
+        0.898777688445884,
+        1.434215446345983
+      ],
+      "X_path_class_counts": {
+        "REG faster": 1,
+        "LDS faster": 896
+      },
+      "X_path_segments": [
+        {
+          "from_M": 128,
+          "to_M": 128,
+          "class": "REG faster"
+        },
+        {
+          "from_M": 129,
+          "to_M": 1024,
+          "class": "LDS faster"
+        }
+      ]
+    }
+  }
+}
