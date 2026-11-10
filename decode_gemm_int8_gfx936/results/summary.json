@@ -181,5 +181,21 @@
         }
       ]
     }
+  },
+  "TP4_TP8": {
+    "dataset": "S007",
+    "N_by_TP": {
+      "4": 8704,
+      "8": 4352
+    },
+    "K": 5120,
+    "M": [
+      1,
+      1024
+    ],
+    "cases": 2048,
+    "candidate_checks": 11264,
+    "independent_checks": 936,
+    "goal90_all_points_achieved": false
   }
 }

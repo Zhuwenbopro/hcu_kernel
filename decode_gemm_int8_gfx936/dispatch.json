@@ -1,0 +1,101 @@
+{
+  "scope": "Conservative tile-aligned policy for N-sharded local GEMM, measured K=5120; small differences within1% do not create extra dispatch regions.",
+  "policies": {
+    "34816": [
+      {
+        "max_M": 128,
+        "variant": "E023"
+      },
+      {
+        "max_M": null,
+        "variant": "E038"
+      }
+    ],
+    "17408": [
+      {
+        "max_M": 32,
+        "variant": "E030"
+      },
+      {
+        "max_M": 128,
+        "variant": "E047"
+      },
+      {
+        "max_M": null,
+        "variant": "E038"
+      }
+    ],
+    "8704": [
+      {
+        "max_M": 32,
+        "variant": "E051"
+      },
+      {
+        "max_M": 64,
+        "variant": "E030"
+      },
+      {
+        "max_M": 128,
+        "variant": "E053"
+      },
+      {
+        "max_M": 384,
+        "variant": "E047"
+      },
+      {
+        "max_M": 448,
+        "variant": "E038"
+      },
+      {
+        "max_M": 512,
+        "variant": "E023"
+      },
+      {
+        "max_M": 704,
+        "variant": "E038"
+      },
+      {
+        "max_M": 896,
+        "variant": "E023"
+      },
+      {
+        "max_M": null,
+        "variant": "E047"
+      }
+    ],
+    "4352": [
+      {
+        "max_M": 32,
+        "variant": "E052"
+      },
+      {
+        "max_M": 64,
+        "variant": "E051"
+      },
+      {
+        "max_M": 128,
+        "variant": "E055"
+      },
+      {
+        "max_M": 256,
+        "variant": "E053"
+      },
+      {
+        "max_M": 512,
+        "variant": "E047"
+      },
+      {
+        "max_M": 576,
+        "variant": "E038"
+      },
+      {
+        "max_M": 896,
+        "variant": "E047"
+      },
+      {
+        "max_M": null,
+        "variant": "E023"
+      }
+    ]
+  }
+}

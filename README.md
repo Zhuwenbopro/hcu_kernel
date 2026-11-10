@@ -4,7 +4,7 @@
 
 ## 算子
 
-- `decode_gemm_int8_gfx936/`：gfx936 INT8 decode GEMM，含6条HIP路径、独立编译/Python入口、正确性与冷权重池基准，以及bs1–1024结果摘要
+- `decode_gemm_int8_gfx936/`：gfx936 INT8 decode GEMM，含14种HIP配置、独立编译/Python入口、正确性与冷权重池基准，以及TP1/2/4/8、bs1–1024结果摘要
 
 - `gemma_rms_norm_dynamic_per_token_quant/`：Gemma RMSNorm + per-token INT8 quant
 - `fuse_rms_norm_gated_per_token_quant_int8/`：GDN RMSNorm + SiLU gate + per-token INT8 quant

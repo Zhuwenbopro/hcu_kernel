@@ -9,6 +9,7 @@ import torch
 
 ROOT = Path(__file__).resolve().parent
 VARIANTS = json.loads((ROOT / "variants.json").read_text())
+DISPATCH = json.loads((ROOT / "dispatch.json").read_text())["policies"]
 
 @dataclass(frozen=True)
 class PackedActivation:
@@ -49,13 +50,15 @@ def pack_weight(w):
 
 def choose_variant(m, n):
     """Conservative measured-shape policy; select a variant explicitly for tuning."""
-    if n not in (17408, 34816):
-        raise ValueError("auto supports N=17408/34816; specify a variant for other N")
-    if m > 128:
-        return "E038"
-    if n == 34816:
-        return "E023"
-    return "E030" if m <= 32 else "E047"
+    if m < 1:
+        raise ValueError("M must be positive")
+    rules = DISPATCH.get(str(n))
+    if rules is None:
+        raise ValueError("auto supports N=" + ",".join(DISPATCH) + "; specify a variant for other N")
+    for rule in rules:
+        if rule["max_M"] is None or m <= rule["max_M"]:
+            return rule["variant"]
+    raise RuntimeError("dispatch policy must have a fallback")
 
 def pack_activation(x, variant):
     _check_input(x)

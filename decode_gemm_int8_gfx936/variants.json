@@ -165,5 +165,219 @@
     ],
     "mainloop_barriers_per_K64": 0,
     "epilogue_barriers": 0
+  },
+  "E049": {
+    "source": "kernels/direct_reg_small.cu",
+    "description": "纯REG单wave路径只将MB2->4，即CTA M32->64；NB4/NW1/D1/默认缓存/PI16均保持",
+    "parent": "E025",
+    "config": {
+      "MB": 4,
+      "NB": 4,
+      "NW": 1,
+      "DEPTH": 1,
+      "WNT": 0,
+      "XNT": 0,
+      "PI": 1
+    },
+    "original_source_sha256": "9b93c30e8255427ac4d18ba4064bd158d08ca66a997844469ff43446b23ff5af",
+    "validated_resources": [
+      106,
+      0,
+      0,
+      64,
+      64,
+      1,
+      1
+    ],
+    "mainloop_barriers_per_K64": 0,
+    "epilogue_barriers": 0
+  },
+  "E050": {
+    "source": "kernels/direct_reg_small.cu",
+    "description": "仅MB4->8，纯REG单wave M64->128；N64、D1、W/X默认缓存和PI16保持",
+    "parent": "E049",
+    "config": {
+      "MB": 8,
+      "NB": 4,
+      "NW": 1,
+      "DEPTH": 1,
+      "WNT": 0,
+      "XNT": 0,
+      "PI": 1
+    },
+    "original_source_sha256": "9b93c30e8255427ac4d18ba4064bd158d08ca66a997844469ff43446b23ff5af",
+    "validated_resources": [
+      186,
+      0,
+      0,
+      128,
+      64,
+      1,
+      1
+    ],
+    "mainloop_barriers_per_K64": 0,
+    "epilogue_barriers": 0
+  },
+  "E051": {
+    "source": "kernels/direct_reg_splitk.cu",
+    "description": "仅将主循环X/W直REG、K二分路径的DEPTH1->2；M32/N64/NW2/KS2/缓存/PI保持",
+    "parent": "E030",
+    "config": {
+      "MB": 2,
+      "NB": 4,
+      "NW": 2,
+      "KS": 2,
+      "DEPTH": 2,
+      "WNT": 0,
+      "XNT": 0,
+      "PI": 1
+    },
+    "original_source_sha256": "9108f043122ce98308209f2c5c6f618888da36222200cdeab4f5cf6889eeb5c9",
+    "validated_resources": [
+      97,
+      8192,
+      0,
+      32,
+      64,
+      2,
+      2
+    ],
+    "mainloop_barriers_per_K64": 0,
+    "epilogue_barriers": 1
+  },
+  "E052": {
+    "source": "kernels/direct_reg_splitk.cu",
+    "description": "仅DEPTH2->4；保持M32/N64/NW2/KS2，增加在途K片段，其他参数不变",
+    "parent": "E051",
+    "config": {
+      "MB": 2,
+      "NB": 4,
+      "NW": 2,
+      "KS": 2,
+      "DEPTH": 4,
+      "WNT": 0,
+      "XNT": 0,
+      "PI": 1
+    },
+    "original_source_sha256": "9108f043122ce98308209f2c5c6f618888da36222200cdeab4f5cf6889eeb5c9",
+    "validated_resources": [
+      145,
+      8192,
+      0,
+      32,
+      64,
+      4,
+      2
+    ],
+    "mainloop_barriers_per_K64": 0,
+    "epilogue_barriers": 1
+  },
+  "E053": {
+    "source": "kernels/direct_reg_splitk.cu",
+    "description": "回到大M较强的D1 K二分路径，只将MB2->4，CTA M32->64；N64/NW2/KS2/缓存/PI保持",
+    "parent": "E030",
+    "config": {
+      "MB": 4,
+      "NB": 4,
+      "NW": 2,
+      "KS": 2,
+      "DEPTH": 1,
+      "WNT": 0,
+      "XNT": 0,
+      "PI": 1
+    },
+    "original_source_sha256": "9108f043122ce98308209f2c5c6f618888da36222200cdeab4f5cf6889eeb5c9",
+    "validated_resources": [
+      125,
+      16384,
+      0,
+      64,
+      64,
+      1,
+      2
+    ],
+    "mainloop_barriers_per_K64": 0,
+    "epilogue_barriers": 1
+  },
+  "E054": {
+    "source": "kernels/direct_reg_splitk.cu",
+    "description": "仅NB4->2，CTA N64->32；保持M32/NW2/KS2/D2，减少每CTA N覆盖并增加N向CTA数",
+    "parent": "E051",
+    "config": {
+      "MB": 2,
+      "NB": 2,
+      "NW": 2,
+      "KS": 2,
+      "DEPTH": 2,
+      "WNT": 0,
+      "XNT": 0,
+      "PI": 1
+    },
+    "original_source_sha256": "9108f043122ce98308209f2c5c6f618888da36222200cdeab4f5cf6889eeb5c9",
+    "validated_resources": [
+      65,
+      4096,
+      0,
+      32,
+      32,
+      2,
+      2
+    ],
+    "mainloop_barriers_per_K64": 0,
+    "epilogue_barriers": 1
+  },
+  "E055": {
+    "source": "kernels/direct_reg_splitk.cu",
+    "description": "仅将K二分M64/N64路径DEPTH1->2；其余参数不变",
+    "parent": "E053",
+    "config": {
+      "MB": 4,
+      "NB": 4,
+      "NW": 2,
+      "KS": 2,
+      "DEPTH": 2,
+      "WNT": 0,
+      "XNT": 0,
+      "PI": 1
+    },
+    "original_source_sha256": "9108f043122ce98308209f2c5c6f618888da36222200cdeab4f5cf6889eeb5c9",
+    "validated_resources": [
+      145,
+      16384,
+      0,
+      64,
+      64,
+      2,
+      2
+    ],
+    "mainloop_barriers_per_K64": 0,
+    "epilogue_barriers": 1
+  },
+  "E056": {
+    "source": "kernels/direct_reg_splitk.cu",
+    "description": "只改变K并行分片2->4：NW/KS同时2/2->4/4以保持Ntile64，M32/D2/缓存/PI不变",
+    "parent": "E051",
+    "config": {
+      "MB": 2,
+      "NB": 4,
+      "NW": 4,
+      "KS": 4,
+      "DEPTH": 2,
+      "WNT": 0,
+      "XNT": 0,
+      "PI": 1
+    },
+    "original_source_sha256": "9108f043122ce98308209f2c5c6f618888da36222200cdeab4f5cf6889eeb5c9",
+    "validated_resources": [
+      104,
+      24576,
+      0,
+      32,
+      64,
+      2,
+      4
+    ],
+    "mainloop_barriers_per_K64": 0,
+    "epilogue_barriers": 1
   }
 }

@@ -1,0 +1,173 @@
+{
+  "id": "S007",
+  "status": "complete",
+  "scope": "N-sharded local INT8 GEMM only, X[M,5120] unchanged; no TP communication/packing/scales/dequant",
+  "reference_GBs": 1363.5,
+  "useful_bytes": "MK+NK+4MN",
+  "physical_HBM_counters_measured": false,
+  "cases": 2048,
+  "candidate_checks": 11264,
+  "output_elements_checked": 35973562368,
+  "facts": {
+    "8704": {
+      "TP": 4,
+      "shape_count": 1024,
+      "candidate_checks": 5632,
+      "winner_counts": {
+        "E051": 32,
+        "E030": 32,
+        "E053": 64,
+        "E047": 384,
+        "E038": 256,
+        "E023": 256
+      },
+      "winner_segments": [
+        {
+          "from_M": 1,
+          "to_M": 32,
+          "value": "E051"
+        },
+        {
+          "from_M": 33,
+          "to_M": 64,
+          "value": "E030"
+        },
+        {
+          "from_M": 65,
+          "to_M": 128,
+          "value": "E053"
+        },
+        {
+          "from_M": 129,
+          "to_M": 384,
+          "value": "E047"
+        },
+        {
+          "from_M": 385,
+          "to_M": 448,
+          "value": "E038"
+        },
+        {
+          "from_M": 449,
+          "to_M": 512,
+          "value": "E023"
+        },
+        {
+          "from_M": 513,
+          "to_M": 704,
+          "value": "E038"
+        },
+        {
+          "from_M": 705,
+          "to_M": 896,
+          "value": "E023"
+        },
+        {
+          "from_M": 897,
+          "to_M": 1024,
+          "value": "E047"
+        }
+      ],
+      "REG_LDS_segments": [
+        {
+          "from_M": 1,
+          "to_M": 128,
+          "value": "reg"
+        },
+        {
+          "from_M": 129,
+          "to_M": 1024,
+          "value": "lds"
+        }
+      ],
+      "total_effective_io_pct_range": [
+        28.85669795304086,
+        96.46120701993297
+      ],
+      "total_effective_io_ge90_count": 64
+    },
+    "4352": {
+      "TP": 8,
+      "shape_count": 1024,
+      "candidate_checks": 5632,
+      "winner_counts": {
+        "E052": 32,
+        "E051": 64,
+        "E055": 32,
+        "E053": 128,
+        "E047": 512,
+        "E038": 128,
+        "E023": 128
+      },
+      "winner_segments": [
+        {
+          "from_M": 1,
+          "to_M": 32,
+          "value": "E052"
+        },
+        {
+          "from_M": 33,
+          "to_M": 96,
+          "value": "E051"
+        },
+        {
+          "from_M": 97,
+          "to_M": 128,
+          "value": "E055"
+        },
+        {
+          "from_M": 129,
+          "to_M": 256,
+          "value": "E053"
+        },
+        {
+          "from_M": 257,
+          "to_M": 512,
+          "value": "E047"
+        },
+        {
+          "from_M": 513,
+          "to_M": 576,
+          "value": "E038"
+        },
+        {
+          "from_M": 577,
+          "to_M": 768,
+          "value": "E047"
+        },
+        {
+          "from_M": 769,
+          "to_M": 832,
+          "value": "E038"
+        },
+        {
+          "from_M": 833,
+          "to_M": 896,
+          "value": "E047"
+        },
+        {
+          "from_M": 897,
+          "to_M": 1024,
+          "value": "E023"
+        }
+      ],
+      "REG_LDS_segments": [
+        {
+          "from_M": 1,
+          "to_M": 256,
+          "value": "reg"
+        },
+        {
+          "from_M": 257,
+          "to_M": 1024,
+          "value": "lds"
+        }
+      ],
+      "total_effective_io_pct_range": [
+        28.308266015195578,
+        89.02581053042886
+      ],
+      "total_effective_io_ge90_count": 0
+    }
+  }
+}

@@ -1,0 +1,433 @@
+[
+  {
+    "id": "E049",
+    "parent": "E025",
+    "other_parents": [],
+    "change": "纯REG单wave路径只将MB2->4，即CTA M32->64；NB4/NW1/D1/默认缓存/PI16均保持",
+    "hypothesis": "TP4/8的W变小且N向并发低，M64可在同一wave内复用W，避免M33..64跨两个M tile；代价是累加器和X片段VGPR增加。",
+    "prediction": "输出位精确、guard完好、0LDS/0barrier/0spill；TP4或TP8的M64至少一项比E025快10%。M<=32可能因padding和更高VGPR变慢，原样记录。",
+    "config": {
+      "MB": 4,
+      "NB": 4,
+      "NW": 1,
+      "DEPTH": 1,
+      "WNT": 0,
+      "XNT": 0,
+      "PI": 1
+    },
+    "resources": [
+      106,
+      0,
+      0,
+      64,
+      64,
+      1,
+      1
+    ],
+    "correctness": {
+      "cases": 46,
+      "bad": 0,
+      "cpu_bad": 0,
+      "all_guards": true
+    },
+    "validation": {
+      "registered_prediction": "输出位精确、guard完好、0LDS/0barrier/0spill；TP4或TP8的M64至少一项比E025快10%。M<=32可能因padding和更高VGPR变慢，原样记录。",
+      "threshold_pct": 10,
+      "observed": [
+        {
+          "N": 8704,
+          "M": 64,
+          "faster_pct": -17.020970516183965,
+          "parent_us": 57.17774232228597,
+          "child_us": 66.9099489847819
+        },
+        {
+          "N": 4352,
+          "M": 64,
+          "faster_pct": -29.371435810370183,
+          "parent_us": 50.396631161371864,
+          "child_us": 65.19884533352322
+        }
+      ],
+      "prediction_pass": false,
+      "later_dense_wins": 0
+    }
+  },
+  {
+    "id": "E050",
+    "parent": "E049",
+    "other_parents": [
+      "E048"
+    ],
+    "change": "仅MB4->8，纯REG单wave M64->128；N64、D1、W/X默认缓存和PI16保持",
+    "hypothesis": "测试更大M内复用W是否足以抵消184左右VGPR及更低M向并发；与E048同每wave128x64但从4wave CTA变为独立单wave CTA，后者可作映射参考而非单因果对照。",
+    "prediction": "46项精确/guard通过，0LDS/0barrier/0spill；TP4或TP8的M128至少一项比E049快5%；若不成立，优先检查单wave串行VM等待而非继续扩大tile。",
+    "config": {
+      "MB": 8,
+      "NB": 4,
+      "NW": 1,
+      "DEPTH": 1,
+      "WNT": 0,
+      "XNT": 0,
+      "PI": 1
+    },
+    "resources": [
+      186,
+      0,
+      0,
+      128,
+      64,
+      1,
+      1
+    ],
+    "correctness": {
+      "cases": 46,
+      "bad": 0,
+      "cpu_bad": 0,
+      "all_guards": true
+    },
+    "validation": {
+      "registered_prediction": "46项精确/guard通过，0LDS/0barrier/0spill；TP4或TP8的M128至少一项比E049快5%；若不成立，优先检查单wave串行VM等待而非继续扩大tile。",
+      "threshold_pct": 5,
+      "observed": [
+        {
+          "N": 8704,
+          "M": 128,
+          "faster_pct": -28.377989634839462,
+          "parent_us": 67.45440430111356,
+          "child_us": 86.59660816192627
+        },
+        {
+          "N": 4352,
+          "M": 128,
+          "faster_pct": -39.93989589265077,
+          "parent_us": 60.999956395890976,
+          "child_us": 85.3632754749722
+        }
+      ],
+      "prediction_pass": false,
+      "later_dense_wins": 0
+    }
+  },
+  {
+    "id": "E051",
+    "parent": "E030",
+    "other_parents": [
+      "S005"
+    ],
+    "change": "仅将主循环X/W直REG、K二分路径的DEPTH1->2；M32/N64/NW2/KS2/缓存/PI保持",
+    "hypothesis": "E049扩大Mtile的预测失败；低N下单wave并发不足，先让下一K片段提前在途可能比继续扩大tile更有效。双槽可用当前MMMA覆盖未来VM读取。",
+    "prediction": "46项精确/guard通过、无spill，主循环0barrier、末尾1次归约；设备汇编保留非零VM等待；TP4或TP8的M32至少一项比E030快8%，观察收益是否随M延续。",
+    "config": {
+      "MB": 2,
+      "NB": 4,
+      "NW": 2,
+      "KS": 2,
+      "DEPTH": 2,
+      "WNT": 0,
+      "XNT": 0,
+      "PI": 1
+    },
+    "resources": [
+      97,
+      8192,
+      0,
+      32,
+      64,
+      2,
+      2
+    ],
+    "correctness": {
+      "cases": 46,
+      "bad": 0,
+      "cpu_bad": 0,
+      "all_guards": true
+    },
+    "validation": {
+      "registered_prediction": "46项精确/guard通过、无spill，主循环0barrier、末尾1次归约；设备汇编保留非零VM等待；TP4或TP8的M32至少一项比E030快8%，观察收益是否随M延续。",
+      "threshold_pct": 8,
+      "observed": [
+        {
+          "N": 8704,
+          "M": 32,
+          "faster_pct": 9.767191497113103,
+          "parent_us": 39.611091216405235,
+          "child_us": 35.74220008320279
+        },
+        {
+          "N": 4352,
+          "M": 32,
+          "faster_pct": 33.14974703868643,
+          "parent_us": 30.058870712916057,
+          "child_us": 20.094431108898586
+        }
+      ],
+      "prediction_pass": true,
+      "later_dense_wins": 96
+    }
+  },
+  {
+    "id": "E052",
+    "parent": "E051",
+    "other_parents": [],
+    "change": "仅DEPTH2->4；保持M32/N64/NW2/KS2，增加在途K片段，其他参数不变",
+    "hypothesis": "TP8 N64路径只有68个N向CTA，增加每wave在途读取可补足低并发；代价是更高VGPR和短K时的冗余预取。",
+    "prediction": "46项全输出/CPU/guard通过，无spill；实际设备汇编保留允许未来片段在途的非零VM等待；TP4或TP8 M32至少一项比E051快5%。若失败或寄存器上升导致退化，保留较浅方案。",
+    "config": {
+      "MB": 2,
+      "NB": 4,
+      "NW": 2,
+      "KS": 2,
+      "DEPTH": 4,
+      "WNT": 0,
+      "XNT": 0,
+      "PI": 1
+    },
+    "resources": [
+      145,
+      8192,
+      0,
+      32,
+      64,
+      4,
+      2
+    ],
+    "correctness": {
+      "cases": 46,
+      "bad": 0,
+      "cpu_bad": 0,
+      "all_guards": true
+    },
+    "validation": {
+      "registered_prediction": "46项全输出/CPU/guard通过，无spill；实际设备汇编保留允许未来片段在途的非零VM等待；TP4或TP8 M32至少一项比E051快5%。若失败或寄存器上升导致退化，保留较浅方案。",
+      "threshold_pct": 5,
+      "observed": [
+        {
+          "N": 8704,
+          "M": 32,
+          "faster_pct": -4.706671066867818,
+          "parent_us": 35.74108415179782,
+          "child_us": 37.42329941855537
+        },
+        {
+          "N": 4352,
+          "M": 32,
+          "faster_pct": 1.9330141592196592,
+          "parent_us": 20.003315475251938,
+          "child_us": 19.61664855480194
+        }
+      ],
+      "prediction_pass": false,
+      "later_dense_wins": 32
+    }
+  },
+  {
+    "id": "E053",
+    "parent": "E030",
+    "other_parents": [
+      "E049",
+      "E050",
+      "E051"
+    ],
+    "change": "回到大M较强的D1 K二分路径，只将MB2->4，CTA M32->64；N64/NW2/KS2/缓存/PI保持",
+    "hypothesis": "E049的单wave M64扩大同时丢失并发；保留E030的两个K wave后，M64可能减少W重读而仍有足够在途工作。只比较同K分片父节点。",
+    "prediction": "46项精确/guard通过、无spill，主环0barrier，末尾LDS归约；TP4或TP8 M128至少一项比E030快10%；M32可能因padding变慢，保留完整结果。",
+    "config": {
+      "MB": 4,
+      "NB": 4,
+      "NW": 2,
+      "KS": 2,
+      "DEPTH": 1,
+      "WNT": 0,
+      "XNT": 0,
+      "PI": 1
+    },
+    "resources": [
+      125,
+      16384,
+      0,
+      64,
+      64,
+      1,
+      2
+    ],
+    "correctness": {
+      "cases": 46,
+      "bad": 0,
+      "cpu_bad": 0,
+      "all_guards": true
+    },
+    "validation": {
+      "registered_prediction": "46项精确/guard通过、无spill，主环0barrier，末尾LDS归约；TP4或TP8 M128至少一项比E030快10%；M32可能因padding变慢，保留完整结果。",
+      "threshold_pct": 10,
+      "observed": [
+        {
+          "N": 8704,
+          "M": 128,
+          "faster_pct": 47.27005225798114,
+          "parent_us": 84.71881681018405,
+          "child_us": 44.67218783166673
+        },
+        {
+          "N": 4352,
+          "M": 128,
+          "faster_pct": -16.652987485258276,
+          "parent_us": 32.449970642725624,
+          "child_us": 37.853860192828705
+        }
+      ],
+      "prediction_pass": true,
+      "later_dense_wins": 192
+    }
+  },
+  {
+    "id": "E054",
+    "parent": "E051",
+    "other_parents": [
+      "E052"
+    ],
+    "change": "仅NB4->2，CTA N64->32；保持M32/NW2/KS2/D2，减少每CTA N覆盖并增加N向CTA数",
+    "hypothesis": "TP8在N64时只有68个N向CTA，N32使其增至136；更多独立CTA和更小VGPR/LDS可能改善低N并发，代价是X重复读取及调度增加。E052的D4对M32未达5%增益且资源上升，因此从较浅D2出发。",
+    "prediction": "46项精确/guard通过、无spill；末尾归约LDS8KiB->4KiB，主环无barrier；TP8 M32比E051至少快8%，TP4不预设收益。",
+    "config": {
+      "MB": 2,
+      "NB": 2,
+      "NW": 2,
+      "KS": 2,
+      "DEPTH": 2,
+      "WNT": 0,
+      "XNT": 0,
+      "PI": 1
+    },
+    "resources": [
+      65,
+      4096,
+      0,
+      32,
+      32,
+      2,
+      2
+    ],
+    "correctness": {
+      "cases": 46,
+      "bad": 0,
+      "cpu_bad": 0,
+      "all_guards": true
+    },
+    "validation": {
+      "registered_prediction": "46项精确/guard通过、无spill；末尾归约LDS8KiB->4KiB，主环无barrier；TP8 M32比E051至少快8%，TP4不预设收益。",
+      "threshold_pct": 8,
+      "observed": [
+        {
+          "N": 4352,
+          "M": 32,
+          "faster_pct": 1.346247983045168,
+          "parent_us": 20.138319995668198,
+          "child_us": 19.867208268907333
+        }
+      ],
+      "prediction_pass": false,
+      "later_dense_wins": 0
+    }
+  },
+  {
+    "id": "E055",
+    "parent": "E053",
+    "other_parents": [
+      "E051"
+    ],
+    "change": "仅将K二分M64/N64路径DEPTH1->2；其余参数不变",
+    "hypothesis": "E053的M64在TP4 M128和TP8 M192/256有明显W复用收益，检查双槽能否覆盖IO；E051已显示更深缓冲会在部分M退化，因此不预设全范围改善。",
+    "prediction": "46项精确/guard通过、无spill；TP4 M128比E053快至少5%；若失败则保留D1，不用更深预取掩盖并发/局部性变化。",
+    "config": {
+      "MB": 4,
+      "NB": 4,
+      "NW": 2,
+      "KS": 2,
+      "DEPTH": 2,
+      "WNT": 0,
+      "XNT": 0,
+      "PI": 1
+    },
+    "resources": [
+      145,
+      16384,
+      0,
+      64,
+      64,
+      2,
+      2
+    ],
+    "correctness": {
+      "cases": 46,
+      "bad": 0,
+      "cpu_bad": 0,
+      "all_guards": true
+    },
+    "validation": {
+      "registered_prediction": "46项精确/guard通过、无spill；TP4 M128比E053快至少5%；若失败则保留D1，不用更深预取掩盖并发/局部性变化。",
+      "threshold_pct": 5,
+      "observed": [
+        {
+          "N": 8704,
+          "M": 128,
+          "faster_pct": -39.01670062113125,
+          "parent_us": 44.72442468007406,
+          "child_us": 62.17441956202189
+        }
+      ],
+      "prediction_pass": false,
+      "later_dense_wins": 32
+    }
+  },
+  {
+    "id": "E056",
+    "parent": "E051",
+    "other_parents": [
+      "E054"
+    ],
+    "change": "只改变K并行分片2->4：NW/KS同时2/2->4/4以保持Ntile64，M32/D2/缓存/PI不变",
+    "hypothesis": "N32增加CTA仅带来约1%小M收益且大M退化；保留N64局部性，让四个wave分摊K，有望在低CTA数时增加在途请求。代价是末尾三个部分和及24KiB LDS，可能降低大M驻留。",
+    "prediction": "46项精确/guard通过，无spill；CTA N64不变，归约LDS24KiB；TP8 M32比E051至少快10%，大M可能因LDS/并发退化而更慢，不能全范围替换。",
+    "config": {
+      "MB": 2,
+      "NB": 4,
+      "NW": 4,
+      "KS": 4,
+      "DEPTH": 2,
+      "WNT": 0,
+      "XNT": 0,
+      "PI": 1
+    },
+    "resources": [
+      104,
+      24576,
+      0,
+      32,
+      64,
+      2,
+      4
+    ],
+    "correctness": {
+      "cases": 46,
+      "bad": 0,
+      "cpu_bad": 0,
+      "all_guards": true
+    },
+    "validation": {
+      "registered_prediction": "46项精确/guard通过，无spill；CTA N64不变，归约LDS24KiB；TP8 M32比E051至少快10%，大M可能因LDS/并发退化而更慢，不能全范围替换。",
+      "threshold_pct": 10,
+      "observed": [
+        {
+          "N": 4352,
+          "M": 32,
+          "faster_pct": 1.478871352704414,
+          "parent_us": 20.022763146294487,
+          "child_us": 19.72665223810408
+        }
+      ],
+      "prediction_pass": false,
+      "later_dense_wins": 0
+    }
+  }
+]

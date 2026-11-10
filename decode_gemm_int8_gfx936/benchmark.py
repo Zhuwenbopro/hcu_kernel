@@ -32,7 +32,9 @@ def batch_sizes(text):
 def main():
     p = argparse.ArgumentParser(description=__doc__)
     p.add_argument("--batches", default="32,128")
-    p.add_argument("--n", type=int, nargs="+", default=[34816, 17408])
+    shapes = p.add_mutually_exclusive_group()
+    shapes.add_argument("--n", type=int, nargs="+")
+    shapes.add_argument("--tp", type=int, nargs="+", choices=[1, 2, 4, 8], help="local N=34816/TP; K and communication unchanged")
     p.add_argument("--k", type=int, default=5120)
     p.add_argument("--variants", nargs="+", choices=list(VARIANTS), default=["E023", "E030", "E038", "E047"])
     p.add_argument("--pool-gib", type=float, default=6)
@@ -43,6 +45,7 @@ def main():
     p.add_argument("--reference-gbs", type=float, default=1363.5)
     p.add_argument("--output", default=str(ROOT / "build" / "benchmark.json"))
     a = p.parse_args()
+    a.n = [34816 // tp for tp in a.tp] if a.tp else (a.n or [34816, 17408])
     batches = batch_sizes(a.batches)
     if a.rounds < 1 or a.warmup < 1 or a.pool_gib <= 0 or a.reference_gbs <= 0 or a.k < 64 or a.k % 64:
         p.error("invalid rounds/warmup/pool/reference/K")

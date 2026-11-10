@@ -1,13 +1,13 @@
 [
   {
     "path": "README.md",
-    "sha256": "4c50e669d4120baee6cbaa979008031a52c1e7a251a47cebc738eba81d0c1d61",
-    "bytes": 957
+    "sha256": "ae066014bc3dd0561195995e84780cb65faafd74a6d338943dd82784f91f5998",
+    "bytes": 970
   },
   {
     "path": "decode_gemm_int8_gfx936/README.md",
-    "sha256": "4162d72ad06dbbcac58c81ea0f798030aaef96ad62458dfe8da0f253aecdaa2b",
-    "bytes": 6921
+    "sha256": "7f8b6da72991bde97e4ad2d1fe8293a16a9f44ad35e4370a57c0f825bcb0f7aa",
+    "bytes": 10555
   },
   {
     "path": "decode_gemm_int8_gfx936/__init__.py",
@@ -16,13 +16,18 @@
   },
   {
     "path": "decode_gemm_int8_gfx936/benchmark.py",
-    "sha256": "c2a4aeb96c6aac7f37dc5886f8e9e4ce1d0bb7ba455b01f8305a3803390316e6",
-    "bytes": 8042
+    "sha256": "5485060c4455734aaf8a3db5b4ba8d254d07b696dd6c3f5eea55caea0f52a5a9",
+    "bytes": 8276
   },
   {
     "path": "decode_gemm_int8_gfx936/build.py",
     "sha256": "062fa68eb16f727807889caa1be13432b246a33cecb7d04b349bc3881db68cf5",
     "bytes": 1820
+  },
+  {
+    "path": "decode_gemm_int8_gfx936/dispatch.json",
+    "sha256": "1f2d9f80c8c30944f41af417f7ea849fb7801bb56fbcaa80bfdd81f4b6c54bbe",
+    "bytes": 1689
   },
   {
     "path": "decode_gemm_int8_gfx936/kernels/direct_reg_matched.cu",
@@ -56,13 +61,13 @@
   },
   {
     "path": "decode_gemm_int8_gfx936/python_api.py",
-    "sha256": "e018434c3ffa9c2234afc57477defc439bc7836a17d71fda4743e0c9e61ae28f",
-    "bytes": 5925
+    "sha256": "29be21d0c6866270d6fa85b6d708dca42068cdd9349c88add988310b5c9237f5",
+    "bytes": 6153
   },
   {
     "path": "decode_gemm_int8_gfx936/results/batch_sweep.csv",
-    "sha256": "5c909f533f241370183df67e6a46cd11c880bd19cf4c1e2dfa4c6e44cfe1c672",
-    "bytes": 209658
+    "sha256": "e78a0890e7cfd0497cf9bf63fc58a4332cd96fdc1f80c3fe20a6e1e66be8cbba",
+    "bytes": 425438
   },
   {
     "path": "decode_gemm_int8_gfx936/results/independent_validation.json",
@@ -76,8 +81,38 @@
   },
   {
     "path": "decode_gemm_int8_gfx936/results/summary.json",
-    "sha256": "08064ada20b19480d5edc6a2f3150519622efe4bb0a3df9b359d11bd4b10961e",
-    "bytes": 3762
+    "sha256": "1d40f02e2d2f3cc06d2bdd6d0805282719d1d464e8607ec02efce588d0b9d018",
+    "bytes": 4036
+  },
+  {
+    "path": "decode_gemm_int8_gfx936/results/tp48_experiments.json",
+    "sha256": "527ac3da24ee464d6c325e8c191f0fc670b10e7517ceb3e5889fbcb39d7ea1ae",
+    "bytes": 12524
+  },
+  {
+    "path": "decode_gemm_int8_gfx936/results/tp48_independent_validation.json",
+    "sha256": "789ac8ce688bf8fcc9ac74da2d1a114d01748433bc48497e53764c3946f6c415",
+    "bytes": 124774
+  },
+  {
+    "path": "decode_gemm_int8_gfx936/results/tp48_rebuild_validation.json",
+    "sha256": "2f21db4382e99b899596295546d08005549a64acacdebb2c44ac6112a054cdd9",
+    "bytes": 106884
+  },
+  {
+    "path": "decode_gemm_int8_gfx936/results/tp48_reg_vs_lds.csv",
+    "sha256": "1fffff8ceba64cba93dd7789700142efb12af907617ea72fb16b5de3efd720c4",
+    "bytes": 213583
+  },
+  {
+    "path": "decode_gemm_int8_gfx936/results/tp48_schedule.json",
+    "sha256": "31fdf8e637fb4bba2177b30b52cce9ea3d86a5fdcc9980ae43ea4cfaa9bbb9cb",
+    "bytes": 10474
+  },
+  {
+    "path": "decode_gemm_int8_gfx936/results/tp48_summary.json",
+    "sha256": "a6c6652b1a8b9e9c303b3f0b9bce7b9bd5dd7cda6ed2d8d7e7e74864d8889ff1",
+    "bytes": 3481
   },
   {
     "path": "decode_gemm_int8_gfx936/results/x_delivery_comparison.csv",
@@ -86,8 +121,8 @@
   },
   {
     "path": "decode_gemm_int8_gfx936/test_decode_gemm_int8.py",
-    "sha256": "cedffa76f24e3d55b8de575b24cd2f0b7acaef82ab16ff5481bc3c8537e13bc3",
-    "bytes": 5028
+    "sha256": "f30d468b262fb0198e1e208246dbd30baceb9c869491dd10b0bde0dd6e09780b",
+    "bytes": 5170
   },
   {
     "path": "decode_gemm_int8_gfx936/validation_utils.py",
@@ -96,8 +131,8 @@
   },
   {
     "path": "decode_gemm_int8_gfx936/variants.json",
-    "sha256": "374594d26d684923be6dad711a562fdfd7656c49063b8a2ff32efc4f261dd8e0",
-    "bytes": 3382
+    "sha256": "45098788c1c688573331abb509b5acc3f9cd7d1ac19f98ded77f577badb1e3e0",
+    "bytes": 8170
   },
   {
     "path": "fuse_rms_norm_gated_per_token_quant_int8/README.md",

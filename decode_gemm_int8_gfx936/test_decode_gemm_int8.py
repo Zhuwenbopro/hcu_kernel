@@ -32,6 +32,7 @@ def run_validation(variants=None, output=None):
     cases += [(32, 256, k, "random") for k in (64, 128, 192, 256, 320, 448, 512, 576, 960, 1024, 1088, 5056, 5120, 5184)]
     cases += [(32, 256, 576, pattern) for pattern in ("zero", "minmin", "minmax", "maxmax", "onehot")]
     cases += [(m, n, 5120, "random") for m in (32, 128, 129, 256, 512, 1024) for n in (17408, 34816)]
+    cases += [(m, n, 5120, "random") for m in (1, 32, 33, 64, 65, 128, 129, 192, 193, 256, 257, 512, 1024) for n in (8704, 4352)]
     cases = list(dict.fromkeys(cases))
     try:
         for ci, (m, n, k, pattern) in enumerate(cases):
@@ -53,7 +54,7 @@ def run_validation(variants=None, output=None):
             ref_bad, cpu_count = cpu_check(x, w, expected)
             assert ref_bad == 0, "GPU reference disagrees with independent CPU INT64 samples"
             backing, y = guarded_output(m, n, x.device)
-            for variant in variants + (["auto"] if n in (17408, 34816) else []):
+            for variant in variants + (["auto"] if n in (17408, 34816, 8704, 4352) else []):
                 backing.fill_(SENTINEL)
                 if variant == "auto":
                     decode_gemm_int8(x, wp, out=y)
