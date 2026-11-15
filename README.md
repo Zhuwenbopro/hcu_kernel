@@ -1,8 +1,10 @@
 # hcu_kernel
 
-海光 HCU/DTK 算子源码归档。每个算子放在独立目录；融合算子来自 LightOp 已验证实现，decode GEMM 为独立 HIP 实现。
+海光 HCU/DTK 算子源码归档。每个算子放在独立目录；LightOp 融合算子来自已验证实现，GEMM 包含独立 HIP 与模块化汇编实现。
 
 ## 算子
+
+- [fused_gate_up_gemm_gfx936/](fused_gate_up_gemm_gfx936/)：gfx936 INT8/BF16 特殊布局 gate/up GEMM 融合 SiLU×up，直接输出 BF16 [M,8704]；含源码快照、完整可校验复现包和正确性/性能记录
 
 - `decode_gemm_int8_gfx936/`：gfx936 INT8 decode GEMM，含14种HIP配置、独立编译/Python入口、正确性与冷权重池基准，以及TP1/2/4/8、bs1–1024结果摘要
 

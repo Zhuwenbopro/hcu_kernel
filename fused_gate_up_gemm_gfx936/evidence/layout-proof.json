@@ -1,0 +1,86 @@
+[
+  {
+    "family": "M128_SAB",
+    "output_cells": 8192,
+    "coverage_exact_once": true,
+    "wave_N": 128
+  },
+  {
+    "family": "M192_PF_SAB",
+    "output_cells": 12288,
+    "coverage_exact_once": true,
+    "wave_N": 128
+  },
+  {
+    "family": "M256_PF_SAB",
+    "output_cells": 16384,
+    "coverage_exact_once": true,
+    "wave_N": 128
+  },
+  {
+    "family": "N128_SAB",
+    "output_cells": 8192,
+    "coverage_exact_once": true,
+    "wave_N": 32
+  },
+  {
+    "family": "N144_SAB",
+    "output_cells": 9216,
+    "coverage_exact_once": true,
+    "wave_N": 32
+  },
+  {
+    "family": "N160_SAB",
+    "output_cells": 10240,
+    "coverage_exact_once": true,
+    "wave_N": 32
+  },
+  {
+    "family": "N176_SAB",
+    "output_cells": 11264,
+    "coverage_exact_once": true,
+    "wave_N": 32
+  },
+  {
+    "family": "N192_SAB",
+    "output_cells": 12288,
+    "coverage_exact_once": true,
+    "wave_N": 32
+  },
+  {
+    "family": "N208_SP5_SAB",
+    "output_cells": 13312,
+    "coverage_exact_once": true,
+    "wave_N": 32
+  },
+  {
+    "family": "N208_SP7_SAB",
+    "output_cells": 13312,
+    "coverage_exact_once": true,
+    "wave_N": 32
+  },
+  {
+    "family": "N224_SP9_SAB",
+    "output_cells": 14336,
+    "coverage_exact_once": true,
+    "wave_N": 32
+  },
+  {
+    "family": "N224_SP10_SAB",
+    "output_cells": 14336,
+    "coverage_exact_once": true,
+    "wave_N": 32
+  },
+  {
+    "family": "N240_SP12_SAB",
+    "output_cells": 15360,
+    "coverage_exact_once": true,
+    "wave_N": 32
+  },
+  {
+    "family": "N256_SP11_SAB",
+    "output_cells": 16384,
+    "coverage_exact_once": true,
+    "wave_N": 32
+  }
+]

@@ -1,0 +1,235 @@
+{
+  "status": "verified",
+  "source": "/home/metic/gate-up-fused-20261115-122610",
+  "base_commit_when_snapshot_created": "63dff36f95cdb7da442299b3878c3385d77efe5d",
+  "archive_checked_files": 2696,
+  "validation_cases": 1024,
+  "benchmark_groups": 198,
+  "policy_sha256": "c3be1d9ef3e03471339bad19e18fd3ca7064c47e9d9cb54291f100bd3be65eef",
+  "copied_files": [
+    {
+      "original": "/home/metic/gate-up-fused-20261115-122610/fused_gemm.py",
+      "path": "sources/fused_gemm.py",
+      "sha256": "821e63662418d4dc5aa609612fef5afc8408de1bb55bf11ae21d77232f95f06f",
+      "bytes": 7626
+    },
+    {
+      "original": "/home/metic/gate-up-fused-20261115-122610/fused_generator.py",
+      "path": "sources/fused_generator.py",
+      "sha256": "055f630904f14aa549573b2a5b66914cfa3263854ff664f62f32fc53c9f3e931",
+      "bytes": 9995
+    },
+    {
+      "original": "/home/metic/gate-up-fused-20261115-122610/fused_legacy_generator.py",
+      "path": "sources/fused_legacy_generator.py",
+      "sha256": "11461189faf837f64a788d8b99eeda2bcd9e7d55619b779e4fa9d5f3869abbb9",
+      "bytes": 6455
+    },
+    {
+      "original": "/home/metic/gate-up-fused-20261115-122610/common_gfx936.inc",
+      "path": "sources/common_gfx936.inc",
+      "sha256": "9241c5ca9d29b52535343f4f57e2060027712e7fabf0144be9c0afbbcbaf495e",
+      "bytes": 2266
+    },
+    {
+      "original": "/home/metic/gate-up-fused-20261115-122610/fused-policy.json",
+      "path": "sources/fused-policy.json",
+      "sha256": "c3be1d9ef3e03471339bad19e18fd3ca7064c47e9d9cb54291f100bd3be65eef",
+      "bytes": 13608
+    },
+    {
+      "original": "/home/metic/gate-up-fused-20261115-122610/test_common.py",
+      "path": "sources/test_common.py",
+      "sha256": "9487cc3e9b2dc6cb81abeed14a47c279c3c9ff497f06889d94503d0bf0a678bc",
+      "bytes": 4408
+    },
+    {
+      "original": "/home/metic/gate-up-fused-20261115-122610/smoke.py",
+      "path": "sources/smoke.py",
+      "sha256": "a2c47ba6198c9f18a8edfbc894fb56718a0e7731ea8e6bcba67d4610a8242136",
+      "bytes": 3195
+    },
+    {
+      "original": "/home/metic/gate-up-fused-20261115-122610/validate.py",
+      "path": "sources/validate.py",
+      "sha256": "eb714498406ce5482df55b389c8361b396a747f3b019d00c24734501dafda005",
+      "bytes": 6748
+    },
+    {
+      "original": "/home/metic/gate-up-fused-20261115-122610/screen.py",
+      "path": "sources/screen.py",
+      "sha256": "6b9716dd8e5584cef18c659d4088ddd234d98307887e2354f511d246bf50e3f0",
+      "bytes": 5020
+    },
+    {
+      "original": "/home/metic/gate-up-fused-20261115-122610/select_policy.py",
+      "path": "sources/select_policy.py",
+      "sha256": "e2b40c816979e41a7a31c8d6cb9a27efc65e1f343e3a1e66817494809e687c9e",
+      "bytes": 1803
+    },
+    {
+      "original": "/home/metic/gate-up-fused-20261115-122610/benchmark.py",
+      "path": "sources/benchmark.py",
+      "sha256": "8259d76deb6d835851a71a631b78f36c6173dff3268a98d3931c14d2c592feb6",
+      "bytes": 6730
+    },
+    {
+      "original": "/home/metic/gate-up-fused-20261115-122610/analyze.py",
+      "path": "sources/analyze.py",
+      "sha256": "c1b367dc84506adfe73c410950389052ea23141f773feeaaa6d3115ba80e53a4",
+      "bytes": 7603
+    },
+    {
+      "original": "/home/metic/gate-up-fused-20261115-122610/report.py",
+      "path": "sources/report.py",
+      "sha256": "ff23587cc95e09c55b28db206ac13bfc8967f1a1e233f7ce178758cac6f2b0b3",
+      "bytes": 9995
+    },
+    {
+      "original": "/home/metic/gate-up-fused-20261115-122610/audit.py",
+      "path": "sources/audit.py",
+      "sha256": "be1abe4c5e1786473153dcdc0ebd73fb08d85d6ea1edce5d102784b63a8d3b9c",
+      "bytes": 2112
+    },
+    {
+      "original": "/home/metic/gate-up-fused-20261115-122610/REPORT.md",
+      "path": "evidence/REPORT.md",
+      "sha256": "115dd30dd98a947338f6140bee8c17dab02319e5cf75881f59497673c2181981",
+      "bytes": 9975
+    },
+    {
+      "original": "/home/metic/gate-up-fused-20261115-122610/RESULT.json",
+      "path": "evidence/RESULT.json",
+      "sha256": "5fdbf46320d9123d39aed06436e70e0a9351186ba304eb0023daf6b329169b70",
+      "bytes": 148281
+    },
+    {
+      "original": "/home/metic/gate-up-fused-20261115-122610/RELEASE.json",
+      "path": "evidence/RELEASE.json",
+      "sha256": "abb1e0d0ce24d25c88be13dd187ff37f19a070775ae0b54e75a1e4a7875fdfe2",
+      "bytes": 988
+    },
+    {
+      "original": "/home/metic/gate-up-fused-20261115-122610/PRESERVED.json",
+      "path": "evidence/PRESERVED.json",
+      "sha256": "a8f2d8a214344bc11740e83ee2497b6d7f6065d0d35a95cf3f9a9ac3c10684fd",
+      "bytes": 665
+    },
+    {
+      "original": "/home/metic/gate-up-fused-20261115-122610/validation.json",
+      "path": "evidence/validation.json",
+      "sha256": "e5f7180dded2efbad0a40883f092bd977ba7e6543c05f5794dcb9c631c31d593",
+      "bytes": 1191934
+    },
+    {
+      "original": "/home/metic/gate-up-fused-20261115-122610/smoke.json",
+      "path": "evidence/smoke.json",
+      "sha256": "45a29eca4b78c217d9f28f0a50c46eae29c1d11fda34bfc37fd8ea230acba27b",
+      "bytes": 49381
+    },
+    {
+      "original": "/home/metic/gate-up-fused-20261115-122610/environment.json",
+      "path": "evidence/environment.json",
+      "sha256": "321bb951a0cbf8be61e06f8e560de25ad7d6420ddab201865533f59b535e587a",
+      "bytes": 1284
+    },
+    {
+      "original": "/home/metic/gate-up-fused-20261115-122610/instruction-resource-audit.json",
+      "path": "evidence/instruction-resource-audit.json",
+      "sha256": "554cab74454cdb57561d9fef006e56b7823b33fbc6942583db5e11095c460fa4",
+      "bytes": 21331
+    },
+    {
+      "original": "/home/metic/gate-up-fused-20261115-122610/layout-proof.json",
+      "path": "evidence/layout-proof.json",
+      "sha256": "da520eb60d6bfd45e6be7db23f721e82db17bc8f92efc7088f7f16ea0a309c87",
+      "bytes": 1604
+    },
+    {
+      "original": "/home/metic/gate-up-fused-20261115-122610/bf16-small-M-order-check.json",
+      "path": "evidence/bf16-small-M-order-check.json",
+      "sha256": "713ae2646c3e2d5c1e2144305776db365470bd43def67fdaaf5088e263ae6e2c",
+      "bytes": 9899
+    },
+    {
+      "original": "/home/metic/gate-up-fused-20261115-122610/latency-int8.csv",
+      "path": "evidence/latency-int8.csv",
+      "sha256": "0952a8e281b5d97c7904f75060ea15efda48ab6ad13c0a751d548d3019adf1bd",
+      "bytes": 7804
+    },
+    {
+      "original": "/home/metic/gate-up-fused-20261115-122610/latency-bf16.csv",
+      "path": "evidence/latency-bf16.csv",
+      "sha256": "90f125e50643a98dde7e49af3b3c376b8c79304e4a2e0b84509d96085efdc3e6",
+      "bytes": 8059
+    },
+    {
+      "original": "/home/metic/gate-up-fused-20261115-122610/latency-all.csv",
+      "path": "evidence/latency-all.csv",
+      "sha256": "7e4b079617a4ec7bb38f995b8a563e4f03bb0e85274dffc34801e3cae35fdae8",
+      "bytes": 15566
+    },
+    {
+      "original": "/home/metic/gate-up-fused-20261115-122610/fused-gate-up.png",
+      "path": "evidence/fused-gate-up.png",
+      "sha256": "e4d7dc8b60aff519a5df44348f6c514fc3b3d09c498be3c6fb5b74b16873c4f7",
+      "bytes": 289540
+    },
+    {
+      "original": "/home/metic/gate-up-fused-20261115-122610/fused-gate-up.svg",
+      "path": "evidence/fused-gate-up.svg",
+      "sha256": "dcd5343eaf20a235a63254bc0783c3fd7707dc2b97df83065080d659be99a576",
+      "bytes": 148789
+    },
+    {
+      "original": "/home/metic/gate-up-fused-20261115-122610/benchmark-raw.json",
+      "path": "evidence/benchmark-raw.json",
+      "sha256": "09160ff731c8c25a13d1392154d68ff97cd06ad116925390666e1cce58ea7047",
+      "bytes": 1009136
+    },
+    {
+      "original": "/home/metic/gate-up-fused-20261115-122610/clocks.jsonl",
+      "path": "evidence/clocks.jsonl",
+      "sha256": "80ccef5d2eaf6bac046d0514a0f4065951e1a558f7ab88d2b66fcd4f4be18eb0",
+      "bytes": 71067
+    },
+    {
+      "original": "/home/metic/gate-up-fused-20261115-122610/activation-probe.json",
+      "path": "evidence/activation-probe.json",
+      "sha256": "6f8a88f4b85ca4421d69eb105f1f3ec98b5283e0695c07f3b8579949f4b06f4e",
+      "bytes": 508
+    },
+    {
+      "original": "/home/metic/gate-up-fused-20261115-122610/release-sha256.json",
+      "path": "evidence/release-sha256.json",
+      "sha256": "ff16b20b46901221999423b76c15a6cbc2c27866de871987c6976948388f4878",
+      "bytes": 463
+    },
+    {
+      "original": "/home/metic/gate-up-fused-20261115-122610/benchmark-status.json",
+      "path": "evidence/benchmark-status.json",
+      "sha256": "a9063ed48d105b765d575bef3e0f68bb3d0ac50deebb2d28ab2c9b755a54df8e",
+      "bytes": 90
+    },
+    {
+      "original": "/home/metic/gate-up-fused-20261115-122610/validation-status.json",
+      "path": "evidence/validation-status.json",
+      "sha256": "d0e794b44c22177a59ae5352317d8f1327327a494666034ce4f4f5b060ac233c",
+      "bytes": 66
+    },
+    {
+      "original": "/home/metic/gate-up-fused-20261115-122610/fused-gate-up-release.tar.gz",
+      "path": "fused-gate-up-release.tar.gz",
+      "sha256": "00a3fa0b879192a8f584e841f4bfedfc35ce85d31a34a186a24f1179a8dbc59a",
+      "bytes": 21905197
+    },
+    {
+      "original": "/home/metic/gate-up-fused-20261115-122610/fused-gate-up-release.tar.gz.sha256",
+      "path": "fused-gate-up-release.tar.gz.sha256",
+      "sha256": "58ce9789491d010f54bf8bf7fcdeeef7eae4a2c0dbe31328d4e333386e5819b9",
+      "bytes": 95
+    }
+  ],
+  "README_sha256": "32e90bc3b1ec98e5cb96a32ae3a903a4f8dc0f8581a309047f77874309891d80",
+  "runtime_sources_are_unmodified": true
+}

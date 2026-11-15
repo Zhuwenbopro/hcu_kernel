@@ -1,0 +1,62 @@
+{
+  "torch": "2.11.0",
+  "HIP": "7.2.26365",
+  "device": "_CudaDeviceProperties(name='BW1000 64G', major=9, minor=3, gcnArchName='gfx936:sramecc+:xnack-', total_memory=65520MB, multi_processor_count=80, uuid=30303135-3338-6139-6634-653434313031, pci_bus_id=193, pci_device_id=0, pci_domain_id=0, L2_cache_size=8MB)",
+  "PCI": "0000:c1:00.0",
+  "node": "bw47",
+  "container": "zhuwenbo_sgl_0522",
+  "GPU": 5,
+  "formal_seeds": [
+    202611153041,
+    202611153042,
+    202611153043
+  ],
+  "rounds": 7,
+  "copies": 72,
+  "points": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    32,
+    48,
+    64,
+    80,
+    96,
+    112,
+    128,
+    129,
+    144,
+    160,
+    176,
+    192,
+    193,
+    208,
+    224,
+    240,
+    256
+  ],
+  "policy_sha256": "c3be1d9ef3e03471339bad19e18fd3ca7064c47e9d9cb54291f100bd3be65eef",
+  "activation": "AITER silu_and_mul(out,input,limit=0) and single-kernel Triton sigmoid(g)*g*u, FP32 arithmetic",
+  "aiter_distribution": [
+    {
+      "aiter": "0.1.8+dtk2610.torch2110.2611031115.ga1a2bc"
+    }
+  ],
+  "env": {
+    "HIP_VISIBLE_DEVICES": "5"
+  },
+  "scope": "A pack + GEMM + activation/BF16 output. Static weight/scale preparation excluded; input INT8 quantization excluded."
+}

@@ -1,0 +1,19 @@
+{
+  "archive": "/home/metic/gate-up-fused-20261115-122610/fused-gate-up-release.tar.gz",
+  "sha256": "00a3fa0b879192a8f584e841f4bfedfc35ce85d31a34a186a24f1179a8dbc59a",
+  "bytes": 21905197,
+  "checked_files": 2696,
+  "verified": true,
+  "seed_wins_out_of_33": {
+    "int8": {
+      "202611153041": 33,
+      "202611153042": 33,
+      "202611153043": 33
+    },
+    "bf16": {
+      "202611153041": 33,
+      "202611153042": 33,
+      "202611153043": 33
+    }
+  }
+}

@@ -1,0 +1,8 @@
+{
+  "source_repository": "/home/zmoe",
+  "source_commit": "c2aa0b2a5e29eba0f222058178ebcc47d83275cf",
+  "source_folder": "results/gate-up-fused-20261115-122610",
+  "release_sha256": "00a3fa0b879192a8f584e841f4bfedfc35ce85d31a34a186a24f1179a8dbc59a",
+  "snapshot_source_files": 39,
+  "runtime_source_and_archive_unmodified": true
+}

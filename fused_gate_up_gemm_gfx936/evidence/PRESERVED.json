@@ -1,0 +1,20 @@
+[
+  {
+    "type": "int8",
+    "source": "/home/metic/lightop-gemm-alignment-20261114-193801/aligned-bf16-release.tar.gz",
+    "saved": "/home/metic/gate-up-fused-20261115-122610/frozen-int8.tar.gz",
+    "sha256": "aca9566e0fffc330a0dc7683abe0d03dc6939b8ffa141edee1a7002ad7591348",
+    "top_entries": [
+      "aligned-bf16"
+    ]
+  },
+  {
+    "type": "bf16",
+    "source": "/home/metic/bf16-gemm-extension-20261114-203046/bf16-in-bf16-out-release.tar.gz",
+    "saved": "/home/metic/gate-up-fused-20261115-122610/frozen-bf16.tar.gz",
+    "sha256": "ee750d7ec4794df15592c362c521894dd1e9b47dacfb402b7572548ab7447839",
+    "top_entries": [
+      "bf16-gemm"
+    ]
+  }
+]

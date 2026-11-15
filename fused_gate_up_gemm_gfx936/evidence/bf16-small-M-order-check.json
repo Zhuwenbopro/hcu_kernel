@@ -1,0 +1,432 @@
+{
+  "status": "complete",
+  "records": [
+    {
+      "family": "E030",
+      "gate_up_vs_current": {
+        "max_abs": 0.25,
+        "relative_L2": 3.5164210431069756e-05,
+        "max_BF16_ULP": 1,
+        "mismatches": 11,
+        "elements": 17408
+      },
+      "fused_vs_same_family_AITER": {
+        "max_abs": 0.0,
+        "relative_L2": 0.0,
+        "max_BF16_ULP": 0,
+        "mismatches": 0,
+        "elements": 8704
+      },
+      "fused_vs_current": {
+        "max_abs": 16.0,
+        "relative_L2": 4.512511294053544e-05,
+        "max_BF16_ULP": 2,
+        "mismatches": 6,
+        "elements": 8704
+      },
+      "examples": [
+        {
+          "idx": [
+            0,
+            859
+          ],
+          "old_gate": 89.0,
+          "new_gate": 89.0,
+          "old_up": -19.625,
+          "new_up": -19.75,
+          "old_final": -1744.0,
+          "fused_final": -1760.0,
+          "same_family_AITER": -1760.0
+        },
+        {
+          "idx": [
+            0,
+            4094
+          ],
+          "old_gate": 2.546875,
+          "new_gate": 2.546875,
+          "old_up": 2.203125,
+          "new_up": 2.1875,
+          "old_final": 5.21875,
+          "fused_final": 5.15625,
+          "same_family_AITER": 5.15625
+        }
+      ]
+    },
+    {
+      "family": "E047",
+      "gate_up_vs_current": {
+        "max_abs": 0.0,
+        "relative_L2": 0.0,
+        "max_BF16_ULP": 0,
+        "mismatches": 0,
+        "elements": 17408
+      },
+      "fused_vs_same_family_AITER": {
+        "max_abs": 0.0,
+        "relative_L2": 0.0,
+        "max_BF16_ULP": 0,
+        "mismatches": 0,
+        "elements": 8704
+      },
+      "fused_vs_current": {
+        "max_abs": 0.0,
+        "relative_L2": 0.0,
+        "max_BF16_ULP": 0,
+        "mismatches": 0,
+        "elements": 8704
+      },
+      "examples": []
+    },
+    {
+      "family": "M128_SAB",
+      "gate_up_vs_current": {
+        "max_abs": 0.0,
+        "relative_L2": 0.0,
+        "max_BF16_ULP": 0,
+        "mismatches": 0,
+        "elements": 17408
+      },
+      "fused_vs_same_family_AITER": {
+        "max_abs": 0.0,
+        "relative_L2": 0.0,
+        "max_BF16_ULP": 0,
+        "mismatches": 0,
+        "elements": 8704
+      },
+      "fused_vs_current": {
+        "max_abs": 0.0,
+        "relative_L2": 0.0,
+        "max_BF16_ULP": 0,
+        "mismatches": 0,
+        "elements": 8704
+      },
+      "examples": []
+    },
+    {
+      "family": "M192_PF_SAB",
+      "gate_up_vs_current": {
+        "max_abs": 0.0,
+        "relative_L2": 0.0,
+        "max_BF16_ULP": 0,
+        "mismatches": 0,
+        "elements": 17408
+      },
+      "fused_vs_same_family_AITER": {
+        "max_abs": 0.0,
+        "relative_L2": 0.0,
+        "max_BF16_ULP": 0,
+        "mismatches": 0,
+        "elements": 8704
+      },
+      "fused_vs_current": {
+        "max_abs": 0.0,
+        "relative_L2": 0.0,
+        "max_BF16_ULP": 0,
+        "mismatches": 0,
+        "elements": 8704
+      },
+      "examples": []
+    },
+    {
+      "family": "M256_PF_SAB",
+      "gate_up_vs_current": {
+        "max_abs": 0.0,
+        "relative_L2": 0.0,
+        "max_BF16_ULP": 0,
+        "mismatches": 0,
+        "elements": 17408
+      },
+      "fused_vs_same_family_AITER": {
+        "max_abs": 0.0,
+        "relative_L2": 0.0,
+        "max_BF16_ULP": 0,
+        "mismatches": 0,
+        "elements": 8704
+      },
+      "fused_vs_current": {
+        "max_abs": 0.0,
+        "relative_L2": 0.0,
+        "max_BF16_ULP": 0,
+        "mismatches": 0,
+        "elements": 8704
+      },
+      "examples": []
+    },
+    {
+      "family": "N128_SAB",
+      "gate_up_vs_current": {
+        "max_abs": 0.0,
+        "relative_L2": 0.0,
+        "max_BF16_ULP": 0,
+        "mismatches": 0,
+        "elements": 17408
+      },
+      "fused_vs_same_family_AITER": {
+        "max_abs": 0.0,
+        "relative_L2": 0.0,
+        "max_BF16_ULP": 0,
+        "mismatches": 0,
+        "elements": 8704
+      },
+      "fused_vs_current": {
+        "max_abs": 0.0,
+        "relative_L2": 0.0,
+        "max_BF16_ULP": 0,
+        "mismatches": 0,
+        "elements": 8704
+      },
+      "examples": []
+    },
+    {
+      "family": "N144_SAB",
+      "gate_up_vs_current": {
+        "max_abs": 0.0,
+        "relative_L2": 0.0,
+        "max_BF16_ULP": 0,
+        "mismatches": 0,
+        "elements": 17408
+      },
+      "fused_vs_same_family_AITER": {
+        "max_abs": 0.0,
+        "relative_L2": 0.0,
+        "max_BF16_ULP": 0,
+        "mismatches": 0,
+        "elements": 8704
+      },
+      "fused_vs_current": {
+        "max_abs": 0.0,
+        "relative_L2": 0.0,
+        "max_BF16_ULP": 0,
+        "mismatches": 0,
+        "elements": 8704
+      },
+      "examples": []
+    },
+    {
+      "family": "N160_SAB",
+      "gate_up_vs_current": {
+        "max_abs": 0.0,
+        "relative_L2": 0.0,
+        "max_BF16_ULP": 0,
+        "mismatches": 0,
+        "elements": 17408
+      },
+      "fused_vs_same_family_AITER": {
+        "max_abs": 0.0,
+        "relative_L2": 0.0,
+        "max_BF16_ULP": 0,
+        "mismatches": 0,
+        "elements": 8704
+      },
+      "fused_vs_current": {
+        "max_abs": 0.0,
+        "relative_L2": 0.0,
+        "max_BF16_ULP": 0,
+        "mismatches": 0,
+        "elements": 8704
+      },
+      "examples": []
+    },
+    {
+      "family": "N176_SAB",
+      "gate_up_vs_current": {
+        "max_abs": 0.0,
+        "relative_L2": 0.0,
+        "max_BF16_ULP": 0,
+        "mismatches": 0,
+        "elements": 17408
+      },
+      "fused_vs_same_family_AITER": {
+        "max_abs": 0.0,
+        "relative_L2": 0.0,
+        "max_BF16_ULP": 0,
+        "mismatches": 0,
+        "elements": 8704
+      },
+      "fused_vs_current": {
+        "max_abs": 0.0,
+        "relative_L2": 0.0,
+        "max_BF16_ULP": 0,
+        "mismatches": 0,
+        "elements": 8704
+      },
+      "examples": []
+    },
+    {
+      "family": "N192_SAB",
+      "gate_up_vs_current": {
+        "max_abs": 0.0,
+        "relative_L2": 0.0,
+        "max_BF16_ULP": 0,
+        "mismatches": 0,
+        "elements": 17408
+      },
+      "fused_vs_same_family_AITER": {
+        "max_abs": 0.0,
+        "relative_L2": 0.0,
+        "max_BF16_ULP": 0,
+        "mismatches": 0,
+        "elements": 8704
+      },
+      "fused_vs_current": {
+        "max_abs": 0.0,
+        "relative_L2": 0.0,
+        "max_BF16_ULP": 0,
+        "mismatches": 0,
+        "elements": 8704
+      },
+      "examples": []
+    },
+    {
+      "family": "N208_SP5_SAB",
+      "gate_up_vs_current": {
+        "max_abs": 0.0,
+        "relative_L2": 0.0,
+        "max_BF16_ULP": 0,
+        "mismatches": 0,
+        "elements": 17408
+      },
+      "fused_vs_same_family_AITER": {
+        "max_abs": 0.0,
+        "relative_L2": 0.0,
+        "max_BF16_ULP": 0,
+        "mismatches": 0,
+        "elements": 8704
+      },
+      "fused_vs_current": {
+        "max_abs": 0.0,
+        "relative_L2": 0.0,
+        "max_BF16_ULP": 0,
+        "mismatches": 0,
+        "elements": 8704
+      },
+      "examples": []
+    },
+    {
+      "family": "N208_SP7_SAB",
+      "gate_up_vs_current": {
+        "max_abs": 0.0,
+        "relative_L2": 0.0,
+        "max_BF16_ULP": 0,
+        "mismatches": 0,
+        "elements": 17408
+      },
+      "fused_vs_same_family_AITER": {
+        "max_abs": 0.0,
+        "relative_L2": 0.0,
+        "max_BF16_ULP": 0,
+        "mismatches": 0,
+        "elements": 8704
+      },
+      "fused_vs_current": {
+        "max_abs": 0.0,
+        "relative_L2": 0.0,
+        "max_BF16_ULP": 0,
+        "mismatches": 0,
+        "elements": 8704
+      },
+      "examples": []
+    },
+    {
+      "family": "N224_SP10_SAB",
+      "gate_up_vs_current": {
+        "max_abs": 0.0,
+        "relative_L2": 0.0,
+        "max_BF16_ULP": 0,
+        "mismatches": 0,
+        "elements": 17408
+      },
+      "fused_vs_same_family_AITER": {
+        "max_abs": 0.0,
+        "relative_L2": 0.0,
+        "max_BF16_ULP": 0,
+        "mismatches": 0,
+        "elements": 8704
+      },
+      "fused_vs_current": {
+        "max_abs": 0.0,
+        "relative_L2": 0.0,
+        "max_BF16_ULP": 0,
+        "mismatches": 0,
+        "elements": 8704
+      },
+      "examples": []
+    },
+    {
+      "family": "N224_SP9_SAB",
+      "gate_up_vs_current": {
+        "max_abs": 0.0,
+        "relative_L2": 0.0,
+        "max_BF16_ULP": 0,
+        "mismatches": 0,
+        "elements": 17408
+      },
+      "fused_vs_same_family_AITER": {
+        "max_abs": 0.0,
+        "relative_L2": 0.0,
+        "max_BF16_ULP": 0,
+        "mismatches": 0,
+        "elements": 8704
+      },
+      "fused_vs_current": {
+        "max_abs": 0.0,
+        "relative_L2": 0.0,
+        "max_BF16_ULP": 0,
+        "mismatches": 0,
+        "elements": 8704
+      },
+      "examples": []
+    },
+    {
+      "family": "N240_SP12_SAB",
+      "gate_up_vs_current": {
+        "max_abs": 0.0,
+        "relative_L2": 0.0,
+        "max_BF16_ULP": 0,
+        "mismatches": 0,
+        "elements": 17408
+      },
+      "fused_vs_same_family_AITER": {
+        "max_abs": 0.0,
+        "relative_L2": 0.0,
+        "max_BF16_ULP": 0,
+        "mismatches": 0,
+        "elements": 8704
+      },
+      "fused_vs_current": {
+        "max_abs": 0.0,
+        "relative_L2": 0.0,
+        "max_BF16_ULP": 0,
+        "mismatches": 0,
+        "elements": 8704
+      },
+      "examples": []
+    },
+    {
+      "family": "N256_SP11_SAB",
+      "gate_up_vs_current": {
+        "max_abs": 0.0,
+        "relative_L2": 0.0,
+        "max_BF16_ULP": 0,
+        "mismatches": 0,
+        "elements": 17408
+      },
+      "fused_vs_same_family_AITER": {
+        "max_abs": 0.0,
+        "relative_L2": 0.0,
+        "max_BF16_ULP": 0,
+        "mismatches": 0,
+        "elements": 8704
+      },
+      "fused_vs_current": {
+        "max_abs": 0.0,
+        "relative_L2": 0.0,
+        "max_BF16_ULP": 0,
+        "mismatches": 0,
+        "elements": 8704
+      },
+      "examples": []
+    }
+  ]
+}

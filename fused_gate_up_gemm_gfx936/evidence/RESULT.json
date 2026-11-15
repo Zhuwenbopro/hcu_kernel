@@ -1,0 +1,4403 @@
+{
+  "status": "complete",
+  "scope": {
+    "M": [
+      1,
+      256
+    ],
+    "N": 17408,
+    "K": 5120,
+    "H": 8704,
+    "weight_layout": "packed G16,U16 with PI16 inside each block",
+    "output": "BF16 [M,8704]",
+    "INT8_path": "INT8 A/W -> INT32 accumulation -> (sx*sw)*float(acc) -> BF16 RNE in registers -> FP32 SiLU*up -> BF16 RNE store",
+    "BF16_path": "BF16 A/W -> FP32 accumulation -> BF16 RNE in registers -> FP32 SiLU*up -> BF16 RNE store",
+    "activation_pack_each_call": true,
+    "weight_prepared_once": true,
+    "model_dispatch_modified": false
+  },
+  "method": {
+    "formal_seeds": [
+      202611153041,
+      202611153042,
+      202611153043
+    ],
+    "rounds": 7,
+    "copies": 72,
+    "measured_M": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14,
+      15,
+      16,
+      32,
+      48,
+      64,
+      80,
+      96,
+      112,
+      128,
+      129,
+      144,
+      160,
+      176,
+      192,
+      193,
+      208,
+      224,
+      240,
+      256
+    ],
+    "aggregation": "median of seven rounds per seed, then median of three held-out seed medians",
+    "main_baseline": "lower aggregate median of frozen GEMM+AITER and frozen GEMM+single-kernel Triton",
+    "same_tile_control": "same packed G16/U16 W, same family and K loop; materialize BF16 gate_up, then standalone Triton SiLU*up",
+    "timed_scope": "A pack + GEMM + activation/BF16 output. Static weight/scale preparation excluded; input INT8 quantization excluded.",
+    "timed_groups": 198,
+    "timed_replays_checked": 6930
+  },
+  "ranges": {
+    "int8": {
+      "measured_points": 33,
+      "wins_vs_faster_separate": 33,
+      "min_speedup_vs_faster_separate": 1.0236190542961912,
+      "max_speedup_vs_faster_separate": 1.1318113605629256,
+      "min_reduction_pct": 2.3074066662847392,
+      "max_reduction_pct": 11.646053852769867,
+      "min_speedup_same_tile": 1.024713963759653,
+      "max_speedup_same_tile": 1.302955406427278
+    },
+    "bf16": {
+      "measured_points": 33,
+      "wins_vs_faster_separate": 33,
+      "min_speedup_vs_faster_separate": 1.0142922901408598,
+      "max_speedup_vs_faster_separate": 1.1390776827595723,
+      "min_reduction_pct": 1.4090898925076978,
+      "max_reduction_pct": 12.209674973408102,
+      "min_speedup_same_tile": 1.0120381543132337,
+      "max_speedup_same_tile": 1.189542358489713
+    }
+  },
+  "points": [
+    {
+      "precision": "int8",
+      "M": 1,
+      "fused_family": "E030",
+      "current_family": "E030",
+      "fused_us": 71.03549771838718,
+      "current_GEMM_us": 70.52662637498644,
+      "current_plus_aiter_us": 76.34884781307645,
+      "current_plus_triton_us": 72.71328899595473,
+      "same_tile_plus_triton_us": 72.7910664346483,
+      "faster_separate_activation": "current_plus_triton",
+      "faster_separate_us": 72.71328899595473,
+      "speedup_vs_faster_separate": 1.0236190542961912,
+      "latency_reduction_vs_faster_separate_pct": 2.3074066662847392,
+      "speedup_vs_AITER_separate": 1.074798519970304,
+      "speedup_vs_same_tile": 1.024713963759653,
+      "seed_median_us": {
+        "202611153041": {
+          "fused": 70.92440128326416,
+          "current_GEMM": 70.3577200571696,
+          "current_plus_aiter": 76.33550299538507,
+          "current_plus_triton": 72.44440582063463,
+          "same_tile_plus_triton": 72.69106970893012
+        },
+        "202611153042": {
+          "fused": 71.16662793689304,
+          "current_GEMM": 70.65773672527737,
+          "current_plus_aiter": 76.55994759665595,
+          "current_plus_triton": 72.92218340767755,
+          "same_tile_plus_triton": 72.96662198172675
+        },
+        "202611153043": {
+          "fused": 71.03549771838718,
+          "current_GEMM": 70.52662637498644,
+          "current_plus_aiter": 76.34884781307645,
+          "current_plus_triton": 72.71328899595473,
+          "same_tile_plus_triton": 72.7910664346483
+        }
+      }
+    },
+    {
+      "precision": "int8",
+      "M": 2,
+      "fused_family": "N128_SAB",
+      "current_family": "E030",
+      "fused_us": 71.05329301622179,
+      "current_GEMM_us": 70.56662771436903,
+      "current_plus_aiter_us": 76.68438884947035,
+      "current_plus_triton_us": 72.89995749791463,
+      "same_tile_plus_triton_us": 72.953290409512,
+      "faster_separate_activation": "current_plus_triton",
+      "faster_separate_us": 72.89995749791463,
+      "speedup_vs_faster_separate": 1.02598985076274,
+      "latency_reduction_vs_faster_separate_pct": 2.5331489140383523,
+      "speedup_vs_AITER_separate": 1.079251722111781,
+      "speedup_vs_same_tile": 1.0267404551236834,
+      "seed_median_us": {
+        "202611153041": {
+          "fused": 70.81773546006944,
+          "current_GEMM": 70.43773598141141,
+          "current_plus_aiter": 76.68438884947035,
+          "current_plus_triton": 72.8510684437222,
+          "same_tile_plus_triton": 72.80883524152968
+        },
+        "202611153042": {
+          "fused": 71.0799429151747,
+          "current_GEMM": 70.78660859002008,
+          "current_plus_aiter": 76.77994171778361,
+          "current_plus_triton": 73.16662205590143,
+          "same_tile_plus_triton": 73.02884923087225
+        },
+        "202611153043": {
+          "fused": 71.05329301622179,
+          "current_GEMM": 70.56662771436903,
+          "current_plus_aiter": 76.65106985304091,
+          "current_plus_triton": 72.89995749791463,
+          "same_tile_plus_triton": 72.953290409512
+        }
+      }
+    },
+    {
+      "precision": "int8",
+      "M": 3,
+      "fused_family": "N128_SAB",
+      "current_family": "E030",
+      "fused_us": 71.01551691691081,
+      "current_GEMM_us": 70.74218326144748,
+      "current_plus_aiter_us": 76.80884997049968,
+      "current_plus_triton_us": 72.76440329021878,
+      "same_tile_plus_triton_us": 73.3288460307651,
+      "faster_separate_activation": "current_plus_triton",
+      "faster_separate_us": 72.76440329021878,
+      "speedup_vs_faster_separate": 1.0246268202955446,
+      "latency_reduction_vs_faster_separate_pct": 2.4034916720646837,
+      "speedup_vs_AITER_separate": 1.0815784113825033,
+      "speedup_vs_same_tile": 1.0325749809940963,
+      "seed_median_us": {
+        "202611153041": {
+          "fused": 70.7666277885437,
+          "current_GEMM": 70.45772340562608,
+          "current_plus_aiter": 76.44883129331801,
+          "current_plus_triton": 72.58440388573541,
+          "same_tile_plus_triton": 72.95105854670207
+        },
+        "202611153042": {
+          "fused": 71.35328981611464,
+          "current_GEMM": 70.94218333562215,
+          "current_plus_aiter": 76.87105735143025,
+          "current_plus_triton": 72.9332897398207,
+          "same_tile_plus_triton": 73.39549726910062
+        },
+        "202611153043": {
+          "fused": 71.01551691691081,
+          "current_GEMM": 70.74218326144748,
+          "current_plus_aiter": 76.80884997049968,
+          "current_plus_triton": 72.76440329021878,
+          "same_tile_plus_triton": 73.3288460307651
+        }
+      }
+    },
+    {
+      "precision": "int8",
+      "M": 4,
+      "fused_family": "N128_SAB",
+      "current_family": "E030",
+      "fused_us": 71.06438610288832,
+      "current_GEMM_us": 70.7666277885437,
+      "current_plus_aiter_us": 76.90216435326471,
+      "current_plus_triton_us": 72.99772236082289,
+      "same_tile_plus_triton_us": 72.953290409512,
+      "faster_separate_activation": "current_plus_triton",
+      "faster_separate_us": 72.99772236082289,
+      "speedup_vs_faster_separate": 1.027205417002202,
+      "latency_reduction_vs_faster_separate_pct": 2.6484884670486264,
+      "speedup_vs_AITER_separate": 1.082147733492334,
+      "speedup_vs_same_tile": 1.0265801818633722,
+      "seed_median_us": {
+        "202611153041": {
+          "fused": 70.79996003044977,
+          "current_GEMM": 70.66216733720567,
+          "current_plus_aiter": 76.61549912558661,
+          "current_plus_triton": 72.62883583704631,
+          "same_tile_plus_triton": 72.64883650673761
+        },
+        "202611153042": {
+          "fused": 71.18440336651273,
+          "current_GEMM": 71.03548447291057,
+          "current_plus_aiter": 77.02662547429402,
+          "current_plus_triton": 73.03994231753879,
+          "same_tile_plus_triton": 73.17996025085449
+        },
+        "202611153043": {
+          "fused": 71.06438610288832,
+          "current_GEMM": 70.7666277885437,
+          "current_plus_aiter": 76.90216435326471,
+          "current_plus_triton": 72.99772236082289,
+          "same_tile_plus_triton": 72.953290409512
+        }
+      }
+    },
+    {
+      "precision": "int8",
+      "M": 5,
+      "fused_family": "N128_SAB",
+      "current_family": "E030",
+      "fused_us": 70.95773352517023,
+      "current_GEMM_us": 70.82439131206937,
+      "current_plus_aiter_us": 77.03551318910387,
+      "current_plus_triton_us": 73.03994231753879,
+      "same_tile_plus_triton_us": 73.43994246588812,
+      "faster_separate_activation": "current_plus_triton",
+      "faster_separate_us": 73.03994231753879,
+      "speedup_vs_faster_separate": 1.0293443531652537,
+      "latency_reduction_vs_faster_separate_pct": 2.8507809922908023,
+      "speedup_vs_AITER_separate": 1.0856535202294437,
+      "speedup_vs_same_tile": 1.0349815138872411,
+      "seed_median_us": {
+        "202611153041": {
+          "fused": 70.95773352517023,
+          "current_GEMM": 70.82439131206937,
+          "current_plus_aiter": 76.939947075314,
+          "current_plus_triton": 72.92662726508246,
+          "same_tile_plus_triton": 73.43994246588812
+        },
+        "202611153042": {
+          "fused": 70.89995675616794,
+          "current_GEMM": 70.78217797809177,
+          "current_plus_aiter": 77.03551318910387,
+          "current_plus_triton": 73.03994231753879,
+          "same_tile_plus_triton": 73.21551111009386
+        },
+        "202611153043": {
+          "fused": 71.20662265353732,
+          "current_GEMM": 71.08662525812785,
+          "current_plus_aiter": 77.27994521458943,
+          "current_plus_triton": 73.6777385075887,
+          "same_tile_plus_triton": 73.47772518793742
+        }
+      }
+    },
+    {
+      "precision": "int8",
+      "M": 6,
+      "fused_family": "N128_SAB",
+      "current_family": "E030",
+      "fused_us": 71.22884856330023,
+      "current_GEMM_us": 71.14218340979681,
+      "current_plus_aiter_us": 77.231056160397,
+      "current_plus_triton_us": 73.63551192813449,
+      "same_tile_plus_triton_us": 73.31327597300212,
+      "faster_separate_activation": "current_plus_triton",
+      "faster_separate_us": 73.63551192813449,
+      "speedup_vs_faster_separate": 1.0337877617479032,
+      "latency_reduction_vs_faster_separate_pct": 3.268346076256079,
+      "speedup_vs_AITER_separate": 1.0842665256867472,
+      "speedup_vs_same_tile": 1.0292638088603874,
+      "seed_median_us": {
+        "202611153041": {
+          "fused": 70.81772221459283,
+          "current_GEMM": 70.6843998697069,
+          "current_plus_aiter": 76.84440082973904,
+          "current_plus_triton": 73.12661409378052,
+          "same_tile_plus_triton": 72.92661401960585
+        },
+        "202611153042": {
+          "fused": 71.69329457812839,
+          "current_GEMM": 71.43329249487982,
+          "current_plus_aiter": 77.3910681406657,
+          "current_plus_triton": 73.81994194454617,
+          "same_tile_plus_triton": 73.40217961205377
+        },
+        "202611153043": {
+          "fused": 71.22884856330023,
+          "current_GEMM": 71.14218340979681,
+          "current_plus_aiter": 77.231056160397,
+          "current_plus_triton": 73.63551192813449,
+          "same_tile_plus_triton": 73.31327597300212
+        }
+      }
+    },
+    {
+      "precision": "int8",
+      "M": 7,
+      "fused_family": "N128_SAB",
+      "current_family": "E030",
+      "fused_us": 71.08662525812785,
+      "current_GEMM_us": 71.04439205593533,
+      "current_plus_aiter_us": 77.40218109554715,
+      "current_plus_triton_us": 73.388848039839,
+      "same_tile_plus_triton_us": 73.3488334549798,
+      "faster_separate_activation": "current_plus_triton",
+      "faster_separate_us": 73.388848039839,
+      "speedup_vs_faster_separate": 1.0323861594688366,
+      "latency_reduction_vs_faster_separate_pct": 3.137019919513373,
+      "speedup_vs_AITER_separate": 1.0888430955117987,
+      "speedup_vs_same_tile": 1.0318232605449686,
+      "seed_median_us": {
+        "202611153041": {
+          "fused": 70.83773612976074,
+          "current_GEMM": 70.75995869106717,
+          "current_plus_aiter": 76.99772384431627,
+          "current_plus_triton": 73.20884863535564,
+          "same_tile_plus_triton": 73.14440276887682
+        },
+        "202611153042": {
+          "fused": 71.47105534871419,
+          "current_GEMM": 71.48440016640558,
+          "current_plus_aiter": 77.62218183941312,
+          "current_plus_triton": 73.65551259782579,
+          "same_tile_plus_triton": 73.68216911951701
+        },
+        "202611153043": {
+          "fused": 71.08662525812785,
+          "current_GEMM": 71.04439205593533,
+          "current_plus_aiter": 77.40218109554715,
+          "current_plus_triton": 73.388848039839,
+          "same_tile_plus_triton": 73.3488334549798
+        }
+      }
+    },
+    {
+      "precision": "int8",
+      "M": 8,
+      "fused_family": "N128_SAB",
+      "current_family": "E030",
+      "fused_us": 71.43106725480821,
+      "current_GEMM_us": 71.3644027709961,
+      "current_plus_aiter_us": 77.54883501264784,
+      "current_plus_triton_us": 73.67327478196886,
+      "same_tile_plus_triton_us": 73.4088487095303,
+      "faster_separate_activation": "current_plus_triton",
+      "faster_separate_us": 73.67327478196886,
+      "speedup_vs_faster_separate": 1.03138980857114,
+      "latency_reduction_vs_faster_separate_pct": 3.0434476189585835,
+      "speedup_vs_AITER_separate": 1.0856457560128059,
+      "speedup_vs_same_tile": 1.0276879729049402,
+      "seed_median_us": {
+        "202611153041": {
+          "fused": 71.26662466261122,
+          "current_GEMM": 71.15107112460666,
+          "current_plus_aiter": 77.2732761171129,
+          "current_plus_triton": 73.63106807072957,
+          "same_tile_plus_triton": 73.4088487095303
+        },
+        "202611153042": {
+          "fused": 71.44440544976129,
+          "current_GEMM": 71.3644027709961,
+          "current_plus_aiter": 77.54883501264784,
+          "current_plus_triton": 73.67327478196886,
+          "same_tile_plus_triton": 73.4088487095303
+        },
+        "202611153043": {
+          "fused": 71.43106725480821,
+          "current_GEMM": 71.44218020968967,
+          "current_plus_aiter": 77.6043865415785,
+          "current_plus_triton": 73.77329137590196,
+          "same_tile_plus_triton": 73.4088487095303
+        }
+      }
+    },
+    {
+      "precision": "int8",
+      "M": 9,
+      "fused_family": "N128_SAB",
+      "current_family": "E030",
+      "fused_us": 71.13327582677205,
+      "current_GEMM_us": 71.1377329296536,
+      "current_plus_aiter_us": 77.54662301805284,
+      "current_plus_triton_us": 73.69105683432684,
+      "same_tile_plus_triton_us": 73.50440157784357,
+      "faster_separate_activation": "current_plus_triton",
+      "faster_separate_us": 73.69105683432684,
+      "speedup_vs_faster_separate": 1.0359575877509655,
+      "latency_reduction_vs_faster_separate_pct": 3.4709517239048804,
+      "speedup_vs_AITER_separate": 1.0901595929154022,
+      "speedup_vs_same_tile": 1.0333335660914285,
+      "seed_median_us": {
+        "202611153041": {
+          "fused": 70.94440195295546,
+          "current_GEMM": 70.83996136983235,
+          "current_plus_aiter": 77.49107148912218,
+          "current_plus_triton": 73.4532806608412,
+          "same_tile_plus_triton": 73.27770524554782
+        },
+        "202611153042": {
+          "fused": 71.13327582677205,
+          "current_GEMM": 71.1377329296536,
+          "current_plus_aiter": 77.54662301805284,
+          "current_plus_triton": 73.69105683432684,
+          "same_tile_plus_triton": 73.5155012872484
+        },
+        "202611153043": {
+          "fused": 71.1577335993449,
+          "current_GEMM": 71.18662198384602,
+          "current_plus_aiter": 77.56439182493422,
+          "current_plus_triton": 73.76217842102051,
+          "same_tile_plus_triton": 73.50440157784357
+        }
+      }
+    },
+    {
+      "precision": "int8",
+      "M": 10,
+      "fused_family": "N128_SAB",
+      "current_family": "E047",
+      "fused_us": 71.21994760301378,
+      "current_GEMM_us": 72.57994678285387,
+      "current_plus_aiter_us": 78.9643857214186,
+      "current_plus_triton_us": 75.23994313346014,
+      "same_tile_plus_triton_us": 73.8844010565016,
+      "faster_separate_activation": "current_plus_triton",
+      "faster_separate_us": 75.23994313346014,
+      "speedup_vs_faster_separate": 1.0564447976408824,
+      "latency_reduction_vs_faster_separate_pct": 5.342900809103113,
+      "speedup_vs_AITER_separate": 1.1087397334462108,
+      "speedup_vs_same_tile": 1.037411617716145,
+      "seed_median_us": {
+        "202611153041": {
+          "fused": 71.00216547648112,
+          "current_GEMM": 72.30884499020047,
+          "current_plus_aiter": 78.82661289638943,
+          "current_plus_triton": 74.97994767294989,
+          "same_tile_plus_triton": 73.58216577106052
+        },
+        "202611153042": {
+          "fused": 71.52218288845486,
+          "current_GEMM": 72.88662592569987,
+          "current_plus_aiter": 79.07551527023315,
+          "current_plus_triton": 75.60662428538005,
+          "same_tile_plus_triton": 74.0510688887702
+        },
+        "202611153043": {
+          "fused": 71.21994760301378,
+          "current_GEMM": 72.57994678285387,
+          "current_plus_aiter": 78.9643857214186,
+          "current_plus_triton": 75.23994313346014,
+          "same_tile_plus_triton": 73.8844010565016
+        }
+      }
+    },
+    {
+      "precision": "int8",
+      "M": 11,
+      "fused_family": "N128_SAB",
+      "current_family": "E030",
+      "fused_us": 71.393264664544,
+      "current_GEMM_us": 71.48216830359564,
+      "current_plus_aiter_us": 77.96217997868855,
+      "current_plus_triton_us": 74.31105772654216,
+      "same_tile_plus_triton_us": 74.41773679521349,
+      "faster_separate_activation": "current_plus_triton",
+      "faster_separate_us": 74.31105772654216,
+      "speedup_vs_faster_separate": 1.0408693043483583,
+      "latency_reduction_vs_faster_separate_pct": 3.926458795318677,
+      "speedup_vs_AITER_separate": 1.0920102945986565,
+      "speedup_vs_same_tile": 1.042363549907412,
+      "seed_median_us": {
+        "202611153041": {
+          "fused": 71.13551431232028,
+          "current_GEMM": 71.14661402172513,
+          "current_plus_aiter": 77.6643885506524,
+          "current_plus_triton": 73.99327887429132,
+          "same_tile_plus_triton": 73.77106613583035
+        },
+        "202611153042": {
+          "fused": 71.53550121519301,
+          "current_GEMM": 71.68662548065186,
+          "current_plus_aiter": 78.01994350221422,
+          "current_plus_triton": 74.444399939643,
+          "same_tile_plus_triton": 74.45771164364285
+        },
+        "202611153043": {
+          "fused": 71.393264664544,
+          "current_GEMM": 71.48216830359564,
+          "current_plus_aiter": 77.96217997868855,
+          "current_plus_triton": 74.31105772654216,
+          "same_tile_plus_triton": 74.41773679521349
+        }
+      }
+    },
+    {
+      "precision": "int8",
+      "M": 12,
+      "fused_family": "N128_SAB",
+      "current_family": "E030",
+      "fused_us": 71.31106985939874,
+      "current_GEMM_us": 71.43327924940321,
+      "current_plus_aiter_us": 77.87772019704182,
+      "current_plus_triton_us": 74.21994209289551,
+      "same_tile_plus_triton_us": 73.90662696626451,
+      "faster_separate_activation": "current_plus_triton",
+      "faster_separate_us": 74.21994209289551,
+      "speedup_vs_faster_separate": 1.040791313876402,
+      "latency_reduction_vs_faster_separate_pct": 3.919259637599759,
+      "speedup_vs_AITER_separate": 1.092084585893751,
+      "speedup_vs_same_tile": 1.0363976744702237,
+      "seed_median_us": {
+        "202611153041": {
+          "fused": 71.05772362815009,
+          "current_GEMM": 71.16660806867812,
+          "current_plus_aiter": 77.6043865415785,
+          "current_plus_triton": 74.01551140679254,
+          "same_tile_plus_triton": 73.53994581434462
+        },
+        "202611153042": {
+          "fused": 71.31106985939874,
+          "current_GEMM": 71.51994440290663,
+          "current_plus_aiter": 77.91107230716281,
+          "current_plus_triton": 74.3821660677592,
+          "same_tile_plus_triton": 74.04216792848375
+        },
+        "202611153043": {
+          "fused": 71.35105795330472,
+          "current_GEMM": 71.43327924940321,
+          "current_plus_aiter": 77.87772019704182,
+          "current_plus_triton": 74.21994209289551,
+          "same_tile_plus_triton": 73.90662696626451
+        }
+      }
+    },
+    {
+      "precision": "int8",
+      "M": 13,
+      "fused_family": "N128_SAB",
+      "current_family": "E047",
+      "fused_us": 71.72440157996283,
+      "current_GEMM_us": 73.02884923087225,
+      "current_plus_aiter_us": 79.22216918733385,
+      "current_plus_triton_us": 75.87771945529514,
+      "same_tile_plus_triton_us": 74.35994678073459,
+      "faster_separate_activation": "current_plus_triton",
+      "faster_separate_us": 75.87771945529514,
+      "speedup_vs_faster_separate": 1.0579066229043672,
+      "latency_reduction_vs_faster_separate_pct": 5.47369887385627,
+      "speedup_vs_AITER_separate": 1.1045357987269093,
+      "speedup_vs_same_tile": 1.0367454470544937,
+      "seed_median_us": {
+        "202611153041": {
+          "fused": 71.77107201682196,
+          "current_GEMM": 73.02884923087225,
+          "current_plus_aiter": 79.22216918733385,
+          "current_plus_triton": 75.87771945529514,
+          "same_tile_plus_triton": 74.5488339000278
+        },
+        "202611153042": {
+          "fused": 71.72440157996283,
+          "current_GEMM": 73.0377369456821,
+          "current_plus_aiter": 79.54883575439453,
+          "current_plus_triton": 75.91107156541612,
+          "same_tile_plus_triton": 74.35994678073459
+        },
+        "202611153043": {
+          "fused": 71.31328847673204,
+          "current_GEMM": 72.71551423602634,
+          "current_plus_aiter": 78.9266096221076,
+          "current_plus_triton": 75.50216383404202,
+          "same_tile_plus_triton": 74.18439123365614
+        }
+      }
+    },
+    {
+      "precision": "int8",
+      "M": 14,
+      "fused_family": "N128_SAB",
+      "current_family": "E047",
+      "fused_us": 71.42440478006999,
+      "current_GEMM_us": 72.82218005922105,
+      "current_plus_aiter_us": 79.24662695990668,
+      "current_plus_triton_us": 75.83551274405585,
+      "same_tile_plus_triton_us": 74.01549816131592,
+      "faster_separate_activation": "current_plus_triton",
+      "faster_separate_us": 75.83551274405585,
+      "speedup_vs_faster_separate": 1.0617591140950846,
+      "latency_reduction_vs_faster_separate_pct": 5.816678498467209,
+      "speedup_vs_AITER_separate": 1.1095174990106376,
+      "speedup_vs_same_tile": 1.0362774235112553,
+      "seed_median_us": {
+        "202611153041": {
+          "fused": 71.10884454515245,
+          "current_GEMM": 72.4777380625407,
+          "current_plus_aiter": 78.9466102917989,
+          "current_plus_triton": 75.47327544954088,
+          "same_tile_plus_triton": 73.69551393720839
+        },
+        "202611153042": {
+          "fused": 71.5132753054301,
+          "current_GEMM": 72.82218005922105,
+          "current_plus_aiter": 79.38218116760254,
+          "current_plus_triton": 75.83551274405585,
+          "same_tile_plus_triton": 74.0910702281528
+        },
+        "202611153043": {
+          "fused": 71.42440478006999,
+          "current_GEMM": 72.8510684437222,
+          "current_plus_aiter": 79.24662695990668,
+          "current_plus_triton": 75.89328951305814,
+          "same_tile_plus_triton": 74.01549816131592
+        }
+      }
+    },
+    {
+      "precision": "int8",
+      "M": 15,
+      "fused_family": "N128_SAB",
+      "current_family": "E047",
+      "fused_us": 71.715513865153,
+      "current_GEMM_us": 73.15995958116319,
+      "current_plus_aiter_us": 79.66217729780409,
+      "current_plus_triton_us": 75.87771945529514,
+      "same_tile_plus_triton_us": 74.45995675192938,
+      "faster_separate_activation": "current_plus_triton",
+      "faster_separate_us": 75.87771945529514,
+      "speedup_vs_faster_separate": 1.0580377294370134,
+      "latency_reduction_vs_faster_separate_pct": 5.485412081466656,
+      "speedup_vs_AITER_separate": 1.1108081502085203,
+      "speedup_vs_same_tile": 1.0382684685483363,
+      "seed_median_us": {
+        "202611153041": {
+          "fused": 71.61773575676813,
+          "current_GEMM": 72.96660873625014,
+          "current_plus_aiter": 79.44438854853313,
+          "current_plus_triton": 75.81106821695964,
+          "same_tile_plus_triton": 74.5288332303365
+        },
+        "202611153042": {
+          "fused": 71.715513865153,
+          "current_GEMM": 73.15995958116319,
+          "current_plus_aiter": 79.66217729780409,
+          "current_plus_triton": 75.87771945529514,
+          "same_tile_plus_triton": 74.45995675192938
+        },
+        "202611153043": {
+          "fused": 71.97995980580647,
+          "current_GEMM": 73.244399494595,
+          "current_plus_aiter": 79.6643892923991,
+          "current_plus_triton": 75.97329219182332,
+          "same_tile_plus_triton": 74.45995675192938
+        }
+      }
+    },
+    {
+      "precision": "int8",
+      "M": 16,
+      "fused_family": "N128_SAB",
+      "current_family": "E047",
+      "fused_us": 71.69994380739,
+      "current_GEMM_us": 73.21994172202216,
+      "current_plus_aiter_us": 79.27994595633612,
+      "current_plus_triton_us": 75.67107015185886,
+      "same_tile_plus_triton_us": 74.23105504777696,
+      "faster_separate_activation": "current_plus_triton",
+      "faster_separate_us": 75.67107015185886,
+      "speedup_vs_faster_separate": 1.0553853480713546,
+      "latency_reduction_vs_faster_separate_pct": 5.247879191478977,
+      "speedup_vs_AITER_separate": 1.1057183833966249,
+      "speedup_vs_same_tile": 1.0353014396662064,
+      "seed_median_us": {
+        "202611153041": {
+          "fused": 71.68438699510362,
+          "current_GEMM": 73.06438684463501,
+          "current_plus_aiter": 79.27994595633612,
+          "current_plus_triton": 75.67107015185886,
+          "same_tile_plus_triton": 74.07772541046143
+        },
+        "202611153042": {
+          "fused": 71.69994380739,
+          "current_GEMM": 73.25773768954807,
+          "current_plus_aiter": 79.4199440214369,
+          "current_plus_triton": 75.72884692086114,
+          "same_tile_plus_triton": 74.2732948727078
+        },
+        "202611153043": {
+          "fused": 71.95107142130534,
+          "current_GEMM": 73.21994172202216,
+          "current_plus_aiter": 79.25773329204983,
+          "current_plus_triton": 75.58439175287883,
+          "same_tile_plus_triton": 74.23105504777696
+        }
+      }
+    },
+    {
+      "precision": "int8",
+      "M": 32,
+      "fused_family": "N128_SAB",
+      "current_family": "E047",
+      "fused_us": 72.63327969445123,
+      "current_GEMM_us": 74.03551207648383,
+      "current_plus_aiter_us": 80.72439167234633,
+      "current_plus_triton_us": 77.92883449130588,
+      "same_tile_plus_triton_us": 76.11995935440063,
+      "faster_separate_activation": "current_plus_triton",
+      "faster_separate_us": 77.92883449130588,
+      "speedup_vs_faster_separate": 1.072908105198218,
+      "latency_reduction_vs_faster_separate_pct": 6.7953727672463105,
+      "speedup_vs_AITER_separate": 1.1113967593358338,
+      "speedup_vs_same_tile": 1.0480038857479235,
+      "seed_median_us": {
+        "202611153041": {
+          "fused": 72.63327969445123,
+          "current_GEMM": 74.0088489320543,
+          "current_plus_aiter": 80.67550261815389,
+          "current_plus_triton": 77.92883449130588,
+          "same_tile_plus_triton": 76.11995935440063
+        },
+        "202611153042": {
+          "fused": 73.29106993145413,
+          "current_GEMM": 74.55773486031427,
+          "current_plus_aiter": 81.07773462931316,
+          "current_plus_triton": 78.31107245551215,
+          "same_tile_plus_triton": 76.6532884703742
+        },
+        "202611153043": {
+          "fused": 72.50440120697021,
+          "current_GEMM": 74.03551207648383,
+          "current_plus_aiter": 80.72439167234633,
+          "current_plus_triton": 77.87772019704182,
+          "same_tile_plus_triton": 76.11994610892401
+        }
+      }
+    },
+    {
+      "precision": "int8",
+      "M": 48,
+      "fused_family": "N128_SAB",
+      "current_family": "E047",
+      "fused_us": 74.08662637074788,
+      "current_GEMM_us": 74.56217871771918,
+      "current_plus_aiter_us": 81.32439189487033,
+      "current_plus_triton_us": 79.32660977045695,
+      "same_tile_plus_triton_us": 78.05327574412028,
+      "faster_separate_activation": "current_plus_triton",
+      "faster_separate_us": 79.32660977045695,
+      "speedup_vs_faster_separate": 1.0707277906472201,
+      "latency_reduction_vs_faster_separate_pct": 6.605580920288567,
+      "speedup_vs_AITER_separate": 1.0976932798627228,
+      "speedup_vs_same_tile": 1.0535406937484548,
+      "seed_median_us": {
+        "202611153041": {
+          "fused": 74.08662637074788,
+          "current_GEMM": 74.56217871771918,
+          "current_plus_aiter": 81.34883642196655,
+          "current_plus_triton": 79.40661244922214,
+          "same_tile_plus_triton": 78.05327574412028
+        },
+        "202611153042": {
+          "fused": 74.32660791609023,
+          "current_GEMM": 74.61551162931654,
+          "current_plus_aiter": 81.32439189487033,
+          "current_plus_triton": 79.32660977045695,
+          "same_tile_plus_triton": 78.11327775319417
+        },
+        "202611153043": {
+          "fused": 74.0510688887702,
+          "current_GEMM": 74.39329226811726,
+          "current_plus_aiter": 81.25107155905829,
+          "current_plus_triton": 79.24218310250177,
+          "same_tile_plus_triton": 77.95551088121202
+        }
+      }
+    },
+    {
+      "precision": "int8",
+      "M": 64,
+      "fused_family": "N128_SAB",
+      "current_family": "E047",
+      "fused_us": 75.69105757607355,
+      "current_GEMM_us": 75.77329211764865,
+      "current_plus_aiter_us": 83.0932789378696,
+      "current_plus_triton_us": 81.61105712254842,
+      "same_tile_plus_triton_us": 80.12884855270386,
+      "faster_separate_activation": "current_plus_triton",
+      "faster_separate_us": 81.61105712254842,
+      "speedup_vs_faster_separate": 1.0782126678640334,
+      "latency_reduction_vs_faster_separate_pct": 7.253918470367693,
+      "speedup_vs_AITER_separate": 1.0977951900639837,
+      "speedup_vs_same_tile": 1.058630320658026,
+      "seed_median_us": {
+        "202611153041": {
+          "fused": 75.69105757607355,
+          "current_GEMM": 75.77327887217204,
+          "current_plus_aiter": 83.0932789378696,
+          "current_plus_triton": 81.61105712254842,
+          "same_tile_plus_triton": 80.09772168265448
+        },
+        "202611153042": {
+          "fused": 75.70661438835992,
+          "current_GEMM": 76.12216472625732,
+          "current_plus_aiter": 83.15105570687189,
+          "current_plus_triton": 81.61995808283488,
+          "same_tile_plus_triton": 80.1621675491333
+        },
+        "202611153043": {
+          "fused": 75.66218243704901,
+          "current_GEMM": 75.77329211764865,
+          "current_plus_aiter": 83.00661378436618,
+          "current_plus_triton": 81.58216873804729,
+          "same_tile_plus_triton": 80.12884855270386
+        }
+      }
+    },
+    {
+      "precision": "int8",
+      "M": 80,
+      "fused_family": "N128_SAB",
+      "current_family": "E047",
+      "fused_us": 77.43550009197659,
+      "current_GEMM_us": 76.99773708979289,
+      "current_plus_aiter_us": 84.30438571506076,
+      "current_plus_triton_us": 83.56216881010268,
+      "same_tile_plus_triton_us": 82.19327529271443,
+      "faster_separate_activation": "current_plus_triton",
+      "faster_separate_us": 83.56216881010268,
+      "speedup_vs_faster_separate": 1.0791196377740044,
+      "latency_reduction_vs_faster_separate_pct": 7.331868960999688,
+      "speedup_vs_AITER_separate": 1.088704607252816,
+      "speedup_vs_same_tile": 1.0614417830980187,
+      "seed_median_us": {
+        "202611153041": {
+          "fused": 77.20438639322917,
+          "current_GEMM": 76.4888326327006,
+          "current_plus_aiter": 83.91105466418796,
+          "current_plus_triton": 83.11549822489421,
+          "same_tile_plus_triton": 81.77994357215033
+        },
+        "202611153042": {
+          "fused": 77.94660992092557,
+          "current_GEMM": 76.99773708979289,
+          "current_plus_aiter": 84.4999419318305,
+          "current_plus_triton": 83.72661140229967,
+          "same_tile_plus_triton": 82.34216769536336
+        },
+        "202611153043": {
+          "fused": 77.43550009197659,
+          "current_GEMM": 77.00885004467435,
+          "current_plus_aiter": 84.30438571506076,
+          "current_plus_triton": 83.56216881010268,
+          "same_tile_plus_triton": 82.19327529271443
+        }
+      }
+    },
+    {
+      "precision": "int8",
+      "M": 96,
+      "fused_family": "N128_SAB",
+      "current_family": "E047",
+      "fused_us": 78.9221790101793,
+      "current_GEMM_us": 77.63994402355618,
+      "current_plus_aiter_us": 87.92661295996771,
+      "current_plus_triton_us": 84.91105503506131,
+      "same_tile_plus_triton_us": 84.33773782518175,
+      "faster_separate_activation": "current_plus_triton",
+      "faster_separate_us": 84.91105503506131,
+      "speedup_vs_faster_separate": 1.0758833080889665,
+      "latency_reduction_vs_faster_separate_pct": 7.0531169615182465,
+      "speedup_vs_AITER_separate": 1.1140925664080692,
+      "speedup_vs_same_tile": 1.068618972295531,
+      "seed_median_us": {
+        "202611153041": {
+          "fused": 79.0044003062778,
+          "current_GEMM": 77.63994402355618,
+          "current_plus_aiter": 88.06216716766357,
+          "current_plus_triton": 85.08216672473483,
+          "same_tile_plus_triton": 84.46440431806776
+        },
+        "202611153042": {
+          "fused": 78.9221790101793,
+          "current_GEMM": 77.76440514458551,
+          "current_plus_aiter": 87.92661295996771,
+          "current_plus_triton": 84.91105503506131,
+          "same_tile_plus_triton": 84.33773782518175
+        },
+        "202611153043": {
+          "fused": 78.88883352279663,
+          "current_GEMM": 77.42218176523845,
+          "current_plus_aiter": 87.8843863805135,
+          "current_plus_triton": 84.83772145377264,
+          "same_tile_plus_triton": 84.18881893157959
+        }
+      }
+    },
+    {
+      "precision": "int8",
+      "M": 112,
+      "fused_family": "N128_SAB",
+      "current_family": "E047",
+      "fused_us": 80.47329054938422,
+      "current_GEMM_us": 78.89107200834486,
+      "current_plus_aiter_us": 89.039941628774,
+      "current_plus_triton_us": 86.71549956003825,
+      "same_tile_plus_triton_us": 85.59772041108873,
+      "faster_separate_activation": "current_plus_triton",
+      "faster_separate_us": 86.71549956003825,
+      "speedup_vs_faster_separate": 1.077568705940058,
+      "latency_reduction_vs_faster_separate_pct": 7.198492821150371,
+      "speedup_vs_AITER_separate": 1.106453346457017,
+      "speedup_vs_same_tile": 1.0636786420279383,
+      "seed_median_us": {
+        "202611153041": {
+          "fused": 80.09105258517795,
+          "current_GEMM": 78.47327656216092,
+          "current_plus_aiter": 88.53327565722995,
+          "current_plus_triton": 86.1488315794203,
+          "same_tile_plus_triton": 85.03550291061401
+        },
+        "202611153042": {
+          "fused": 80.47329054938422,
+          "current_GEMM": 78.89107200834486,
+          "current_plus_aiter": 89.039941628774,
+          "current_plus_triton": 86.83772219551935,
+          "same_tile_plus_triton": 85.61994632085164
+        },
+        "202611153043": {
+          "fused": 80.65551519393921,
+          "current_GEMM": 79.10884751213922,
+          "current_plus_aiter": 89.23549784554376,
+          "current_plus_triton": 86.71549956003825,
+          "same_tile_plus_triton": 85.59772041108873
+        }
+      }
+    },
+    {
+      "precision": "int8",
+      "M": 128,
+      "fused_family": "M128_SAB",
+      "current_family": "E047_fixed",
+      "fused_us": 80.01773887210422,
+      "current_GEMM_us": 79.24216985702515,
+      "current_plus_aiter_us": 89.97994661331177,
+      "current_plus_triton_us": 88.17327684826321,
+      "same_tile_plus_triton_us": 87.87105480829875,
+      "faster_separate_activation": "current_plus_triton",
+      "faster_separate_us": 88.17327684826321,
+      "speedup_vs_faster_separate": 1.1019216250186017,
+      "latency_reduction_vs_faster_separate_pct": 9.249444126017693,
+      "speedup_vs_AITER_separate": 1.124499990647456,
+      "speedup_vs_same_tile": 1.0981446870018012,
+      "seed_median_us": {
+        "202611153041": {
+          "fused": 79.7688364982605,
+          "current_GEMM": 78.95106739468045,
+          "current_plus_aiter": 89.86215458975897,
+          "current_plus_triton": 87.77327669991388,
+          "same_tile_plus_triton": 87.52216895421346
+        },
+        "202611153042": {
+          "fused": 80.09550306532118,
+          "current_GEMM": 79.35773664050632,
+          "current_plus_aiter": 90.20439121458266,
+          "current_plus_triton": 88.22439114252727,
+          "same_tile_plus_triton": 88.20216523276434
+        },
+        "202611153043": {
+          "fused": 80.01773887210422,
+          "current_GEMM": 79.24216985702515,
+          "current_plus_aiter": 89.97994661331177,
+          "current_plus_triton": 88.17327684826321,
+          "same_tile_plus_triton": 87.87105480829875
+        }
+      }
+    },
+    {
+      "precision": "int8",
+      "M": 129,
+      "fused_family": "N144_SAB",
+      "current_family": "N144_SAB",
+      "fused_us": 83.74883068932428,
+      "current_GEMM_us": 79.88884713914659,
+      "current_plus_aiter_us": 90.53772025638156,
+      "current_plus_triton_us": 88.6043906211853,
+      "same_tile_plus_triton_us": 88.75548839569092,
+      "faster_separate_activation": "current_plus_triton",
+      "faster_separate_us": 88.6043906211853,
+      "speedup_vs_faster_separate": 1.057977644486444,
+      "latency_reduction_vs_faster_separate_pct": 5.480044383601978,
+      "speedup_vs_AITER_separate": 1.0810624997528793,
+      "speedup_vs_same_tile": 1.0597818222076365,
+      "seed_median_us": {
+        "202611153041": {
+          "fused": 84.0421650144789,
+          "current_GEMM": 80.16883002387152,
+          "current_plus_aiter": 90.53772025638156,
+          "current_plus_triton": 88.61327833599515,
+          "same_tile_plus_triton": 88.8110531700982
+        },
+        "202611153042": {
+          "fused": 83.71994230482314,
+          "current_GEMM": 79.88884713914659,
+          "current_plus_aiter": 90.60213963190715,
+          "current_plus_triton": 88.6043906211853,
+          "same_tile_plus_triton": 88.75548839569092
+        },
+        "202611153043": {
+          "fused": 83.74883068932428,
+          "current_GEMM": 79.86440261205037,
+          "current_plus_aiter": 90.16438987520006,
+          "current_plus_triton": 88.41549687915378,
+          "same_tile_plus_triton": 88.54215012656317
+        }
+      }
+    },
+    {
+      "precision": "int8",
+      "M": 144,
+      "fused_family": "N144_SAB",
+      "current_family": "N144_SAB",
+      "fused_us": 84.42438973320856,
+      "current_GEMM_us": 80.53994178771973,
+      "current_plus_aiter_us": 91.17326471540663,
+      "current_plus_triton_us": 89.37994639078777,
+      "same_tile_plus_triton_us": 89.85326687494914,
+      "faster_separate_activation": "current_plus_triton",
+      "faster_separate_us": 89.37994639078777,
+      "speedup_vs_faster_separate": 1.0586981638036044,
+      "latency_reduction_vs_faster_separate_pct": 5.544371928701408,
+      "speedup_vs_AITER_separate": 1.079939872867608,
+      "speedup_vs_same_tile": 1.064304606274283,
+      "seed_median_us": {
+        "202611153041": {
+          "fused": 84.22438965903387,
+          "current_GEMM": 80.37549919552274,
+          "current_plus_aiter": 91.02661079830594,
+          "current_plus_triton": 89.37994639078777,
+          "same_tile_plus_triton": 89.71327543258667
+        },
+        "202611153042": {
+          "fused": 84.91994274987115,
+          "current_GEMM": 80.9821817609999,
+          "current_plus_aiter": 91.204391585456,
+          "current_plus_triton": 89.52883217069838,
+          "same_tile_plus_triton": 90.15550216039021
+        },
+        "202611153043": {
+          "fused": 84.42438973320856,
+          "current_GEMM": 80.53994178771973,
+          "current_plus_aiter": 91.17326471540663,
+          "current_plus_triton": 89.35327662361993,
+          "same_tile_plus_triton": 89.85326687494914
+        }
+      }
+    },
+    {
+      "precision": "int8",
+      "M": 160,
+      "fused_family": "N160_SAB",
+      "current_family": "N160_SAB",
+      "fused_us": 86.62883440653484,
+      "current_GEMM_us": 82.2666221194797,
+      "current_plus_aiter_us": 93.1043889787462,
+      "current_plus_triton_us": 92.06659926308527,
+      "same_tile_plus_triton_us": 92.18216604656644,
+      "faster_separate_activation": "current_plus_triton",
+      "faster_separate_us": 92.06659926308527,
+      "speedup_vs_faster_separate": 1.0627708417619,
+      "latency_reduction_vs_faster_separate_pct": 5.906338346452578,
+      "speedup_vs_AITER_separate": 1.0747505679439557,
+      "speedup_vs_same_tile": 1.0641048869937546,
+      "seed_median_us": {
+        "202611153041": {
+          "fused": 86.31772465176053,
+          "current_GEMM": 81.82883262634277,
+          "current_plus_aiter": 93.01105472776625,
+          "current_plus_triton": 91.61994192335341,
+          "same_tile_plus_triton": 91.93550215827094
+        },
+        "202611153042": {
+          "fused": 86.85770961973402,
+          "current_GEMM": 82.27994706895616,
+          "current_plus_aiter": 93.1043889787462,
+          "current_plus_triton": 92.20215347078111,
+          "same_tile_plus_triton": 92.29994482464261
+        },
+        "202611153043": {
+          "fused": 86.62883440653484,
+          "current_GEMM": 82.2666221194797,
+          "current_plus_aiter": 93.27993128034804,
+          "current_plus_triton": 92.06659926308527,
+          "same_tile_plus_triton": 92.18216604656644
+        }
+      }
+    },
+    {
+      "precision": "int8",
+      "M": 176,
+      "fused_family": "M192_PF_SAB",
+      "current_family": "N176_SAB",
+      "fused_us": 86.46883567174275,
+      "current_GEMM_us": 84.15994379255507,
+      "current_plus_aiter_us": 97.0466136932373,
+      "current_plus_triton_us": 94.5688353644477,
+      "same_tile_plus_triton_us": 95.95104058583577,
+      "faster_separate_activation": "current_plus_triton",
+      "faster_separate_us": 94.5688353644477,
+      "speedup_vs_faster_separate": 1.0936753644220971,
+      "latency_reduction_vs_faster_separate_pct": 8.565189220623592,
+      "speedup_vs_AITER_separate": 1.1223305245100146,
+      "speedup_vs_same_tile": 1.1096603746358957,
+      "seed_median_us": {
+        "202611153041": {
+          "fused": 86.45549747678969,
+          "current_GEMM": 84.15994379255507,
+          "current_plus_aiter": 97.50883446799384,
+          "current_plus_triton": 94.77326605055067,
+          "same_tile_plus_triton": 95.95104058583577
+        },
+        "202611153042": {
+          "fused": 86.46883567174275,
+          "current_GEMM": 84.22662814458211,
+          "current_plus_aiter": 97.0466136932373,
+          "current_plus_triton": 94.30883328119914,
+          "same_tile_plus_triton": 95.85327572292752
+        },
+        "202611153043": {
+          "fused": 86.60883373684354,
+          "current_GEMM": 83.90216694937811,
+          "current_plus_aiter": 96.94439172744751,
+          "current_plus_triton": 94.5688353644477,
+          "same_tile_plus_triton": 95.99992964002821
+        }
+      }
+    },
+    {
+      "precision": "int8",
+      "M": 192,
+      "fused_family": "M192_PF_SAB",
+      "current_family": "M192_PF_SAB",
+      "fused_us": 86.96661392847697,
+      "current_GEMM_us": 84.7043858634101,
+      "current_plus_aiter_us": 98.70659642749362,
+      "current_plus_triton_us": 96.72659635543823,
+      "same_tile_plus_triton_us": 96.6577066315545,
+      "faster_separate_activation": "current_plus_triton",
+      "faster_separate_us": 96.72659635543823,
+      "speedup_vs_faster_separate": 1.1122267728508788,
+      "latency_reduction_vs_faster_separate_pct": 10.090277953228654,
+      "speedup_vs_AITER_separate": 1.1349941312958538,
+      "speedup_vs_same_tile": 1.111434632962112,
+      "seed_median_us": {
+        "202611153041": {
+          "fused": 86.71994341744318,
+          "current_GEMM": 84.50658453835382,
+          "current_plus_aiter": 98.53549798329671,
+          "current_plus_triton": 96.56437238057454,
+          "same_tile_plus_triton": 96.6577066315545
+        },
+        "202611153042": {
+          "fused": 86.9732764032152,
+          "current_GEMM": 84.7043858634101,
+          "current_plus_aiter": 98.70659642749362,
+          "current_plus_triton": 96.83105680677626,
+          "same_tile_plus_triton": 96.575485335456
+        },
+        "202611153043": {
+          "fused": 86.96661392847697,
+          "current_GEMM": 84.73772472805447,
+          "current_plus_aiter": 98.78659910625882,
+          "current_plus_triton": 96.72659635543823,
+          "same_tile_plus_triton": 96.84438837899103
+        }
+      }
+    },
+    {
+      "precision": "int8",
+      "M": 193,
+      "fused_family": "N208_SP5_SAB",
+      "current_family": "N208_SP5_SAB",
+      "fused_us": 94.34439076317682,
+      "current_GEMM_us": 88.5621640417311,
+      "current_plus_aiter_us": 102.08661026424832,
+      "current_plus_triton_us": 100.28883483674791,
+      "same_tile_plus_triton_us": 100.67103968726263,
+      "faster_separate_activation": "current_plus_triton",
+      "faster_separate_us": 100.28883483674791,
+      "speedup_vs_faster_separate": 1.063007922627778,
+      "latency_reduction_vs_faster_separate_pct": 5.927323897268899,
+      "speedup_vs_AITER_separate": 1.0820633790566947,
+      "speedup_vs_same_tile": 1.0670590892888054,
+      "seed_median_us": {
+        "202611153041": {
+          "fused": 94.64659955766466,
+          "current_GEMM": 88.5621640417311,
+          "current_plus_aiter": 102.05103953679402,
+          "current_plus_triton": 100.29326544867621,
+          "same_tile_plus_triton": 100.47105285856459
+        },
+        "202611153042": {
+          "fused": 94.26438808441162,
+          "current_GEMM": 88.6266099082099,
+          "current_plus_aiter": 102.46882173750136,
+          "current_plus_triton": 100.21548800998264,
+          "same_tile_plus_triton": 100.73992941114638
+        },
+        "202611153043": {
+          "fused": 94.34439076317682,
+          "current_GEMM": 88.41105302174886,
+          "current_plus_aiter": 102.08661026424832,
+          "current_plus_triton": 100.28883483674791,
+          "same_tile_plus_triton": 100.67103968726263
+        }
+      }
+    },
+    {
+      "precision": "int8",
+      "M": 208,
+      "fused_family": "N208_SP5_SAB",
+      "current_family": "N208_SP5_SAB",
+      "fused_us": 94.68881951438055,
+      "current_GEMM_us": 89.02437819374933,
+      "current_plus_aiter_us": 102.52659850650363,
+      "current_plus_triton_us": 101.01993216408624,
+      "same_tile_plus_triton_us": 101.75993045171101,
+      "faster_separate_activation": "current_plus_triton",
+      "faster_separate_us": 101.01993216408624,
+      "speedup_vs_faster_separate": 1.066862304147156,
+      "latency_reduction_vs_faster_separate_pct": 6.267191547329576,
+      "speedup_vs_AITER_separate": 1.082774070183996,
+      "speedup_vs_same_tile": 1.0746773586743952,
+      "seed_median_us": {
+        "202611153041": {
+          "fused": 94.68881951438055,
+          "current_GEMM": 89.02437819374933,
+          "current_plus_aiter": 102.52659850650363,
+          "current_plus_triton": 100.94881720013089,
+          "same_tile_plus_triton": 101.75993045171101
+        },
+        "202611153042": {
+          "fused": 94.35548384984334,
+          "current_GEMM": 88.7910525004069,
+          "current_plus_aiter": 102.40216387642755,
+          "current_plus_triton": 101.01993216408624,
+          "same_tile_plus_triton": 101.25770833757188
+        },
+        "202611153043": {
+          "fused": 94.95104021496243,
+          "current_GEMM": 89.27772442499797,
+          "current_plus_aiter": 102.97993156645033,
+          "current_plus_triton": 101.4265947871738,
+          "same_tile_plus_triton": 101.79548793368869
+        }
+      }
+    },
+    {
+      "precision": "int8",
+      "M": 224,
+      "fused_family": "N224_SP10_SAB",
+      "current_family": "N224_SP9_SAB",
+      "fused_us": 97.29550282160442,
+      "current_GEMM_us": 91.50883224275377,
+      "current_plus_aiter_us": 104.79326380623712,
+      "current_plus_triton_us": 103.91549931632147,
+      "same_tile_plus_triton_us": 104.33770550621881,
+      "faster_separate_activation": "current_plus_triton",
+      "faster_separate_us": 103.91549931632147,
+      "speedup_vs_faster_separate": 1.068040107741209,
+      "latency_reduction_vs_faster_separate_pct": 6.370557364658003,
+      "speedup_vs_AITER_separate": 1.0770617424978026,
+      "speedup_vs_same_tile": 1.0723795291702904,
+      "seed_median_us": {
+        "202611153041": {
+          "fused": 97.29103909598456,
+          "current_GEMM": 91.6799439324273,
+          "current_plus_aiter": 104.79326380623712,
+          "current_plus_triton": 103.83770863215129,
+          "same_tile_plus_triton": 104.11771138509114
+        },
+        "202611153042": {
+          "fused": 97.29550282160442,
+          "current_GEMM": 90.98660945892334,
+          "current_plus_aiter": 104.69548569785223,
+          "current_plus_triton": 103.91549931632147,
+          "same_tile_plus_triton": 104.34661308924358
+        },
+        "202611153043": {
+          "fused": 97.53992822435167,
+          "current_GEMM": 91.50883224275377,
+          "current_plus_aiter": 104.94660006629096,
+          "current_plus_triton": 103.95548741022746,
+          "same_tile_plus_triton": 104.33770550621881
+        }
+      }
+    },
+    {
+      "precision": "int8",
+      "M": 240,
+      "fused_family": "M256_PF_SAB",
+      "current_family": "N240_SP12_SAB",
+      "fused_us": 98.86437654495239,
+      "current_GEMM_us": 95.46660052405463,
+      "current_plus_aiter_us": 109.38437779744466,
+      "current_plus_triton_us": 108.98213916354709,
+      "same_tile_plus_triton_us": 127.69103050231934,
+      "faster_separate_activation": "current_plus_triton",
+      "faster_separate_us": 108.98213916354709,
+      "speedup_vs_faster_separate": 1.1023398211993405,
+      "latency_reduction_vs_faster_separate_pct": 9.283872289762263,
+      "speedup_vs_AITER_separate": 1.1064084114029582,
+      "speedup_vs_same_tile": 1.2915777650634335,
+      "seed_median_us": {
+        "202611153041": {
+          "fused": 98.86437654495239,
+          "current_GEMM": 95.46660052405463,
+          "current_plus_aiter": 109.37770869996812,
+          "current_plus_triton": 108.98213916354709,
+          "same_tile_plus_triton": 127.69103050231934
+        },
+        "202611153042": {
+          "fused": 98.57771131727431,
+          "current_GEMM": 95.28216388490465,
+          "current_plus_aiter": 109.38437779744466,
+          "current_plus_triton": 108.82215367423163,
+          "same_tile_plus_triton": 127.48213609059651
+        },
+        "202611153043": {
+          "fused": 99.02881913714938,
+          "current_GEMM": 95.68437602784898,
+          "current_plus_aiter": 109.90215010113187,
+          "current_plus_triton": 109.05104213290744,
+          "same_tile_plus_triton": 127.7643707063463
+        }
+      }
+    },
+    {
+      "precision": "int8",
+      "M": 256,
+      "fused_family": "M256_PF_SAB",
+      "current_family": "N256_SP11_SAB",
+      "fused_us": 99.09772210650974,
+      "current_GEMM_us": 98.13104073206584,
+      "current_plus_aiter_us": 114.6132681104872,
+      "current_plus_triton_us": 112.1599276860555,
+      "same_tile_plus_triton_us": 129.11991278330484,
+      "faster_separate_activation": "current_plus_triton",
+      "faster_separate_us": 112.1599276860555,
+      "speedup_vs_faster_separate": 1.1318113605629256,
+      "latency_reduction_vs_faster_separate_pct": 11.646053852769867,
+      "speedup_vs_AITER_separate": 1.156568139753015,
+      "speedup_vs_same_tile": 1.302955406427278,
+      "seed_median_us": {
+        "202611153041": {
+          "fused": 99.09772210650974,
+          "current_GEMM": 98.13104073206584,
+          "current_plus_aiter": 114.6132681104872,
+          "current_plus_triton": 112.1599276860555,
+          "same_tile_plus_triton": 129.11991278330484
+        },
+        "202611153042": {
+          "fused": 98.95328018400404,
+          "current_GEMM": 97.81327512529161,
+          "current_plus_aiter": 114.32213253445096,
+          "current_plus_triton": 112.14660273657904,
+          "same_tile_plus_triton": 128.75103950500488
+        },
+        "202611153043": {
+          "fused": 99.25548897849188,
+          "current_GEMM": 98.41105673048231,
+          "current_plus_aiter": 114.93104033999973,
+          "current_plus_triton": 112.41326067182753,
+          "same_tile_plus_triton": 129.20657793680826
+        }
+      }
+    },
+    {
+      "precision": "bf16",
+      "M": 1,
+      "fused_family": "N128_SAB",
+      "current_family": "N128_SAB",
+      "fused_us": 135.94657844967313,
+      "current_GEMM_us": 135.78214910295276,
+      "current_plus_aiter_us": 141.5776941511366,
+      "current_plus_triton_us": 137.9621426264445,
+      "same_tile_plus_triton_us": 137.62435648176404,
+      "faster_separate_activation": "current_plus_triton",
+      "faster_separate_us": 137.9621426264445,
+      "speedup_vs_faster_separate": 1.0148261486221775,
+      "latency_reduction_vs_faster_separate_pct": 1.4609545331785934,
+      "speedup_vs_AITER_separate": 1.0414215331174965,
+      "speedup_vs_same_tile": 1.0123414509671682,
+      "seed_median_us": {
+        "202611153041": {
+          "fused": 135.94657844967313,
+          "current_GEMM": 135.52214039696588,
+          "current_plus_aiter": 141.5776941511366,
+          "current_plus_triton": 137.99103101094565,
+          "same_tile_plus_triton": 137.62435648176404
+        },
+        "202611153042": {
+          "fused": 136.07548342810736,
+          "current_GEMM": 135.83548863728842,
+          "current_plus_aiter": 142.1132485071818,
+          "current_plus_triton": 137.9621426264445,
+          "same_tile_plus_triton": 137.86215252346463
+        },
+        "202611153043": {
+          "fused": 135.78437434302435,
+          "current_GEMM": 135.78214910295276,
+          "current_plus_aiter": 141.47991604275174,
+          "current_plus_triton": 137.83992661370172,
+          "same_tile_plus_triton": 137.3643742667304
+        }
+      }
+    },
+    {
+      "precision": "bf16",
+      "M": 2,
+      "fused_family": "N128_SAB",
+      "current_family": "N128_SAB",
+      "fused_us": 136.04882028367786,
+      "current_GEMM_us": 135.94437970055475,
+      "current_plus_aiter_us": 141.73324902852377,
+      "current_plus_triton_us": 137.99326949649387,
+      "same_tile_plus_triton_us": 137.68659697638617,
+      "faster_separate_activation": "current_plus_triton",
+      "faster_separate_us": 137.99326949649387,
+      "speedup_vs_faster_separate": 1.0142922901408598,
+      "latency_reduction_vs_faster_separate_pct": 1.4090898925076978,
+      "speedup_vs_AITER_separate": 1.0417822714889642,
+      "speedup_vs_same_tile": 1.0120381543132337,
+      "seed_median_us": {
+        "202611153041": {
+          "fused": 135.57769192589654,
+          "current_GEMM": 135.21546787685818,
+          "current_plus_aiter": 141.73324902852377,
+          "current_plus_triton": 137.408799595303,
+          "same_tile_plus_triton": 137.33547263675266
+        },
+        "202611153042": {
+          "fused": 136.09104686313205,
+          "current_GEMM": 136.04880703820123,
+          "current_plus_aiter": 141.89546638064914,
+          "current_plus_triton": 138.38214344448514,
+          "same_tile_plus_triton": 138.1243732240465
+        },
+        "202611153043": {
+          "fused": 136.04882028367786,
+          "current_GEMM": 135.94437970055475,
+          "current_plus_aiter": 141.47991604275174,
+          "current_plus_triton": 137.99326949649387,
+          "same_tile_plus_triton": 137.68659697638617
+        }
+      }
+    },
+    {
+      "precision": "bf16",
+      "M": 3,
+      "fused_family": "N128_SAB",
+      "current_family": "N128_SAB",
+      "fused_us": 135.879913965861,
+      "current_GEMM_us": 135.9399159749349,
+      "current_plus_aiter_us": 141.81768894195557,
+      "current_plus_triton_us": 138.13991016811795,
+      "same_tile_plus_triton_us": 137.99546824561224,
+      "faster_separate_activation": "current_plus_triton",
+      "faster_separate_us": 138.13991016811795,
+      "speedup_vs_faster_separate": 1.0166323052193333,
+      "latency_reduction_vs_faster_separate_pct": 1.636019742235617,
+      "speedup_vs_AITER_separate": 1.043698695434753,
+      "speedup_vs_same_tile": 1.01556929363587,
+      "seed_median_us": {
+        "202611153041": {
+          "fused": 135.879913965861,
+          "current_GEMM": 135.9399159749349,
+          "current_plus_aiter": 141.81768894195557,
+          "current_plus_triton": 138.13991016811795,
+          "same_tile_plus_triton": 137.81102498372397
+        },
+        "202611153042": {
+          "fused": 136.36436727311877,
+          "current_GEMM": 136.2465884950426,
+          "current_plus_aiter": 141.99324448903403,
+          "current_plus_triton": 138.4621328777737,
+          "same_tile_plus_triton": 138.03103235032825
+        },
+        "202611153043": {
+          "fused": 135.711047384474,
+          "current_GEMM": 135.76214843326144,
+          "current_plus_aiter": 141.66213406456842,
+          "current_plus_triton": 138.13547293345133,
+          "same_tile_plus_triton": 137.99546824561224
+        }
+      }
+    },
+    {
+      "precision": "bf16",
+      "M": 4,
+      "fused_family": "N128_SAB",
+      "current_family": "N128_SAB",
+      "fused_us": 136.16213533613416,
+      "current_GEMM_us": 136.02213064829508,
+      "current_plus_aiter_us": 141.8221394220988,
+      "current_plus_triton_us": 138.12655872768826,
+      "same_tile_plus_triton_us": 137.88436518775092,
+      "faster_separate_activation": "current_plus_triton",
+      "faster_separate_us": 138.12655872768826,
+      "speedup_vs_faster_separate": 1.0144270900768755,
+      "latency_reduction_vs_faster_separate_pct": 1.4221909310192071,
+      "speedup_vs_AITER_separate": 1.0415681207700818,
+      "speedup_vs_same_tile": 1.0126483757570723,
+      "seed_median_us": {
+        "202611153041": {
+          "fused": 136.16213533613416,
+          "current_GEMM": 136.02213064829508,
+          "current_plus_aiter": 141.5510310067071,
+          "current_plus_triton": 138.12655872768826,
+          "same_tile_plus_triton": 137.88436518775092
+        },
+        "202611153042": {
+          "fused": 136.208799150255,
+          "current_GEMM": 136.15324762132434,
+          "current_plus_aiter": 141.90214210086398,
+          "current_plus_triton": 138.3710437350803,
+          "same_tile_plus_triton": 138.3332543902927
+        },
+        "202611153043": {
+          "fused": 135.93104150560168,
+          "current_GEMM": 135.57546668582492,
+          "current_plus_aiter": 141.8221394220988,
+          "current_plus_triton": 138.07770940992566,
+          "same_tile_plus_triton": 137.85991403791638
+        }
+      }
+    },
+    {
+      "precision": "bf16",
+      "M": 5,
+      "fused_family": "N128_SAB",
+      "current_family": "N128_SAB",
+      "fused_us": 136.1065838072035,
+      "current_GEMM_us": 135.8332633972168,
+      "current_plus_aiter_us": 141.89990361531576,
+      "current_plus_triton_us": 138.33769162495932,
+      "same_tile_plus_triton_us": 138.0221446355184,
+      "faster_separate_activation": "current_plus_triton",
+      "faster_separate_us": 138.33769162495932,
+      "speedup_vs_faster_separate": 1.0163923577783438,
+      "latency_reduction_vs_faster_separate_pct": 1.6127982125106466,
+      "speedup_vs_AITER_separate": 1.0425645817128038,
+      "speedup_vs_same_tile": 1.0140739762525253,
+      "seed_median_us": {
+        "202611153041": {
+          "fused": 136.15323437584772,
+          "current_GEMM": 136.06211874220105,
+          "current_plus_aiter": 141.89990361531576,
+          "current_plus_triton": 138.42880725860596,
+          "same_tile_plus_triton": 138.23101255628796
+        },
+        "202611153042": {
+          "fused": 136.1065838072035,
+          "current_GEMM": 135.8176999621921,
+          "current_plus_aiter": 141.9488059149848,
+          "current_plus_triton": 138.33769162495932,
+          "same_tile_plus_triton": 138.0221446355184
+        },
+        "202611153043": {
+          "fused": 136.08659638298883,
+          "current_GEMM": 135.8332633972168,
+          "current_plus_aiter": 141.71991083357068,
+          "current_plus_triton": 138.2910410563151,
+          "same_tile_plus_triton": 138.00659444597034
+        }
+      }
+    },
+    {
+      "precision": "bf16",
+      "M": 6,
+      "fused_family": "N128_SAB",
+      "current_family": "N128_SAB",
+      "fused_us": 136.06880770789252,
+      "current_GEMM_us": 136.204375161065,
+      "current_plus_aiter_us": 142.0932478374905,
+      "current_plus_triton_us": 138.42658201853433,
+      "same_tile_plus_triton_us": 138.07993464999728,
+      "faster_separate_activation": "current_plus_triton",
+      "faster_separate_us": 138.42658201853433,
+      "speedup_vs_faster_separate": 1.01732780899869,
+      "latency_reduction_vs_faster_separate_pct": 1.7032670143702022,
+      "speedup_vs_AITER_separate": 1.0442749534671534,
+      "speedup_vs_same_tile": 1.014780220213454,
+      "seed_median_us": {
+        "202611153041": {
+          "fused": 136.06880770789252,
+          "current_GEMM": 135.7976860470242,
+          "current_plus_aiter": 142.01992087894016,
+          "current_plus_triton": 138.40214411417642,
+          "same_tile_plus_triton": 138.06435796949597
+        },
+        "202611153042": {
+          "fused": 136.09769609239368,
+          "current_GEMM": 136.204375161065,
+          "current_plus_aiter": 142.0932478374905,
+          "current_plus_triton": 138.604376051161,
+          "same_tile_plus_triton": 138.24880123138428
+        },
+        "202611153043": {
+          "fused": 136.0621452331543,
+          "current_GEMM": 136.20882564120822,
+          "current_plus_aiter": 142.33545462290445,
+          "current_plus_triton": 138.42658201853433,
+          "same_tile_plus_triton": 138.07993464999728
+        }
+      }
+    },
+    {
+      "precision": "bf16",
+      "M": 7,
+      "fused_family": "N128_SAB",
+      "current_family": "N128_SAB",
+      "fused_us": 136.26213868459067,
+      "current_GEMM_us": 136.24213801489935,
+      "current_plus_aiter_us": 142.49324798583984,
+      "current_plus_triton_us": 138.53548632727728,
+      "same_tile_plus_triton_us": 138.3976936340332,
+      "faster_separate_activation": "current_plus_triton",
+      "faster_separate_us": 138.53548632727728,
+      "speedup_vs_faster_separate": 1.0166836339472756,
+      "latency_reduction_vs_faster_separate_pct": 1.6409857885192225,
+      "speedup_vs_AITER_separate": 1.0457288382627876,
+      "speedup_vs_same_tile": 1.0156724015200271,
+      "seed_median_us": {
+        "202611153041": {
+          "fused": 136.26213868459067,
+          "current_GEMM": 136.3554663128323,
+          "current_plus_aiter": 142.09547307756213,
+          "current_plus_triton": 138.67768976423474,
+          "same_tile_plus_triton": 138.3976936340332
+        },
+        "202611153042": {
+          "fused": 136.26213868459067,
+          "current_GEMM": 136.24213801489935,
+          "current_plus_aiter": 142.49324798583984,
+          "current_plus_triton": 138.40658134884305,
+          "same_tile_plus_triton": 138.46882184346518
+        },
+        "202611153043": {
+          "fused": 136.11547152201334,
+          "current_GEMM": 135.88435120052762,
+          "current_plus_aiter": 142.49324798583984,
+          "current_plus_triton": 138.53548632727728,
+          "same_tile_plus_triton": 138.24436399671765
+        }
+      }
+    },
+    {
+      "precision": "bf16",
+      "M": 8,
+      "fused_family": "N128_SAB",
+      "current_family": "N128_SAB",
+      "fused_us": 136.33992936876086,
+      "current_GEMM_us": 136.3754669825236,
+      "current_plus_aiter_us": 142.57989989386664,
+      "current_plus_triton_us": 138.7021541595459,
+      "same_tile_plus_triton_us": 138.42879401312933,
+      "faster_separate_activation": "current_plus_triton",
+      "faster_separate_us": 138.7021541595459,
+      "speedup_vs_faster_separate": 1.0173259939455879,
+      "latency_reduction_vs_faster_separate_pct": 1.7030916391304385,
+      "speedup_vs_AITER_separate": 1.0457677406317882,
+      "speedup_vs_same_tile": 1.0153210043018188,
+      "seed_median_us": {
+        "202611153041": {
+          "fused": 136.34879059261746,
+          "current_GEMM": 136.3754669825236,
+          "current_plus_aiter": 142.57989989386664,
+          "current_plus_triton": 138.7043661541409,
+          "same_tile_plus_triton": 138.42879401312933
+        },
+        "202611153042": {
+          "fused": 136.33992936876086,
+          "current_GEMM": 136.5154849158393,
+          "current_plus_aiter": 142.67546600765652,
+          "current_plus_triton": 138.7021541595459,
+          "same_tile_plus_triton": 138.47324583265515
+        },
+        "202611153043": {
+          "fused": 136.25103897518582,
+          "current_GEMM": 136.09769609239368,
+          "current_plus_aiter": 142.41324530707465,
+          "current_plus_triton": 138.40215735965305,
+          "same_tile_plus_triton": 138.14436064826117
+        }
+      }
+    },
+    {
+      "precision": "bf16",
+      "M": 9,
+      "fused_family": "N128_SAB",
+      "current_family": "N128_SAB",
+      "fused_us": 136.27549012502035,
+      "current_GEMM_us": 136.40215661790637,
+      "current_plus_aiter_us": 142.63547791375055,
+      "current_plus_triton_us": 138.71325386895074,
+      "same_tile_plus_triton_us": 138.44214545355902,
+      "faster_separate_activation": "current_plus_triton",
+      "faster_separate_us": 138.71325386895074,
+      "speedup_vs_faster_separate": 1.0178884973496993,
+      "latency_reduction_vs_faster_separate_pct": 1.757412270231562,
+      "speedup_vs_AITER_separate": 1.0466700782576197,
+      "speedup_vs_same_tile": 1.0158990830012862,
+      "seed_median_us": {
+        "202611153041": {
+          "fused": 136.2332503000895,
+          "current_GEMM": 136.0243558883667,
+          "current_plus_aiter": 142.63547791375055,
+          "current_plus_triton": 138.66880204942493,
+          "same_tile_plus_triton": 138.32657867007785
+        },
+        "202611153042": {
+          "fused": 136.27549012502035,
+          "current_GEMM": 136.40215661790637,
+          "current_plus_aiter": 142.67546600765652,
+          "current_plus_triton": 138.71325386895074,
+          "same_tile_plus_triton": 138.44214545355902
+        },
+        "202611153043": {
+          "fused": 136.44880718655057,
+          "current_GEMM": 136.46435737609863,
+          "current_plus_aiter": 142.26437939537897,
+          "current_plus_triton": 138.9488246705797,
+          "same_tile_plus_triton": 138.49993546803793
+        }
+      }
+    },
+    {
+      "precision": "bf16",
+      "M": 10,
+      "fused_family": "N128_SAB",
+      "current_family": "N128_SAB",
+      "fused_us": 136.2976762983534,
+      "current_GEMM_us": 136.43991947174072,
+      "current_plus_aiter_us": 142.5688001844618,
+      "current_plus_triton_us": 138.95769913991293,
+      "same_tile_plus_triton_us": 138.75102996826172,
+      "faster_separate_activation": "current_plus_triton",
+      "faster_separate_us": 138.95769913991293,
+      "speedup_vs_faster_separate": 1.019516274332783,
+      "latency_reduction_vs_faster_separate_pct": 1.9142680528131284,
+      "speedup_vs_AITER_separate": 1.0460104974378361,
+      "speedup_vs_same_tile": 1.0179999669586295,
+      "seed_median_us": {
+        "202611153041": {
+          "fused": 136.34212811787924,
+          "current_GEMM": 136.43991947174072,
+          "current_plus_aiter": 142.6310274336073,
+          "current_plus_triton": 138.90213436550565,
+          "same_tile_plus_triton": 138.75102996826172
+        },
+        "202611153042": {
+          "fused": 136.19991143544516,
+          "current_GEMM": 136.371029747857,
+          "current_plus_aiter": 142.40880807240805,
+          "current_plus_triton": 139.1154925028483,
+          "same_tile_plus_triton": 138.73325453864203
+        },
+        "202611153043": {
+          "fused": 136.2976762983534,
+          "current_GEMM": 136.48880852593317,
+          "current_plus_aiter": 142.5688001844618,
+          "current_plus_triton": 138.95769913991293,
+          "same_tile_plus_triton": 138.79325654771594
+        }
+      }
+    },
+    {
+      "precision": "bf16",
+      "M": 11,
+      "fused_family": "N128_SAB",
+      "current_family": "N128_SAB",
+      "fused_us": 136.34214136335584,
+      "current_GEMM_us": 136.4132695727878,
+      "current_plus_aiter_us": 142.49323474036322,
+      "current_plus_triton_us": 139.24658298492432,
+      "same_tile_plus_triton_us": 138.93991046481662,
+      "faster_separate_activation": "current_plus_triton",
+      "faster_separate_us": 139.24658298492432,
+      "speedup_vs_faster_separate": 1.0213025964864968,
+      "latency_reduction_vs_faster_separate_pct": 2.0858261361307084,
+      "speedup_vs_AITER_separate": 1.0451151295960253,
+      "speedup_vs_same_tile": 1.0190533101173587,
+      "seed_median_us": {
+        "202611153041": {
+          "fused": 136.52434613969592,
+          "current_GEMM": 136.57324843936496,
+          "current_plus_aiter": 142.49323474036322,
+          "current_plus_triton": 139.30881023406982,
+          "same_tile_plus_triton": 138.93991046481662
+        },
+        "202611153042": {
+          "fused": 136.34214136335584,
+          "current_GEMM": 136.4132695727878,
+          "current_plus_aiter": 142.53324932522244,
+          "current_plus_triton": 139.24658298492432,
+          "same_tile_plus_triton": 138.94658618503146
+        },
+        "202611153043": {
+          "fused": 136.21770011054144,
+          "current_GEMM": 136.28880182902017,
+          "current_plus_aiter": 142.15770032670764,
+          "current_plus_triton": 139.02436362372504,
+          "same_tile_plus_triton": 138.9154725604587
+        }
+      }
+    },
+    {
+      "precision": "bf16",
+      "M": 12,
+      "fused_family": "N128_SAB",
+      "current_family": "N128_SAB",
+      "fused_us": 136.4888217714098,
+      "current_GEMM_us": 136.6799275080363,
+      "current_plus_aiter_us": 142.70657963222928,
+      "current_plus_triton_us": 139.28434583875867,
+      "same_tile_plus_triton_us": 139.32879765828451,
+      "faster_separate_activation": "current_plus_triton",
+      "faster_separate_us": 139.28434583875867,
+      "speedup_vs_faster_separate": 1.020481707080971,
+      "latency_reduction_vs_faster_separate_pct": 2.0070626390313095,
+      "speedup_vs_AITER_separate": 1.045555070225699,
+      "speedup_vs_same_tile": 1.0208073881070723,
+      "seed_median_us": {
+        "202611153041": {
+          "fused": 136.40879260169135,
+          "current_GEMM": 136.75101598103842,
+          "current_plus_aiter": 142.64878961775037,
+          "current_plus_triton": 139.28434583875867,
+          "same_tile_plus_triton": 139.32879765828451
+        },
+        "202611153042": {
+          "fused": 136.59102386898465,
+          "current_GEMM": 136.59103711446127,
+          "current_plus_aiter": 142.70657963222928,
+          "current_plus_triton": 139.60214455922446,
+          "same_tile_plus_triton": 139.5710441801283
+        },
+        "202611153043": {
+          "fused": 136.4888217714098,
+          "current_GEMM": 136.6799275080363,
+          "current_plus_aiter": 142.86659823523627,
+          "current_plus_triton": 139.16435506608752,
+          "same_tile_plus_triton": 139.15104336208768
+        }
+      }
+    },
+    {
+      "precision": "bf16",
+      "M": 13,
+      "fused_family": "N128_SAB",
+      "current_family": "N128_SAB",
+      "fused_us": 136.42881976233588,
+      "current_GEMM_us": 136.56658596462674,
+      "current_plus_aiter_us": 142.57768789927164,
+      "current_plus_triton_us": 139.38213719262018,
+      "same_tile_plus_triton_us": 139.11102877722846,
+      "faster_separate_activation": "current_plus_triton",
+      "faster_separate_us": 139.38213719262018,
+      "speedup_vs_faster_separate": 1.0216473134886683,
+      "latency_reduction_vs_faster_separate_pct": 2.118863643339708,
+      "speedup_vs_AITER_separate": 1.0450701556140947,
+      "speedup_vs_same_tile": 1.019660135003477,
+      "seed_median_us": {
+        "202611153041": {
+          "fused": 136.4110310872396,
+          "current_GEMM": 136.54879728953043,
+          "current_plus_aiter": 142.55770047505698,
+          "current_plus_triton": 139.33324813842773,
+          "same_tile_plus_triton": 139.07325267791748
+        },
+        "202611153042": {
+          "fused": 136.6799142625597,
+          "current_GEMM": 136.85992028978137,
+          "current_plus_aiter": 143.0821418762207,
+          "current_plus_triton": 139.38213719262018,
+          "same_tile_plus_triton": 139.1399171617296
+        },
+        "202611153043": {
+          "fused": 136.42881976233588,
+          "current_GEMM": 136.56658596462674,
+          "current_plus_aiter": 142.57768789927164,
+          "current_plus_triton": 139.60880703396268,
+          "same_tile_plus_triton": 139.11102877722846
+        }
+      }
+    },
+    {
+      "precision": "bf16",
+      "M": 14,
+      "fused_family": "N128_SAB",
+      "current_family": "N128_SAB",
+      "fused_us": 136.61102453867593,
+      "current_GEMM_us": 136.75546646118164,
+      "current_plus_aiter_us": 142.9554753833347,
+      "current_plus_triton_us": 139.52880435519748,
+      "same_tile_plus_triton_us": 139.20214441087512,
+      "faster_separate_activation": "current_plus_triton",
+      "faster_separate_us": 139.52880435519748,
+      "speedup_vs_faster_separate": 1.021358304180608,
+      "latency_reduction_vs_faster_separate_pct": 2.091166644769471,
+      "speedup_vs_AITER_separate": 1.046441719224956,
+      "speedup_vs_same_tile": 1.018967135931739,
+      "seed_median_us": {
+        "202611153041": {
+          "fused": 136.68212625715466,
+          "current_GEMM": 136.86213228437634,
+          "current_plus_aiter": 143.18211873372397,
+          "current_plus_triton": 139.41101233164468,
+          "same_tile_plus_triton": 139.20214441087512
+        },
+        "202611153042": {
+          "fused": 136.61102453867593,
+          "current_GEMM": 136.75546646118164,
+          "current_plus_aiter": 142.85102155473498,
+          "current_plus_triton": 139.66880904303656,
+          "same_tile_plus_triton": 139.52657911512586
+        },
+        "202611153043": {
+          "fused": 136.58437463972302,
+          "current_GEMM": 136.75325446658664,
+          "current_plus_aiter": 142.9554753833347,
+          "current_plus_triton": 139.52880435519748,
+          "same_tile_plus_triton": 139.1999191708035
+        }
+      }
+    },
+    {
+      "precision": "bf16",
+      "M": 15,
+      "fused_family": "N128_SAB",
+      "current_family": "N128_SAB",
+      "fused_us": 136.6443501578437,
+      "current_GEMM_us": 136.80658075544568,
+      "current_plus_aiter_us": 142.99547672271729,
+      "current_plus_triton_us": 139.75103696187338,
+      "same_tile_plus_triton_us": 139.264358414544,
+      "faster_separate_activation": "current_plus_triton",
+      "faster_separate_us": 139.75103696187338,
+      "speedup_vs_faster_separate": 1.0227355671891376,
+      "latency_reduction_vs_faster_separate_pct": 2.2230152073055787,
+      "speedup_vs_AITER_separate": 1.0464792474590947,
+      "speedup_vs_same_tile": 1.0191739230613914,
+      "seed_median_us": {
+        "202611153041": {
+          "fused": 136.6443501578437,
+          "current_GEMM": 136.80658075544568,
+          "current_plus_aiter": 142.97990004221597,
+          "current_plus_triton": 139.7621366712782,
+          "same_tile_plus_triton": 139.48880301581488
+        },
+        "202611153042": {
+          "fused": 136.54658529493543,
+          "current_GEMM": 136.69991493225098,
+          "current_plus_aiter": 142.99547672271729,
+          "current_plus_triton": 139.5332548353407,
+          "same_tile_plus_triton": 139.264358414544
+        },
+        "202611153043": {
+          "fused": 136.84214486016168,
+          "current_GEMM": 137.0976898405287,
+          "current_plus_aiter": 143.10880502065024,
+          "current_plus_triton": 139.75103696187338,
+          "same_tile_plus_triton": 139.0376885732015
+        }
+      }
+    },
+    {
+      "precision": "bf16",
+      "M": 16,
+      "fused_family": "N128_SAB",
+      "current_family": "N128_SAB",
+      "fused_us": 136.76434093051486,
+      "current_GEMM_us": 137.12436623043484,
+      "current_plus_aiter_us": 143.26213465796576,
+      "current_plus_triton_us": 139.81102572547064,
+      "same_tile_plus_triton_us": 139.428801006741,
+      "faster_separate_activation": "current_plus_triton",
+      "faster_separate_us": 139.81102572547064,
+      "speedup_vs_faster_separate": 1.0222768945050063,
+      "latency_reduction_vs_faster_separate_pct": 2.1791448701178773,
+      "speedup_vs_AITER_separate": 1.0475108766162387,
+      "speedup_vs_same_tile": 1.0194821256630033,
+      "seed_median_us": {
+        "202611153041": {
+          "fused": 136.76434093051486,
+          "current_GEMM": 136.80435551537408,
+          "current_plus_aiter": 142.9598993725247,
+          "current_plus_triton": 139.6354701783922,
+          "same_tile_plus_triton": 139.3065717485216
+        },
+        "202611153042": {
+          "fused": 136.81546847025552,
+          "current_GEMM": 137.12436623043484,
+          "current_plus_aiter": 143.3310243818495,
+          "current_plus_triton": 139.97103108300104,
+          "same_tile_plus_triton": 139.5110289255778
+        },
+        "202611153043": {
+          "fused": 136.67326503329807,
+          "current_GEMM": 137.20658090379504,
+          "current_plus_aiter": 143.26213465796576,
+          "current_plus_triton": 139.81102572547064,
+          "same_tile_plus_triton": 139.428801006741
+        }
+      }
+    },
+    {
+      "precision": "bf16",
+      "M": 32,
+      "fused_family": "N128_SAB",
+      "current_family": "N128_SAB",
+      "fused_us": 137.64437039693198,
+      "current_GEMM_us": 137.7821365992228,
+      "current_plus_aiter_us": 143.8621415032281,
+      "current_plus_triton_us": 141.5132416619195,
+      "same_tile_plus_triton_us": 141.23992125193277,
+      "faster_separate_activation": "current_plus_triton",
+      "faster_separate_us": 141.5132416619195,
+      "speedup_vs_faster_separate": 1.0281077333844506,
+      "latency_reduction_vs_faster_separate_pct": 2.733928796734375,
+      "speedup_vs_AITER_separate": 1.0451727236527408,
+      "speedup_vs_same_tile": 1.0261220335029477,
+      "seed_median_us": {
+        "202611153041": {
+          "fused": 137.65323162078857,
+          "current_GEMM": 137.7821365992228,
+          "current_plus_aiter": 143.8621415032281,
+          "current_plus_triton": 141.5132416619195,
+          "same_tile_plus_triton": 141.286571820577
+        },
+        "202611153042": {
+          "fused": 137.64437039693198,
+          "current_GEMM": 137.7954880396525,
+          "current_plus_aiter": 144.07991038428412,
+          "current_plus_triton": 141.81547694736057,
+          "same_tile_plus_triton": 141.23992125193277
+        },
+        "202611153043": {
+          "fused": 137.05768850114612,
+          "current_GEMM": 137.22880681355795,
+          "current_plus_aiter": 143.77547634972467,
+          "current_plus_triton": 141.06214046478271,
+          "same_tile_plus_triton": 140.73769251505533
+        }
+      }
+    },
+    {
+      "precision": "bf16",
+      "M": 48,
+      "fused_family": "N128_SAB",
+      "current_family": "N128_SAB",
+      "fused_us": 138.4354829788208,
+      "current_GEMM_us": 138.42880725860596,
+      "current_plus_aiter_us": 145.0821426179674,
+      "current_plus_triton_us": 143.09325483110217,
+      "same_tile_plus_triton_us": 142.7932447857327,
+      "faster_separate_activation": "current_plus_triton",
+      "faster_separate_us": 143.09325483110217,
+      "speedup_vs_faster_separate": 1.0336457947923219,
+      "latency_reduction_vs_faster_separate_pct": 3.2550603854661797,
+      "speedup_vs_AITER_separate": 1.048012687904325,
+      "speedup_vs_same_tile": 1.0314786477653175,
+      "seed_median_us": {
+        "202611153041": {
+          "fused": 138.26435142093234,
+          "current_GEMM": 138.42880725860596,
+          "current_plus_aiter": 144.7354687584771,
+          "current_plus_triton": 143.00880167219373,
+          "same_tile_plus_triton": 142.44879616631403
+        },
+        "202611153042": {
+          "fused": 138.80435625712076,
+          "current_GEMM": 138.87992170121936,
+          "current_plus_aiter": 145.75547642178006,
+          "current_plus_triton": 143.3332496219211,
+          "same_tile_plus_triton": 143.17103226979575
+        },
+        "202611153043": {
+          "fused": 138.4354829788208,
+          "current_GEMM": 138.40658134884305,
+          "current_plus_aiter": 145.0821426179674,
+          "current_plus_triton": 143.09325483110217,
+          "same_tile_plus_triton": 142.7932447857327
+        }
+      }
+    },
+    {
+      "precision": "bf16",
+      "M": 64,
+      "fused_family": "N128_SAB",
+      "current_family": "N128_SAB",
+      "fused_us": 139.6554708480835,
+      "current_GEMM_us": 139.3043597539266,
+      "current_plus_aiter_us": 146.35324478149414,
+      "current_plus_triton_us": 144.89547411600748,
+      "same_tile_plus_triton_us": 144.7376939985487,
+      "faster_separate_activation": "current_plus_triton",
+      "faster_separate_us": 144.89547411600748,
+      "speedup_vs_faster_separate": 1.0375209308744089,
+      "latency_reduction_vs_faster_separate_pct": 3.6164023064852113,
+      "speedup_vs_AITER_separate": 1.0479592664199775,
+      "speedup_vs_same_tile": 1.0363911497315679,
+      "seed_median_us": {
+        "202611153041": {
+          "fused": 139.6554708480835,
+          "current_GEMM": 139.27103413475885,
+          "current_plus_aiter": 146.25102943844266,
+          "current_plus_triton": 144.89547411600748,
+          "same_tile_plus_triton": 144.59991455078125
+        },
+        "202611153042": {
+          "fused": 140.16436205969916,
+          "current_GEMM": 140.06435871124268,
+          "current_plus_aiter": 146.88213666280112,
+          "current_plus_triton": 145.43102847205267,
+          "same_tile_plus_triton": 145.15103234185113
+        },
+        "202611153043": {
+          "fused": 139.55548074510364,
+          "current_GEMM": 139.3043597539266,
+          "current_plus_aiter": 146.35324478149414,
+          "current_plus_triton": 144.83324686686197,
+          "same_tile_plus_triton": 144.7376939985487
+        }
+      }
+    },
+    {
+      "precision": "bf16",
+      "M": 80,
+      "fused_family": "N128_SAB",
+      "current_family": "N128_SAB",
+      "fused_us": 140.79769452412924,
+      "current_GEMM_us": 140.64880212148032,
+      "current_plus_aiter_us": 147.5199063618978,
+      "current_plus_triton_us": 146.64657910664877,
+      "same_tile_plus_triton_us": 146.288792292277,
+      "faster_separate_activation": "current_plus_triton",
+      "faster_separate_us": 146.64657910664877,
+      "speedup_vs_faster_separate": 1.0415410536535255,
+      "latency_reduction_vs_faster_separate_pct": 3.9884221085484173,
+      "speedup_vs_AITER_separate": 1.047743763564371,
+      "speedup_vs_same_tile": 1.038999912510689,
+      "seed_median_us": {
+        "202611153041": {
+          "fused": 140.79769452412924,
+          "current_GEMM": 140.64880212148032,
+          "current_plus_aiter": 147.5199063618978,
+          "current_plus_triton": 146.64657910664877,
+          "same_tile_plus_triton": 146.288792292277
+        },
+        "202611153042": {
+          "fused": 141.31547345055475,
+          "current_GEMM": 141.10436704423694,
+          "current_plus_aiter": 147.91991975572375,
+          "current_plus_triton": 147.3154756757948,
+          "same_tile_plus_triton": 146.79103427463107
+        },
+        "202611153043": {
+          "fused": 140.70657889048258,
+          "current_GEMM": 140.47102133433023,
+          "current_plus_aiter": 147.4443409177992,
+          "current_plus_triton": 146.54658900366888,
+          "same_tile_plus_triton": 145.97547054290771
+        }
+      }
+    },
+    {
+      "precision": "bf16",
+      "M": 96,
+      "fused_family": "N128_SAB",
+      "current_family": "N128_SAB",
+      "fused_us": 141.69547292921277,
+      "current_GEMM_us": 141.59992006089954,
+      "current_plus_aiter_us": 151.12658341725668,
+      "current_plus_triton_us": 148.57990211910672,
+      "same_tile_plus_triton_us": 148.17102750142416,
+      "faster_separate_activation": "current_plus_triton",
+      "faster_separate_us": 148.57990211910672,
+      "speedup_vs_faster_separate": 1.0485860913378173,
+      "latency_reduction_vs_faster_separate_pct": 4.633486152370159,
+      "speedup_vs_AITER_separate": 1.0665590106238287,
+      "speedup_vs_same_tile": 1.0457005043163687,
+      "seed_median_us": {
+        "202611153041": {
+          "fused": 141.69547292921277,
+          "current_GEMM": 141.59992006089954,
+          "current_plus_aiter": 151.12658341725668,
+          "current_plus_triton": 148.57990211910672,
+          "same_tile_plus_triton": 148.17102750142416
+        },
+        "202611153042": {
+          "fused": 142.10658603244357,
+          "current_GEMM": 142.0110331641303,
+          "current_plus_aiter": 151.47101879119873,
+          "current_plus_triton": 148.89102511935764,
+          "same_tile_plus_triton": 148.43102296193442
+        },
+        "202611153043": {
+          "fused": 141.60435729556613,
+          "current_GEMM": 141.33548736572266,
+          "current_plus_aiter": 151.03990501827664,
+          "current_plus_triton": 148.17547798156738,
+          "same_tile_plus_triton": 148.08658758799234
+        }
+      }
+    },
+    {
+      "precision": "bf16",
+      "M": 112,
+      "fused_family": "N128_SAB",
+      "current_family": "N128_SAB",
+      "fused_us": 142.8132322099474,
+      "current_GEMM_us": 142.7332295311822,
+      "current_plus_aiter_us": 152.75768438975015,
+      "current_plus_triton_us": 150.49323770734998,
+      "same_tile_plus_triton_us": 150.07546212938098,
+      "faster_separate_activation": "current_plus_triton",
+      "faster_separate_us": 150.49323770734998,
+      "speedup_vs_faster_separate": 1.0537765680291609,
+      "latency_reduction_vs_faster_separate_pct": 5.103222984900602,
+      "speedup_vs_AITER_separate": 1.0696325685366717,
+      "speedup_vs_same_tile": 1.050851239811991,
+      "seed_median_us": {
+        "202611153041": {
+          "fused": 142.8132322099474,
+          "current_GEMM": 142.7332295311822,
+          "current_plus_aiter": 152.75768438975015,
+          "current_plus_triton": 150.49323770734998,
+          "same_tile_plus_triton": 150.07546212938098
+        },
+        "202611153042": {
+          "fused": 143.14880636003284,
+          "current_GEMM": 142.81324545542398,
+          "current_plus_aiter": 152.88880136277942,
+          "current_plus_triton": 150.6776942147149,
+          "same_tile_plus_triton": 150.1887904273139
+        },
+        "202611153043": {
+          "fused": 142.3799196879069,
+          "current_GEMM": 142.18213823106555,
+          "current_plus_aiter": 152.33547157711453,
+          "current_plus_triton": 149.74213971032037,
+          "same_tile_plus_triton": 149.4599183400472
+        }
+      }
+    },
+    {
+      "precision": "bf16",
+      "M": 128,
+      "fused_family": "N128_SAB",
+      "current_family": "N128_SAB",
+      "fused_us": 143.7510119544135,
+      "current_GEMM_us": 143.40435134039984,
+      "current_plus_aiter_us": 153.89547083112927,
+      "current_plus_triton_us": 151.65547529856363,
+      "same_tile_plus_triton_us": 151.43990516662598,
+      "faster_separate_activation": "current_plus_triton",
+      "faster_separate_us": 151.65547529856363,
+      "speedup_vs_faster_separate": 1.0549871839974023,
+      "latency_reduction_vs_faster_separate_pct": 5.212118671342814,
+      "speedup_vs_AITER_separate": 1.0705696519196177,
+      "speedup_vs_same_tile": 1.0534875762450338,
+      "seed_median_us": {
+        "202611153041": {
+          "fused": 143.7510119544135,
+          "current_GEMM": 143.40435134039984,
+          "current_plus_aiter": 153.89547083112927,
+          "current_plus_triton": 151.64434909820557,
+          "same_tile_plus_triton": 151.43990516662598
+        },
+        "202611153042": {
+          "fused": 144.5465882619222,
+          "current_GEMM": 145.0421412785848,
+          "current_plus_aiter": 156.43991364373102,
+          "current_plus_triton": 152.19325489468045,
+          "same_tile_plus_triton": 152.23325623406305
+        },
+        "202611153043": {
+          "fused": 143.35325029161243,
+          "current_GEMM": 142.97325081295438,
+          "current_plus_aiter": 153.3599164750841,
+          "current_plus_triton": 151.65547529856363,
+          "same_tile_plus_triton": 151.0288053088718
+        }
+      }
+    },
+    {
+      "precision": "bf16",
+      "M": 129,
+      "fused_family": "N144_SAB",
+      "current_family": "N144_SAB",
+      "fused_us": 148.29546875423856,
+      "current_GEMM_us": 147.21992280748157,
+      "current_plus_aiter_us": 157.75101714664035,
+      "current_plus_triton_us": 155.79545497894287,
+      "same_tile_plus_triton_us": 155.60878647698297,
+      "faster_separate_activation": "current_plus_triton",
+      "faster_separate_us": 155.79545497894287,
+      "speedup_vs_faster_separate": 1.050574614907038,
+      "latency_reduction_vs_faster_separate_pct": 4.813995521061898,
+      "speedup_vs_AITER_separate": 1.0637615462686316,
+      "speedup_vs_same_tile": 1.0493158542481453,
+      "seed_median_us": {
+        "202611153041": {
+          "fused": 148.02881081899008,
+          "current_GEMM": 147.05990420447455,
+          "current_plus_aiter": 157.56878587934705,
+          "current_plus_triton": 155.61767419179282,
+          "same_tile_plus_triton": 155.35767873128256
+        },
+        "202611153042": {
+          "fused": 148.29546875423856,
+          "current_GEMM": 147.21992280748157,
+          "current_plus_aiter": 157.9443613688151,
+          "current_plus_triton": 155.97324901156955,
+          "same_tile_plus_triton": 155.659900771247
+        },
+        "202611153043": {
+          "fused": 148.64435460832385,
+          "current_GEMM": 147.23991023169623,
+          "current_plus_aiter": 157.75101714664035,
+          "current_plus_triton": 155.79545497894287,
+          "same_tile_plus_triton": 155.60878647698297
+        }
+      }
+    },
+    {
+      "precision": "bf16",
+      "M": 144,
+      "fused_family": "N144_SAB",
+      "current_family": "N144_SAB",
+      "fused_us": 148.98214075300427,
+      "current_GEMM_us": 148.344357808431,
+      "current_plus_aiter_us": 159.1021352344089,
+      "current_plus_triton_us": 157.4287944369846,
+      "same_tile_plus_triton_us": 157.1399105919732,
+      "faster_separate_activation": "current_plus_triton",
+      "faster_separate_us": 157.4287944369846,
+      "speedup_vs_faster_separate": 1.056695746492084,
+      "latency_reduction_vs_faster_separate_pct": 5.365380402097486,
+      "speedup_vs_AITER_separate": 1.067927567896762,
+      "speedup_vs_same_tile": 1.0547566963243842,
+      "seed_median_us": {
+        "202611153041": {
+          "fused": 148.764345380995,
+          "current_GEMM": 148.08434910244412,
+          "current_plus_aiter": 158.82878833346896,
+          "current_plus_triton": 157.37990538279215,
+          "same_tile_plus_triton": 156.8910148408678
+        },
+        "202611153042": {
+          "fused": 148.98214075300427,
+          "current_GEMM": 148.48879973093668,
+          "current_plus_aiter": 159.18212466769748,
+          "current_plus_triton": 157.4687957763672,
+          "same_tile_plus_triton": 157.1399105919732
+        },
+        "202611153043": {
+          "fused": 149.25991164313422,
+          "current_GEMM": 148.344357808431,
+          "current_plus_aiter": 159.1021352344089,
+          "current_plus_triton": 157.4287944369846,
+          "same_tile_plus_triton": 157.1554740269979
+        }
+      }
+    },
+    {
+      "precision": "bf16",
+      "M": 160,
+      "fused_family": "N160_SAB",
+      "current_family": "N160_SAB",
+      "fused_us": 151.59323480394153,
+      "current_GEMM_us": 150.73102050357394,
+      "current_plus_aiter_us": 161.91991170247397,
+      "current_plus_triton_us": 160.5221430460612,
+      "same_tile_plus_triton_us": 160.282121764289,
+      "faster_separate_activation": "current_plus_triton",
+      "faster_separate_us": 160.5221430460612,
+      "speedup_vs_faster_separate": 1.0589004400735138,
+      "latency_reduction_vs_faster_separate_pct": 5.562415298403756,
+      "speedup_vs_AITER_separate": 1.0681209614128766,
+      "speedup_vs_same_tile": 1.0573171155796297,
+      "seed_median_us": {
+        "202611153041": {
+          "fused": 151.55323346455893,
+          "current_GEMM": 150.5754656261868,
+          "current_plus_aiter": 161.72879272037082,
+          "current_plus_triton": 160.43546464708118,
+          "same_tile_plus_triton": 160.282121764289
+        },
+        "202611153042": {
+          "fused": 151.59323480394153,
+          "current_GEMM": 150.75102117326526,
+          "current_plus_aiter": 161.93101141187879,
+          "current_plus_triton": 160.80436441633435,
+          "same_tile_plus_triton": 160.38212511274548
+        },
+        "202611153043": {
+          "fused": 151.78657902611627,
+          "current_GEMM": 150.73102050357394,
+          "current_plus_aiter": 161.91991170247397,
+          "current_plus_triton": 160.5221430460612,
+          "same_tile_plus_triton": 160.18435690138074
+        }
+      }
+    },
+    {
+      "precision": "bf16",
+      "M": 176,
+      "fused_family": "N176_SAB",
+      "current_family": "N176_SAB",
+      "fused_us": 154.16212876637778,
+      "current_GEMM_us": 153.39989132351346,
+      "current_plus_aiter_us": 166.86879263983832,
+      "current_plus_triton_us": 163.98435168796115,
+      "same_tile_plus_triton_us": 163.73768117692737,
+      "faster_separate_activation": "current_plus_triton",
+      "faster_separate_us": 163.98435168796115,
+      "speedup_vs_faster_separate": 1.0637135916595202,
+      "latency_reduction_vs_faster_separate_pct": 5.9897318375070725,
+      "speedup_vs_AITER_separate": 1.082424029657223,
+      "speedup_vs_same_tile": 1.0621135196249183,
+      "seed_median_us": {
+        "202611153041": {
+          "fused": 154.16212876637778,
+          "current_GEMM": 153.39989132351346,
+          "current_plus_aiter": 166.6621102227105,
+          "current_plus_triton": 163.90878624386258,
+          "same_tile_plus_triton": 163.5421249601576
+        },
+        "202611153042": {
+          "fused": 154.15991677178278,
+          "current_GEMM": 153.43101819356283,
+          "current_plus_aiter": 166.87101787990994,
+          "current_plus_triton": 163.98435168796115,
+          "same_tile_plus_triton": 163.73768117692737
+        },
+        "202611153043": {
+          "fused": 154.47547700670032,
+          "current_GEMM": 153.39546733432346,
+          "current_plus_aiter": 166.86879263983832,
+          "current_plus_triton": 164.26213582356772,
+          "same_tile_plus_triton": 163.8910108142429
+        }
+      }
+    },
+    {
+      "precision": "bf16",
+      "M": 192,
+      "fused_family": "M192_PF_SAB",
+      "current_family": "M192_PF_SAB",
+      "fused_us": 154.94879086812338,
+      "current_GEMM_us": 154.61322996351453,
+      "current_plus_aiter_us": 168.33767626020642,
+      "current_plus_triton_us": 166.2043465508355,
+      "same_tile_plus_triton_us": 166.1976840760973,
+      "faster_separate_activation": "current_plus_triton",
+      "faster_separate_us": 166.2043465508355,
+      "speedup_vs_faster_separate": 1.072640487348441,
+      "latency_reduction_vs_faster_separate_pct": 6.772118729921117,
+      "speedup_vs_AITER_separate": 1.08640845350951,
+      "speedup_vs_same_tile": 1.0725974894347372,
+      "seed_median_us": {
+        "202611153041": {
+          "fused": 154.94211514790854,
+          "current_GEMM": 154.46212556627063,
+          "current_plus_aiter": 168.29988691541882,
+          "current_plus_triton": 166.0221152835422,
+          "same_tile_plus_triton": 166.2065585454305
+        },
+        "202611153042": {
+          "fused": 154.94879086812338,
+          "current_GEMM": 154.61322996351453,
+          "current_plus_aiter": 168.33767626020642,
+          "current_plus_triton": 166.2043465508355,
+          "same_tile_plus_triton": 166.1976840760973
+        },
+        "202611153043": {
+          "fused": 154.9732420179579,
+          "current_GEMM": 155.30657768249512,
+          "current_plus_aiter": 168.44434208340115,
+          "current_plus_triton": 166.6576862335205,
+          "same_tile_plus_triton": 165.90878698560925
+        }
+      }
+    },
+    {
+      "precision": "bf16",
+      "M": 193,
+      "fused_family": "N208_SP7_SAB",
+      "current_family": "N208_SP7_SAB",
+      "fused_us": 166.34212599860297,
+      "current_GEMM_us": 166.09101825290256,
+      "current_plus_aiter_us": 179.34211095174155,
+      "current_plus_triton_us": 178.1576739417182,
+      "same_tile_plus_triton_us": 176.83768272399902,
+      "faster_separate_activation": "current_plus_triton",
+      "faster_separate_us": 178.1576739417182,
+      "speedup_vs_faster_separate": 1.0710316035230574,
+      "latency_reduction_vs_faster_separate_pct": 6.632073534469541,
+      "speedup_vs_AITER_separate": 1.0781520909095976,
+      "speedup_vs_same_tile": 1.0630962040576792,
+      "seed_median_us": {
+        "202611153041": {
+          "fused": 166.54433144463434,
+          "current_GEMM": 166.53990745544434,
+          "current_plus_aiter": 179.34211095174155,
+          "current_plus_triton": 178.34879292382135,
+          "same_tile_plus_triton": 176.81545681423611
+        },
+        "202611153042": {
+          "fused": 166.34212599860297,
+          "current_GEMM": 165.64434104495578,
+          "current_plus_aiter": 180.6132263607449,
+          "current_plus_triton": 177.35989888509116,
+          "same_tile_plus_triton": 177.03323894076877
+        },
+        "202611153043": {
+          "fused": 165.9376753701104,
+          "current_GEMM": 166.09101825290256,
+          "current_plus_aiter": 178.5887744691637,
+          "current_plus_triton": 178.1576739417182,
+          "same_tile_plus_triton": 176.83768272399902
+        }
+      }
+    },
+    {
+      "precision": "bf16",
+      "M": 208,
+      "fused_family": "N208_SP7_SAB",
+      "current_family": "N208_SP5_SAB",
+      "fused_us": 166.69544908735486,
+      "current_GEMM_us": 167.59766472710504,
+      "current_plus_aiter_us": 181.47322866651746,
+      "current_plus_triton_us": 179.77323797014026,
+      "same_tile_plus_triton_us": 177.32434802585178,
+      "faster_separate_activation": "current_plus_triton",
+      "faster_separate_us": 179.77323797014026,
+      "speedup_vs_faster_separate": 1.0784531848612864,
+      "latency_reduction_vs_faster_separate_pct": 7.274602733115132,
+      "speedup_vs_AITER_separate": 1.088651367869188,
+      "speedup_vs_same_tile": 1.0637623822167273,
+      "seed_median_us": {
+        "202611153041": {
+          "fused": 166.69544908735486,
+          "current_GEMM": 167.59766472710504,
+          "current_plus_aiter": 182.5554370880127,
+          "current_plus_triton": 179.57320478227405,
+          "same_tile_plus_triton": 177.94654104444714
+        },
+        "202611153042": {
+          "fused": 166.25768608517117,
+          "current_GEMM": 168.44213008880615,
+          "current_plus_aiter": 181.47322866651746,
+          "current_plus_triton": 179.77323797014026,
+          "same_tile_plus_triton": 177.15321646796332
+        },
+        "202611153043": {
+          "fused": 166.74435138702393,
+          "current_GEMM": 166.78656472100153,
+          "current_plus_aiter": 180.66656589508057,
+          "current_plus_triton": 180.7087924745348,
+          "same_tile_plus_triton": 177.32434802585178
+        }
+      }
+    },
+    {
+      "precision": "bf16",
+      "M": 224,
+      "fused_family": "N224_SP10_SAB",
+      "current_family": "N224_SP9_SAB",
+      "fused_us": 169.55767737494574,
+      "current_GEMM_us": 169.2999071545071,
+      "current_plus_aiter_us": 183.4576792187161,
+      "current_plus_triton_us": 182.79323312971326,
+      "same_tile_plus_triton_us": 181.22655815548367,
+      "faster_separate_activation": "current_plus_triton",
+      "faster_separate_us": 182.79323312971326,
+      "speedup_vs_faster_separate": 1.078059312675648,
+      "latency_reduction_vs_faster_separate_pct": 7.240725232632295,
+      "speedup_vs_AITER_separate": 1.0819780151448586,
+      "speedup_vs_same_tile": 1.0688195365800768,
+      "seed_median_us": {
+        "202611153041": {
+          "fused": 169.55767737494574,
+          "current_GEMM": 170.58657275305853,
+          "current_plus_aiter": 183.0554405848185,
+          "current_plus_triton": 183.30211109585233,
+          "same_tile_plus_triton": 181.22655815548367
+        },
+        "202611153042": {
+          "fused": 169.66656843821207,
+          "current_GEMM": 169.2999071545071,
+          "current_plus_aiter": 183.53545665740967,
+          "current_plus_triton": 182.79323312971326,
+          "same_tile_plus_triton": 181.50877952575684
+        },
+        "202611153043": {
+          "fused": 169.5221265157064,
+          "current_GEMM": 168.66657469007703,
+          "current_plus_aiter": 183.4576792187161,
+          "current_plus_triton": 181.36877483791775,
+          "same_tile_plus_triton": 180.82655800713434
+        }
+      }
+    },
+    {
+      "precision": "bf16",
+      "M": 240,
+      "fused_family": "M256_PF_SAB",
+      "current_family": "N240_SP12_SAB",
+      "fused_us": 173.76656002468533,
+      "current_GEMM_us": 177.69100930955676,
+      "current_plus_aiter_us": 192.61989328596326,
+      "current_plus_triton_us": 191.83988041347928,
+      "same_tile_plus_triton_us": 202.89320415920682,
+      "faster_separate_activation": "current_plus_triton",
+      "faster_separate_us": 191.83988041347928,
+      "speedup_vs_faster_separate": 1.1040091970873247,
+      "latency_reduction_vs_faster_separate_pct": 9.421044440728322,
+      "speedup_vs_AITER_separate": 1.1084980519761662,
+      "speedup_vs_same_tile": 1.1676193862063204,
+      "seed_median_us": {
+        "202611153041": {
+          "fused": 173.76656002468533,
+          "current_GEMM": 178.10433440738254,
+          "current_plus_aiter": 192.61989328596326,
+          "current_plus_triton": 192.63765547010632,
+          "same_tile_plus_triton": 202.353212568495
+        },
+        "202611153042": {
+          "fused": 173.69323306613498,
+          "current_GEMM": 177.69100930955676,
+          "current_plus_aiter": 192.64210595024957,
+          "current_plus_triton": 191.83988041347928,
+          "same_tile_plus_triton": 202.89320415920682
+        },
+        "202611153043": {
+          "fused": 173.79099792904324,
+          "current_GEMM": 177.42655012342664,
+          "current_plus_aiter": 192.57321622636584,
+          "current_plus_triton": 190.92211458418103,
+          "same_tile_plus_triton": 203.0087841881646
+        }
+      }
+    },
+    {
+      "precision": "bf16",
+      "M": 256,
+      "fused_family": "M256_PF_SAB",
+      "current_family": "N256_SP11_SAB",
+      "fused_us": 174.29101467132568,
+      "current_GEMM_us": 182.31766753726535,
+      "current_plus_aiter_us": 200.242108768887,
+      "current_plus_triton_us": 198.5310051176283,
+      "same_tile_plus_triton_us": 207.3265446556939,
+      "faster_separate_activation": "current_plus_triton",
+      "faster_separate_us": 198.5310051176283,
+      "speedup_vs_faster_separate": 1.1390776827595723,
+      "latency_reduction_vs_faster_separate_pct": 12.209674973408102,
+      "speedup_vs_AITER_separate": 1.1488951920240944,
+      "speedup_vs_same_tile": 1.189542358489713,
+      "seed_median_us": {
+        "202611153041": {
+          "fused": 174.02433024512396,
+          "current_GEMM": 182.46210945977106,
+          "current_plus_aiter": 200.91987980736627,
+          "current_plus_triton": 198.88877868652344,
+          "same_tile_plus_triton": 207.3265446556939
+        },
+        "202611153042": {
+          "fused": 174.37101735009088,
+          "current_GEMM": 182.19988875918918,
+          "current_plus_aiter": 200.10877980126276,
+          "current_plus_triton": 198.5310051176283,
+          "same_tile_plus_triton": 207.2865433163113
+        },
+        "202611153043": {
+          "fused": 174.29101467132568,
+          "current_GEMM": 182.31766753726535,
+          "current_plus_aiter": 200.242108768887,
+          "current_plus_triton": 196.53766685061984,
+          "same_tile_plus_triton": 208.01989237467447
+        }
+      }
+    }
+  ],
+  "accuracy": {
+    "int8": {
+      "M_cases": 512,
+      "seeds": [
+        202611153031,
+        202611153032
+      ],
+      "gate_up_current_bit_exact": true,
+      "guards": true,
+      "fused_vs_AITER": {
+        "max_abs": 0.03125,
+        "max_relative_L2": 3.3430698557229e-07,
+        "max_BF16_ULP": 1,
+        "mismatches": 21488,
+        "elements": 572653568,
+        "max_BF16_ULP_gate_ge_neg80": 1,
+        "max_abs_extra_ULP_gate_lt_neg80": 0
+      },
+      "fused_vs_Triton": {
+        "max_abs": 1.0,
+        "max_relative_L2": 1.7724319799198612e-05,
+        "max_BF16_ULP": 1682,
+        "mismatches": 57847,
+        "elements": 572653568,
+        "max_BF16_ULP_gate_ge_neg80": 1,
+        "max_abs_extra_ULP_gate_lt_neg80": 5.491909607041727e-35
+      },
+      "fused_vs_FP64_activation": {
+        "max_abs": 8.0,
+        "max_relative_L2": 4.955901547364045e-05,
+        "max_BF16_ULP": 1682,
+        "mismatches": 376720,
+        "elements": 572653568
+      },
+      "GU_vs_FP64": {
+        "max_abs": 0.0,
+        "max_relative_L2": 0.0,
+        "max_BF16_ULP": 0,
+        "mismatches": 0,
+        "elements": 1145307136
+      }
+    },
+    "bf16": {
+      "M_cases": 512,
+      "seeds": [
+        202611153031,
+        202611153032
+      ],
+      "gate_up_current_bit_exact": true,
+      "guards": true,
+      "fused_vs_AITER": {
+        "max_abs": 0.015625,
+        "max_relative_L2": 2.1488972656767946e-06,
+        "max_BF16_ULP": 27,
+        "mismatches": 34942,
+        "elements": 572653568,
+        "max_BF16_ULP_gate_ge_neg80": 1,
+        "max_abs_extra_ULP_gate_lt_neg80": 2.4795583962657627e-39
+      },
+      "fused_vs_Triton": {
+        "max_abs": 4.0,
+        "max_relative_L2": 8.341085398064171e-06,
+        "max_BF16_ULP": 1942,
+        "mismatches": 1113006,
+        "elements": 572653568,
+        "max_BF16_ULP_gate_ge_neg80": 1,
+        "max_abs_extra_ULP_gate_lt_neg80": 2.256949153578792e-34
+      },
+      "fused_vs_FP64_activation": {
+        "max_abs": 16.0,
+        "max_relative_L2": 0.00019353086362188668,
+        "max_BF16_ULP": 1942,
+        "mismatches": 9384480,
+        "elements": 572653568
+      },
+      "GU_vs_FP64": {
+        "max_abs": 1.0,
+        "max_relative_L2": 6.128976302370709e-05,
+        "max_BF16_ULP": 26955,
+        "mismatches": 359005,
+        "elements": 1145307136
+      }
+    }
+  },
+  "environment": {
+    "torch": "2.11.0",
+    "HIP": "7.2.26365",
+    "device": "_CudaDeviceProperties(name='BW1000 64G', major=9, minor=3, gcnArchName='gfx936:sramecc+:xnack-', total_memory=65520MB, multi_processor_count=80, uuid=30303135-3338-6139-6634-653434313031, pci_bus_id=193, pci_device_id=0, pci_domain_id=0, L2_cache_size=8MB)",
+    "PCI": "0000:c1:00.0",
+    "node": "bw47",
+    "container": "zhuwenbo_sgl_0522",
+    "GPU": 5,
+    "formal_seeds": [
+      202611153041,
+      202611153042,
+      202611153043
+    ],
+    "rounds": 7,
+    "copies": 72,
+    "points": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14,
+      15,
+      16,
+      32,
+      48,
+      64,
+      80,
+      96,
+      112,
+      128,
+      129,
+      144,
+      160,
+      176,
+      192,
+      193,
+      208,
+      224,
+      240,
+      256
+    ],
+    "policy_sha256": "c3be1d9ef3e03471339bad19e18fd3ca7064c47e9d9cb54291f100bd3be65eef",
+    "activation": "AITER silu_and_mul(out,input,limit=0) and single-kernel Triton sigmoid(g)*g*u, FP32 arithmetic",
+    "aiter_distribution": [
+      {
+        "aiter": "0.1.8+dtk2610.torch2110.2611031115.ga1a2bc"
+      }
+    ],
+    "env": {
+      "HIP_VISIBLE_DEVICES": "5"
+    },
+    "scope": "A pack + GEMM + activation/BF16 output. Static weight/scale preparation excluded; input INT8 quantization excluded."
+  },
+  "clocks": {
+    "freq1_input": {
+      "1499000000": 159
+    },
+    "freq2_input": {
+      "1800000000": 159
+    },
+    "power_dpm_force_performance_level": {
+      "manual": 159
+    }
+  },
+  "clock_samples": 159,
+  "instruction_resource_audit": {
+    "status": "complete",
+    "entries": [
+      {
+        "family": "M128_SAB_INT8_FUSED",
+        "base_family": "M128_SAB",
+        "function": "M128_SAB_INT8_FUSED",
+        "input_dtype": "int8",
+        "mode": "fused",
+        "BM": 128,
+        "BN": 128,
+        "NW": 4,
+        "VGPR": 124,
+        "SGPR": 36,
+        "LDS": 16384,
+        "scratch": 0
+      },
+      {
+        "family": "M128_SAB_INT8_DEBUG",
+        "base_family": "M128_SAB",
+        "function": "M128_SAB_INT8_DEBUG",
+        "input_dtype": "int8",
+        "mode": "debug",
+        "BM": 128,
+        "BN": 128,
+        "NW": 4,
+        "VGPR": 124,
+        "SGPR": 36,
+        "LDS": 16384,
+        "scratch": 0
+      },
+      {
+        "family": "M128_SAB_BF16_FUSED",
+        "base_family": "M128_SAB",
+        "function": "M128_SAB_BF16_FUSED",
+        "input_dtype": "bf16",
+        "mode": "fused",
+        "BM": 128,
+        "BN": 128,
+        "NW": 4,
+        "VGPR": 124,
+        "SGPR": 36,
+        "LDS": 16384,
+        "scratch": 0
+      },
+      {
+        "family": "M128_SAB_BF16_DEBUG",
+        "base_family": "M128_SAB",
+        "function": "M128_SAB_BF16_DEBUG",
+        "input_dtype": "bf16",
+        "mode": "debug",
+        "BM": 128,
+        "BN": 128,
+        "NW": 4,
+        "VGPR": 124,
+        "SGPR": 36,
+        "LDS": 16384,
+        "scratch": 0
+      },
+      {
+        "family": "M192_PF_SAB_INT8_FUSED",
+        "base_family": "M192_PF_SAB",
+        "function": "M192_PF_SAB_INT8_FUSED",
+        "input_dtype": "int8",
+        "mode": "fused",
+        "BM": 192,
+        "BN": 128,
+        "NW": 4,
+        "VGPR": 164,
+        "SGPR": 36,
+        "LDS": 16384,
+        "scratch": 0
+      },
+      {
+        "family": "M192_PF_SAB_INT8_DEBUG",
+        "base_family": "M192_PF_SAB",
+        "function": "M192_PF_SAB_INT8_DEBUG",
+        "input_dtype": "int8",
+        "mode": "debug",
+        "BM": 192,
+        "BN": 128,
+        "NW": 4,
+        "VGPR": 164,
+        "SGPR": 36,
+        "LDS": 16384,
+        "scratch": 0
+      },
+      {
+        "family": "M192_PF_SAB_BF16_FUSED",
+        "base_family": "M192_PF_SAB",
+        "function": "M192_PF_SAB_BF16_FUSED",
+        "input_dtype": "bf16",
+        "mode": "fused",
+        "BM": 192,
+        "BN": 128,
+        "NW": 4,
+        "VGPR": 164,
+        "SGPR": 36,
+        "LDS": 16384,
+        "scratch": 0
+      },
+      {
+        "family": "M192_PF_SAB_BF16_DEBUG",
+        "base_family": "M192_PF_SAB",
+        "function": "M192_PF_SAB_BF16_DEBUG",
+        "input_dtype": "bf16",
+        "mode": "debug",
+        "BM": 192,
+        "BN": 128,
+        "NW": 4,
+        "VGPR": 164,
+        "SGPR": 36,
+        "LDS": 16384,
+        "scratch": 0
+      },
+      {
+        "family": "M256_PF_SAB_INT8_FUSED",
+        "base_family": "M256_PF_SAB",
+        "function": "M256_PF_SAB_INT8_FUSED",
+        "input_dtype": "int8",
+        "mode": "fused",
+        "BM": 256,
+        "BN": 128,
+        "NW": 4,
+        "VGPR": 204,
+        "SGPR": 36,
+        "LDS": 16384,
+        "scratch": 0
+      },
+      {
+        "family": "M256_PF_SAB_INT8_DEBUG",
+        "base_family": "M256_PF_SAB",
+        "function": "M256_PF_SAB_INT8_DEBUG",
+        "input_dtype": "int8",
+        "mode": "debug",
+        "BM": 256,
+        "BN": 128,
+        "NW": 4,
+        "VGPR": 204,
+        "SGPR": 36,
+        "LDS": 16384,
+        "scratch": 0
+      },
+      {
+        "family": "M256_PF_SAB_BF16_FUSED",
+        "base_family": "M256_PF_SAB",
+        "function": "M256_PF_SAB_BF16_FUSED",
+        "input_dtype": "bf16",
+        "mode": "fused",
+        "BM": 256,
+        "BN": 128,
+        "NW": 4,
+        "VGPR": 204,
+        "SGPR": 36,
+        "LDS": 16384,
+        "scratch": 0
+      },
+      {
+        "family": "M256_PF_SAB_BF16_DEBUG",
+        "base_family": "M256_PF_SAB",
+        "function": "M256_PF_SAB_BF16_DEBUG",
+        "input_dtype": "bf16",
+        "mode": "debug",
+        "BM": 256,
+        "BN": 128,
+        "NW": 4,
+        "VGPR": 204,
+        "SGPR": 36,
+        "LDS": 16384,
+        "scratch": 0
+      },
+      {
+        "family": "N128_SAB_INT8_FUSED",
+        "base_family": "N128_SAB",
+        "function": "N128_SAB_INT8_FUSED",
+        "input_dtype": "int8",
+        "mode": "fused",
+        "BM": 128,
+        "BN": 128,
+        "NW": 4,
+        "VGPR": 124,
+        "SGPR": 36,
+        "LDS": 16384,
+        "scratch": 0
+      },
+      {
+        "family": "N128_SAB_INT8_DEBUG",
+        "base_family": "N128_SAB",
+        "function": "N128_SAB_INT8_DEBUG",
+        "input_dtype": "int8",
+        "mode": "debug",
+        "BM": 128,
+        "BN": 128,
+        "NW": 4,
+        "VGPR": 124,
+        "SGPR": 36,
+        "LDS": 16384,
+        "scratch": 0
+      },
+      {
+        "family": "N128_SAB_BF16_FUSED",
+        "base_family": "N128_SAB",
+        "function": "N128_SAB_BF16_FUSED",
+        "input_dtype": "bf16",
+        "mode": "fused",
+        "BM": 128,
+        "BN": 128,
+        "NW": 4,
+        "VGPR": 124,
+        "SGPR": 36,
+        "LDS": 16384,
+        "scratch": 0
+      },
+      {
+        "family": "N128_SAB_BF16_DEBUG",
+        "base_family": "N128_SAB",
+        "function": "N128_SAB_BF16_DEBUG",
+        "input_dtype": "bf16",
+        "mode": "debug",
+        "BM": 128,
+        "BN": 128,
+        "NW": 4,
+        "VGPR": 124,
+        "SGPR": 36,
+        "LDS": 16384,
+        "scratch": 0
+      },
+      {
+        "family": "N144_SAB_INT8_FUSED",
+        "base_family": "N144_SAB",
+        "function": "N144_SAB_INT8_FUSED",
+        "input_dtype": "int8",
+        "mode": "fused",
+        "BM": 144,
+        "BN": 128,
+        "NW": 4,
+        "VGPR": 136,
+        "SGPR": 36,
+        "LDS": 18432,
+        "scratch": 0
+      },
+      {
+        "family": "N144_SAB_INT8_DEBUG",
+        "base_family": "N144_SAB",
+        "function": "N144_SAB_INT8_DEBUG",
+        "input_dtype": "int8",
+        "mode": "debug",
+        "BM": 144,
+        "BN": 128,
+        "NW": 4,
+        "VGPR": 136,
+        "SGPR": 36,
+        "LDS": 18432,
+        "scratch": 0
+      },
+      {
+        "family": "N144_SAB_BF16_FUSED",
+        "base_family": "N144_SAB",
+        "function": "N144_SAB_BF16_FUSED",
+        "input_dtype": "bf16",
+        "mode": "fused",
+        "BM": 144,
+        "BN": 128,
+        "NW": 4,
+        "VGPR": 136,
+        "SGPR": 36,
+        "LDS": 18432,
+        "scratch": 0
+      },
+      {
+        "family": "N144_SAB_BF16_DEBUG",
+        "base_family": "N144_SAB",
+        "function": "N144_SAB_BF16_DEBUG",
+        "input_dtype": "bf16",
+        "mode": "debug",
+        "BM": 144,
+        "BN": 128,
+        "NW": 4,
+        "VGPR": 136,
+        "SGPR": 36,
+        "LDS": 18432,
+        "scratch": 0
+      },
+      {
+        "family": "N160_SAB_INT8_FUSED",
+        "base_family": "N160_SAB",
+        "function": "N160_SAB_INT8_FUSED",
+        "input_dtype": "int8",
+        "mode": "fused",
+        "BM": 160,
+        "BN": 128,
+        "NW": 4,
+        "VGPR": 148,
+        "SGPR": 36,
+        "LDS": 20480,
+        "scratch": 0
+      },
+      {
+        "family": "N160_SAB_INT8_DEBUG",
+        "base_family": "N160_SAB",
+        "function": "N160_SAB_INT8_DEBUG",
+        "input_dtype": "int8",
+        "mode": "debug",
+        "BM": 160,
+        "BN": 128,
+        "NW": 4,
+        "VGPR": 148,
+        "SGPR": 36,
+        "LDS": 20480,
+        "scratch": 0
+      },
+      {
+        "family": "N160_SAB_BF16_FUSED",
+        "base_family": "N160_SAB",
+        "function": "N160_SAB_BF16_FUSED",
+        "input_dtype": "bf16",
+        "mode": "fused",
+        "BM": 160,
+        "BN": 128,
+        "NW": 4,
+        "VGPR": 148,
+        "SGPR": 36,
+        "LDS": 20480,
+        "scratch": 0
+      },
+      {
+        "family": "N160_SAB_BF16_DEBUG",
+        "base_family": "N160_SAB",
+        "function": "N160_SAB_BF16_DEBUG",
+        "input_dtype": "bf16",
+        "mode": "debug",
+        "BM": 160,
+        "BN": 128,
+        "NW": 4,
+        "VGPR": 148,
+        "SGPR": 36,
+        "LDS": 20480,
+        "scratch": 0
+      },
+      {
+        "family": "N176_SAB_INT8_FUSED",
+        "base_family": "N176_SAB",
+        "function": "N176_SAB_INT8_FUSED",
+        "input_dtype": "int8",
+        "mode": "fused",
+        "BM": 176,
+        "BN": 128,
+        "NW": 4,
+        "VGPR": 160,
+        "SGPR": 36,
+        "LDS": 22528,
+        "scratch": 0
+      },
+      {
+        "family": "N176_SAB_INT8_DEBUG",
+        "base_family": "N176_SAB",
+        "function": "N176_SAB_INT8_DEBUG",
+        "input_dtype": "int8",
+        "mode": "debug",
+        "BM": 176,
+        "BN": 128,
+        "NW": 4,
+        "VGPR": 160,
+        "SGPR": 36,
+        "LDS": 22528,
+        "scratch": 0
+      },
+      {
+        "family": "N176_SAB_BF16_FUSED",
+        "base_family": "N176_SAB",
+        "function": "N176_SAB_BF16_FUSED",
+        "input_dtype": "bf16",
+        "mode": "fused",
+        "BM": 176,
+        "BN": 128,
+        "NW": 4,
+        "VGPR": 160,
+        "SGPR": 36,
+        "LDS": 22528,
+        "scratch": 0
+      },
+      {
+        "family": "N176_SAB_BF16_DEBUG",
+        "base_family": "N176_SAB",
+        "function": "N176_SAB_BF16_DEBUG",
+        "input_dtype": "bf16",
+        "mode": "debug",
+        "BM": 176,
+        "BN": 128,
+        "NW": 4,
+        "VGPR": 160,
+        "SGPR": 36,
+        "LDS": 22528,
+        "scratch": 0
+      },
+      {
+        "family": "N192_SAB_INT8_FUSED",
+        "base_family": "N192_SAB",
+        "function": "N192_SAB_INT8_FUSED",
+        "input_dtype": "int8",
+        "mode": "fused",
+        "BM": 192,
+        "BN": 128,
+        "NW": 4,
+        "VGPR": 172,
+        "SGPR": 36,
+        "LDS": 24576,
+        "scratch": 0
+      },
+      {
+        "family": "N192_SAB_INT8_DEBUG",
+        "base_family": "N192_SAB",
+        "function": "N192_SAB_INT8_DEBUG",
+        "input_dtype": "int8",
+        "mode": "debug",
+        "BM": 192,
+        "BN": 128,
+        "NW": 4,
+        "VGPR": 172,
+        "SGPR": 36,
+        "LDS": 24576,
+        "scratch": 0
+      },
+      {
+        "family": "N192_SAB_BF16_FUSED",
+        "base_family": "N192_SAB",
+        "function": "N192_SAB_BF16_FUSED",
+        "input_dtype": "bf16",
+        "mode": "fused",
+        "BM": 192,
+        "BN": 128,
+        "NW": 4,
+        "VGPR": 172,
+        "SGPR": 36,
+        "LDS": 24576,
+        "scratch": 0
+      },
+      {
+        "family": "N192_SAB_BF16_DEBUG",
+        "base_family": "N192_SAB",
+        "function": "N192_SAB_BF16_DEBUG",
+        "input_dtype": "bf16",
+        "mode": "debug",
+        "BM": 192,
+        "BN": 128,
+        "NW": 4,
+        "VGPR": 172,
+        "SGPR": 36,
+        "LDS": 24576,
+        "scratch": 0
+      },
+      {
+        "family": "N208_SP5_SAB_INT8_FUSED",
+        "base_family": "N208_SP5_SAB",
+        "function": "N208_SP5_SAB_INT8_FUSED",
+        "input_dtype": "int8",
+        "mode": "fused",
+        "BM": 208,
+        "BN": 128,
+        "NW": 4,
+        "VGPR": 184,
+        "SGPR": 36,
+        "LDS": 26624,
+        "scratch": 0
+      },
+      {
+        "family": "N208_SP5_SAB_INT8_DEBUG",
+        "base_family": "N208_SP5_SAB",
+        "function": "N208_SP5_SAB_INT8_DEBUG",
+        "input_dtype": "int8",
+        "mode": "debug",
+        "BM": 208,
+        "BN": 128,
+        "NW": 4,
+        "VGPR": 184,
+        "SGPR": 36,
+        "LDS": 26624,
+        "scratch": 0
+      },
+      {
+        "family": "N208_SP5_SAB_BF16_FUSED",
+        "base_family": "N208_SP5_SAB",
+        "function": "N208_SP5_SAB_BF16_FUSED",
+        "input_dtype": "bf16",
+        "mode": "fused",
+        "BM": 208,
+        "BN": 128,
+        "NW": 4,
+        "VGPR": 184,
+        "SGPR": 36,
+        "LDS": 26624,
+        "scratch": 0
+      },
+      {
+        "family": "N208_SP5_SAB_BF16_DEBUG",
+        "base_family": "N208_SP5_SAB",
+        "function": "N208_SP5_SAB_BF16_DEBUG",
+        "input_dtype": "bf16",
+        "mode": "debug",
+        "BM": 208,
+        "BN": 128,
+        "NW": 4,
+        "VGPR": 184,
+        "SGPR": 36,
+        "LDS": 26624,
+        "scratch": 0
+      },
+      {
+        "family": "N208_SP7_SAB_INT8_FUSED",
+        "base_family": "N208_SP7_SAB",
+        "function": "N208_SP7_SAB_INT8_FUSED",
+        "input_dtype": "int8",
+        "mode": "fused",
+        "BM": 208,
+        "BN": 128,
+        "NW": 4,
+        "VGPR": 184,
+        "SGPR": 36,
+        "LDS": 26624,
+        "scratch": 0
+      },
+      {
+        "family": "N208_SP7_SAB_INT8_DEBUG",
+        "base_family": "N208_SP7_SAB",
+        "function": "N208_SP7_SAB_INT8_DEBUG",
+        "input_dtype": "int8",
+        "mode": "debug",
+        "BM": 208,
+        "BN": 128,
+        "NW": 4,
+        "VGPR": 184,
+        "SGPR": 36,
+        "LDS": 26624,
+        "scratch": 0
+      },
+      {
+        "family": "N208_SP7_SAB_BF16_FUSED",
+        "base_family": "N208_SP7_SAB",
+        "function": "N208_SP7_SAB_BF16_FUSED",
+        "input_dtype": "bf16",
+        "mode": "fused",
+        "BM": 208,
+        "BN": 128,
+        "NW": 4,
+        "VGPR": 184,
+        "SGPR": 36,
+        "LDS": 26624,
+        "scratch": 0
+      },
+      {
+        "family": "N208_SP7_SAB_BF16_DEBUG",
+        "base_family": "N208_SP7_SAB",
+        "function": "N208_SP7_SAB_BF16_DEBUG",
+        "input_dtype": "bf16",
+        "mode": "debug",
+        "BM": 208,
+        "BN": 128,
+        "NW": 4,
+        "VGPR": 184,
+        "SGPR": 36,
+        "LDS": 26624,
+        "scratch": 0
+      },
+      {
+        "family": "N224_SP9_SAB_INT8_FUSED",
+        "base_family": "N224_SP9_SAB",
+        "function": "N224_SP9_SAB_INT8_FUSED",
+        "input_dtype": "int8",
+        "mode": "fused",
+        "BM": 224,
+        "BN": 128,
+        "NW": 4,
+        "VGPR": 196,
+        "SGPR": 36,
+        "LDS": 28672,
+        "scratch": 0
+      },
+      {
+        "family": "N224_SP9_SAB_INT8_DEBUG",
+        "base_family": "N224_SP9_SAB",
+        "function": "N224_SP9_SAB_INT8_DEBUG",
+        "input_dtype": "int8",
+        "mode": "debug",
+        "BM": 224,
+        "BN": 128,
+        "NW": 4,
+        "VGPR": 196,
+        "SGPR": 36,
+        "LDS": 28672,
+        "scratch": 0
+      },
+      {
+        "family": "N224_SP9_SAB_BF16_FUSED",
+        "base_family": "N224_SP9_SAB",
+        "function": "N224_SP9_SAB_BF16_FUSED",
+        "input_dtype": "bf16",
+        "mode": "fused",
+        "BM": 224,
+        "BN": 128,
+        "NW": 4,
+        "VGPR": 196,
+        "SGPR": 36,
+        "LDS": 28672,
+        "scratch": 0
+      },
+      {
+        "family": "N224_SP9_SAB_BF16_DEBUG",
+        "base_family": "N224_SP9_SAB",
+        "function": "N224_SP9_SAB_BF16_DEBUG",
+        "input_dtype": "bf16",
+        "mode": "debug",
+        "BM": 224,
+        "BN": 128,
+        "NW": 4,
+        "VGPR": 196,
+        "SGPR": 36,
+        "LDS": 28672,
+        "scratch": 0
+      },
+      {
+        "family": "N224_SP10_SAB_INT8_FUSED",
+        "base_family": "N224_SP10_SAB",
+        "function": "N224_SP10_SAB_INT8_FUSED",
+        "input_dtype": "int8",
+        "mode": "fused",
+        "BM": 224,
+        "BN": 128,
+        "NW": 4,
+        "VGPR": 196,
+        "SGPR": 36,
+        "LDS": 28672,
+        "scratch": 0
+      },
+      {
+        "family": "N224_SP10_SAB_INT8_DEBUG",
+        "base_family": "N224_SP10_SAB",
+        "function": "N224_SP10_SAB_INT8_DEBUG",
+        "input_dtype": "int8",
+        "mode": "debug",
+        "BM": 224,
+        "BN": 128,
+        "NW": 4,
+        "VGPR": 196,
+        "SGPR": 36,
+        "LDS": 28672,
+        "scratch": 0
+      },
+      {
+        "family": "N224_SP10_SAB_BF16_FUSED",
+        "base_family": "N224_SP10_SAB",
+        "function": "N224_SP10_SAB_BF16_FUSED",
+        "input_dtype": "bf16",
+        "mode": "fused",
+        "BM": 224,
+        "BN": 128,
+        "NW": 4,
+        "VGPR": 196,
+        "SGPR": 36,
+        "LDS": 28672,
+        "scratch": 0
+      },
+      {
+        "family": "N224_SP10_SAB_BF16_DEBUG",
+        "base_family": "N224_SP10_SAB",
+        "function": "N224_SP10_SAB_BF16_DEBUG",
+        "input_dtype": "bf16",
+        "mode": "debug",
+        "BM": 224,
+        "BN": 128,
+        "NW": 4,
+        "VGPR": 196,
+        "SGPR": 36,
+        "LDS": 28672,
+        "scratch": 0
+      },
+      {
+        "family": "N240_SP12_SAB_INT8_FUSED",
+        "base_family": "N240_SP12_SAB",
+        "function": "N240_SP12_SAB_INT8_FUSED",
+        "input_dtype": "int8",
+        "mode": "fused",
+        "BM": 240,
+        "BN": 128,
+        "NW": 4,
+        "VGPR": 208,
+        "SGPR": 36,
+        "LDS": 30720,
+        "scratch": 0
+      },
+      {
+        "family": "N240_SP12_SAB_INT8_DEBUG",
+        "base_family": "N240_SP12_SAB",
+        "function": "N240_SP12_SAB_INT8_DEBUG",
+        "input_dtype": "int8",
+        "mode": "debug",
+        "BM": 240,
+        "BN": 128,
+        "NW": 4,
+        "VGPR": 208,
+        "SGPR": 36,
+        "LDS": 30720,
+        "scratch": 0
+      },
+      {
+        "family": "N240_SP12_SAB_BF16_FUSED",
+        "base_family": "N240_SP12_SAB",
+        "function": "N240_SP12_SAB_BF16_FUSED",
+        "input_dtype": "bf16",
+        "mode": "fused",
+        "BM": 240,
+        "BN": 128,
+        "NW": 4,
+        "VGPR": 208,
+        "SGPR": 36,
+        "LDS": 30720,
+        "scratch": 0
+      },
+      {
+        "family": "N240_SP12_SAB_BF16_DEBUG",
+        "base_family": "N240_SP12_SAB",
+        "function": "N240_SP12_SAB_BF16_DEBUG",
+        "input_dtype": "bf16",
+        "mode": "debug",
+        "BM": 240,
+        "BN": 128,
+        "NW": 4,
+        "VGPR": 208,
+        "SGPR": 36,
+        "LDS": 30720,
+        "scratch": 0
+      },
+      {
+        "family": "N256_SP11_SAB_INT8_FUSED",
+        "base_family": "N256_SP11_SAB",
+        "function": "N256_SP11_SAB_INT8_FUSED",
+        "input_dtype": "int8",
+        "mode": "fused",
+        "BM": 256,
+        "BN": 128,
+        "NW": 4,
+        "VGPR": 220,
+        "SGPR": 36,
+        "LDS": 32768,
+        "scratch": 0
+      },
+      {
+        "family": "N256_SP11_SAB_INT8_DEBUG",
+        "base_family": "N256_SP11_SAB",
+        "function": "N256_SP11_SAB_INT8_DEBUG",
+        "input_dtype": "int8",
+        "mode": "debug",
+        "BM": 256,
+        "BN": 128,
+        "NW": 4,
+        "VGPR": 220,
+        "SGPR": 36,
+        "LDS": 32768,
+        "scratch": 0
+      },
+      {
+        "family": "N256_SP11_SAB_BF16_FUSED",
+        "base_family": "N256_SP11_SAB",
+        "function": "N256_SP11_SAB_BF16_FUSED",
+        "input_dtype": "bf16",
+        "mode": "fused",
+        "BM": 256,
+        "BN": 128,
+        "NW": 4,
+        "VGPR": 220,
+        "SGPR": 36,
+        "LDS": 32768,
+        "scratch": 0
+      },
+      {
+        "family": "N256_SP11_SAB_BF16_DEBUG",
+        "base_family": "N256_SP11_SAB",
+        "function": "N256_SP11_SAB_BF16_DEBUG",
+        "input_dtype": "bf16",
+        "mode": "debug",
+        "BM": 256,
+        "BN": 128,
+        "NW": 4,
+        "VGPR": 220,
+        "SGPR": 36,
+        "LDS": 32768,
+        "scratch": 0
+      },
+      {
+        "family": "E047_INT8_FUSED",
+        "base_family": "E047_fixed",
+        "function": "E047_INT8_FUSED_fixed",
+        "input_dtype": "int8",
+        "mode": "fused",
+        "BM": 128,
+        "BN": 128,
+        "NW": 4,
+        "VGPR": 123,
+        "SGPR": 32,
+        "LDS": 16384,
+        "scratch": 0
+      },
+      {
+        "family": "E047_INT8_FUSED",
+        "base_family": "E047",
+        "function": "E047_INT8_FUSED_generic",
+        "input_dtype": "int8",
+        "mode": "fused",
+        "BM": 128,
+        "BN": 128,
+        "NW": 4,
+        "VGPR": 128,
+        "SGPR": 32,
+        "LDS": 16384,
+        "scratch": 0
+      },
+      {
+        "family": "E047_INT8_DEBUG",
+        "base_family": "E047_fixed",
+        "function": "E047_INT8_DEBUG_fixed",
+        "input_dtype": "int8",
+        "mode": "debug",
+        "BM": 128,
+        "BN": 128,
+        "NW": 4,
+        "VGPR": 123,
+        "SGPR": 32,
+        "LDS": 16384,
+        "scratch": 0
+      },
+      {
+        "family": "E047_INT8_DEBUG",
+        "base_family": "E047",
+        "function": "E047_INT8_DEBUG_generic",
+        "input_dtype": "int8",
+        "mode": "debug",
+        "BM": 128,
+        "BN": 128,
+        "NW": 4,
+        "VGPR": 128,
+        "SGPR": 32,
+        "LDS": 16384,
+        "scratch": 0
+      },
+      {
+        "family": "E047_BF16_FUSED",
+        "base_family": "E047_fixed",
+        "function": "E047_BF16_FUSED_fixed",
+        "input_dtype": "bf16",
+        "mode": "fused",
+        "BM": 128,
+        "BN": 128,
+        "NW": 4,
+        "VGPR": 123,
+        "SGPR": 24,
+        "LDS": 16384,
+        "scratch": 0
+      },
+      {
+        "family": "E047_BF16_FUSED",
+        "base_family": "E047",
+        "function": "E047_BF16_FUSED_generic",
+        "input_dtype": "bf16",
+        "mode": "fused",
+        "BM": 128,
+        "BN": 128,
+        "NW": 4,
+        "VGPR": 128,
+        "SGPR": 27,
+        "LDS": 16384,
+        "scratch": 0
+      },
+      {
+        "family": "E047_BF16_DEBUG",
+        "base_family": "E047_fixed",
+        "function": "E047_BF16_DEBUG_fixed",
+        "input_dtype": "bf16",
+        "mode": "debug",
+        "BM": 128,
+        "BN": 128,
+        "NW": 4,
+        "VGPR": 123,
+        "SGPR": 24,
+        "LDS": 16384,
+        "scratch": 0
+      },
+      {
+        "family": "E047_BF16_DEBUG",
+        "base_family": "E047",
+        "function": "E047_BF16_DEBUG_generic",
+        "input_dtype": "bf16",
+        "mode": "debug",
+        "BM": 128,
+        "BN": 128,
+        "NW": 4,
+        "VGPR": 128,
+        "SGPR": 27,
+        "LDS": 16384,
+        "scratch": 0
+      },
+      {
+        "family": "E030_INT8_FUSED",
+        "base_family": "E030",
+        "function": "E030_INT8_FUSED_generic",
+        "input_dtype": "int8",
+        "mode": "fused",
+        "BM": 32,
+        "BN": 64,
+        "NW": 2,
+        "VGPR": 72,
+        "SGPR": 32,
+        "LDS": 8192,
+        "scratch": 0
+      },
+      {
+        "family": "E030_INT8_DEBUG",
+        "base_family": "E030",
+        "function": "E030_INT8_DEBUG_generic",
+        "input_dtype": "int8",
+        "mode": "debug",
+        "BM": 32,
+        "BN": 64,
+        "NW": 2,
+        "VGPR": 72,
+        "SGPR": 32,
+        "LDS": 8192,
+        "scratch": 0
+      },
+      {
+        "family": "E030_BF16_FUSED",
+        "base_family": "E030",
+        "function": "E030_BF16_FUSED_generic",
+        "input_dtype": "bf16",
+        "mode": "fused",
+        "BM": 32,
+        "BN": 64,
+        "NW": 2,
+        "VGPR": 72,
+        "SGPR": 26,
+        "LDS": 8192,
+        "scratch": 0
+      },
+      {
+        "family": "E030_BF16_DEBUG",
+        "base_family": "E030",
+        "function": "E030_BF16_DEBUG_generic",
+        "input_dtype": "bf16",
+        "mode": "debug",
+        "BM": 32,
+        "BN": 64,
+        "NW": 2,
+        "VGPR": 72,
+        "SGPR": 26,
+        "LDS": 8192,
+        "scratch": 0
+      }
+    ],
+    "functions": 68,
+    "module_files": 64,
+    "native_MMAC": "INT8xINT8 -> INT32 or BF16xBF16 -> FP32",
+    "SwiGLU": "v_exp_f32 + v_rcp_f32 in register; BF16 RNE before SiLU and on final output",
+    "generic_fused_debug_K_loop_sources_equal": true,
+    "extra_VGPR": 0,
+    "extra_LDS": 0,
+    "scratch": 0,
+    "prior_archives_unchanged": true
+  },
+  "policy": {
+    "training_seeds": {
+      "int8": 202611153021,
+      "bf16": 202611153022
+    },
+    "source": "screen-result.json",
+    "by_dtype": {
+      "int8": {
+        "1": "E030",
+        "2": "N128_SAB",
+        "3": "N128_SAB",
+        "4": "N128_SAB",
+        "5": "N128_SAB",
+        "6": "N128_SAB",
+        "7": "N128_SAB",
+        "8": "N128_SAB",
+        "9": "N128_SAB",
+        "10": "N128_SAB",
+        "11": "N128_SAB",
+        "12": "N128_SAB",
+        "13": "N128_SAB",
+        "14": "N128_SAB",
+        "15": "N128_SAB",
+        "16": "N128_SAB",
+        "17": "N128_SAB",
+        "18": "N128_SAB",
+        "19": "N128_SAB",
+        "20": "N128_SAB",
+        "21": "N128_SAB",
+        "22": "N128_SAB",
+        "23": "N128_SAB",
+        "24": "N128_SAB",
+        "25": "N128_SAB",
+        "26": "N128_SAB",
+        "27": "N128_SAB",
+        "28": "N128_SAB",
+        "29": "N128_SAB",
+        "30": "N128_SAB",
+        "31": "N128_SAB",
+        "32": "N128_SAB",
+        "33": "N128_SAB",
+        "34": "N128_SAB",
+        "35": "N128_SAB",
+        "36": "N128_SAB",
+        "37": "N128_SAB",
+        "38": "N128_SAB",
+        "39": "N128_SAB",
+        "40": "N128_SAB",
+        "41": "N128_SAB",
+        "42": "N128_SAB",
+        "43": "N128_SAB",
+        "44": "N128_SAB",
+        "45": "N128_SAB",
+        "46": "N128_SAB",
+        "47": "N128_SAB",
+        "48": "N128_SAB",
+        "49": "N128_SAB",
+        "50": "N128_SAB",
+        "51": "N128_SAB",
+        "52": "N128_SAB",
+        "53": "N128_SAB",
+        "54": "N128_SAB",
+        "55": "N128_SAB",
+        "56": "N128_SAB",
+        "57": "N128_SAB",
+        "58": "N128_SAB",
+        "59": "N128_SAB",
+        "60": "N128_SAB",
+        "61": "N128_SAB",
+        "62": "N128_SAB",
+        "63": "N128_SAB",
+        "64": "N128_SAB",
+        "65": "N128_SAB",
+        "66": "N128_SAB",
+        "67": "N128_SAB",
+        "68": "N128_SAB",
+        "69": "N128_SAB",
+        "70": "N128_SAB",
+        "71": "N128_SAB",
+        "72": "N128_SAB",
+        "73": "N128_SAB",
+        "74": "N128_SAB",
+        "75": "N128_SAB",
+        "76": "N128_SAB",
+        "77": "N128_SAB",
+        "78": "N128_SAB",
+        "79": "N128_SAB",
+        "80": "N128_SAB",
+        "81": "N128_SAB",
+        "82": "N128_SAB",
+        "83": "N128_SAB",
+        "84": "N128_SAB",
+        "85": "N128_SAB",
+        "86": "N128_SAB",
+        "87": "N128_SAB",
+        "88": "N128_SAB",
+        "89": "N128_SAB",
+        "90": "N128_SAB",
+        "91": "N128_SAB",
+        "92": "N128_SAB",
+        "93": "N128_SAB",
+        "94": "N128_SAB",
+        "95": "N128_SAB",
+        "96": "N128_SAB",
+        "97": "N128_SAB",
+        "98": "N128_SAB",
+        "99": "N128_SAB",
+        "100": "N128_SAB",
+        "101": "N128_SAB",
+        "102": "N128_SAB",
+        "103": "N128_SAB",
+        "104": "N128_SAB",
+        "105": "N128_SAB",
+        "106": "N128_SAB",
+        "107": "N128_SAB",
+        "108": "N128_SAB",
+        "109": "N128_SAB",
+        "110": "N128_SAB",
+        "111": "N128_SAB",
+        "112": "N128_SAB",
+        "113": "M128_SAB",
+        "114": "M128_SAB",
+        "115": "M128_SAB",
+        "116": "M128_SAB",
+        "117": "M128_SAB",
+        "118": "M128_SAB",
+        "119": "M128_SAB",
+        "120": "M128_SAB",
+        "121": "M128_SAB",
+        "122": "M128_SAB",
+        "123": "M128_SAB",
+        "124": "M128_SAB",
+        "125": "M128_SAB",
+        "126": "M128_SAB",
+        "127": "M128_SAB",
+        "128": "M128_SAB",
+        "129": "N144_SAB",
+        "130": "N144_SAB",
+        "131": "N144_SAB",
+        "132": "N144_SAB",
+        "133": "N144_SAB",
+        "134": "N144_SAB",
+        "135": "N144_SAB",
+        "136": "N144_SAB",
+        "137": "N144_SAB",
+        "138": "N144_SAB",
+        "139": "N144_SAB",
+        "140": "N144_SAB",
+        "141": "N144_SAB",
+        "142": "N144_SAB",
+        "143": "N144_SAB",
+        "144": "N144_SAB",
+        "145": "N160_SAB",
+        "146": "N160_SAB",
+        "147": "N160_SAB",
+        "148": "N160_SAB",
+        "149": "N160_SAB",
+        "150": "N160_SAB",
+        "151": "N160_SAB",
+        "152": "N160_SAB",
+        "153": "N160_SAB",
+        "154": "N160_SAB",
+        "155": "N160_SAB",
+        "156": "N160_SAB",
+        "157": "N160_SAB",
+        "158": "N160_SAB",
+        "159": "N160_SAB",
+        "160": "N160_SAB",
+        "161": "M192_PF_SAB",
+        "162": "M192_PF_SAB",
+        "163": "M192_PF_SAB",
+        "164": "M192_PF_SAB",
+        "165": "M192_PF_SAB",
+        "166": "M192_PF_SAB",
+        "167": "M192_PF_SAB",
+        "168": "M192_PF_SAB",
+        "169": "M192_PF_SAB",
+        "170": "M192_PF_SAB",
+        "171": "M192_PF_SAB",
+        "172": "M192_PF_SAB",
+        "173": "M192_PF_SAB",
+        "174": "M192_PF_SAB",
+        "175": "M192_PF_SAB",
+        "176": "M192_PF_SAB",
+        "177": "M192_PF_SAB",
+        "178": "M192_PF_SAB",
+        "179": "M192_PF_SAB",
+        "180": "M192_PF_SAB",
+        "181": "M192_PF_SAB",
+        "182": "M192_PF_SAB",
+        "183": "M192_PF_SAB",
+        "184": "M192_PF_SAB",
+        "185": "M192_PF_SAB",
+        "186": "M192_PF_SAB",
+        "187": "M192_PF_SAB",
+        "188": "M192_PF_SAB",
+        "189": "M192_PF_SAB",
+        "190": "M192_PF_SAB",
+        "191": "M192_PF_SAB",
+        "192": "M192_PF_SAB",
+        "193": "N208_SP5_SAB",
+        "194": "N208_SP5_SAB",
+        "195": "N208_SP5_SAB",
+        "196": "N208_SP5_SAB",
+        "197": "N208_SP5_SAB",
+        "198": "N208_SP5_SAB",
+        "199": "N208_SP5_SAB",
+        "200": "N208_SP5_SAB",
+        "201": "N208_SP5_SAB",
+        "202": "N208_SP5_SAB",
+        "203": "N208_SP5_SAB",
+        "204": "N208_SP5_SAB",
+        "205": "N208_SP5_SAB",
+        "206": "N208_SP5_SAB",
+        "207": "N208_SP5_SAB",
+        "208": "N208_SP5_SAB",
+        "209": "N224_SP10_SAB",
+        "210": "N224_SP10_SAB",
+        "211": "N224_SP10_SAB",
+        "212": "N224_SP10_SAB",
+        "213": "N224_SP10_SAB",
+        "214": "N224_SP10_SAB",
+        "215": "N224_SP10_SAB",
+        "216": "N224_SP10_SAB",
+        "217": "N224_SP10_SAB",
+        "218": "N224_SP10_SAB",
+        "219": "N224_SP10_SAB",
+        "220": "N224_SP10_SAB",
+        "221": "N224_SP10_SAB",
+        "222": "N224_SP10_SAB",
+        "223": "N224_SP10_SAB",
+        "224": "N224_SP10_SAB",
+        "225": "M256_PF_SAB",
+        "226": "M256_PF_SAB",
+        "227": "M256_PF_SAB",
+        "228": "M256_PF_SAB",
+        "229": "M256_PF_SAB",
+        "230": "M256_PF_SAB",
+        "231": "M256_PF_SAB",
+        "232": "M256_PF_SAB",
+        "233": "M256_PF_SAB",
+        "234": "M256_PF_SAB",
+        "235": "M256_PF_SAB",
+        "236": "M256_PF_SAB",
+        "237": "M256_PF_SAB",
+        "238": "M256_PF_SAB",
+        "239": "M256_PF_SAB",
+        "240": "M256_PF_SAB",
+        "241": "M256_PF_SAB",
+        "242": "M256_PF_SAB",
+        "243": "M256_PF_SAB",
+        "244": "M256_PF_SAB",
+        "245": "M256_PF_SAB",
+        "246": "M256_PF_SAB",
+        "247": "M256_PF_SAB",
+        "248": "M256_PF_SAB",
+        "249": "M256_PF_SAB",
+        "250": "M256_PF_SAB",
+        "251": "M256_PF_SAB",
+        "252": "M256_PF_SAB",
+        "253": "M256_PF_SAB",
+        "254": "M256_PF_SAB",
+        "255": "M256_PF_SAB",
+        "256": "M256_PF_SAB"
+      },
+      "bf16": {
+        "1": "N128_SAB",
+        "2": "N128_SAB",
+        "3": "N128_SAB",
+        "4": "N128_SAB",
+        "5": "N128_SAB",
+        "6": "N128_SAB",
+        "7": "N128_SAB",
+        "8": "N128_SAB",
+        "9": "N128_SAB",
+        "10": "N128_SAB",
+        "11": "N128_SAB",
+        "12": "N128_SAB",
+        "13": "N128_SAB",
+        "14": "N128_SAB",
+        "15": "N128_SAB",
+        "16": "N128_SAB",
+        "17": "N128_SAB",
+        "18": "N128_SAB",
+        "19": "N128_SAB",
+        "20": "N128_SAB",
+        "21": "N128_SAB",
+        "22": "N128_SAB",
+        "23": "N128_SAB",
+        "24": "N128_SAB",
+        "25": "N128_SAB",
+        "26": "N128_SAB",
+        "27": "N128_SAB",
+        "28": "N128_SAB",
+        "29": "N128_SAB",
+        "30": "N128_SAB",
+        "31": "N128_SAB",
+        "32": "N128_SAB",
+        "33": "N128_SAB",
+        "34": "N128_SAB",
+        "35": "N128_SAB",
+        "36": "N128_SAB",
+        "37": "N128_SAB",
+        "38": "N128_SAB",
+        "39": "N128_SAB",
+        "40": "N128_SAB",
+        "41": "N128_SAB",
+        "42": "N128_SAB",
+        "43": "N128_SAB",
+        "44": "N128_SAB",
+        "45": "N128_SAB",
+        "46": "N128_SAB",
+        "47": "N128_SAB",
+        "48": "N128_SAB",
+        "49": "N128_SAB",
+        "50": "N128_SAB",
+        "51": "N128_SAB",
+        "52": "N128_SAB",
+        "53": "N128_SAB",
+        "54": "N128_SAB",
+        "55": "N128_SAB",
+        "56": "N128_SAB",
+        "57": "N128_SAB",
+        "58": "N128_SAB",
+        "59": "N128_SAB",
+        "60": "N128_SAB",
+        "61": "N128_SAB",
+        "62": "N128_SAB",
+        "63": "N128_SAB",
+        "64": "N128_SAB",
+        "65": "N128_SAB",
+        "66": "N128_SAB",
+        "67": "N128_SAB",
+        "68": "N128_SAB",
+        "69": "N128_SAB",
+        "70": "N128_SAB",
+        "71": "N128_SAB",
+        "72": "N128_SAB",
+        "73": "N128_SAB",
+        "74": "N128_SAB",
+        "75": "N128_SAB",
+        "76": "N128_SAB",
+        "77": "N128_SAB",
+        "78": "N128_SAB",
+        "79": "N128_SAB",
+        "80": "N128_SAB",
+        "81": "N128_SAB",
+        "82": "N128_SAB",
+        "83": "N128_SAB",
+        "84": "N128_SAB",
+        "85": "N128_SAB",
+        "86": "N128_SAB",
+        "87": "N128_SAB",
+        "88": "N128_SAB",
+        "89": "N128_SAB",
+        "90": "N128_SAB",
+        "91": "N128_SAB",
+        "92": "N128_SAB",
+        "93": "N128_SAB",
+        "94": "N128_SAB",
+        "95": "N128_SAB",
+        "96": "N128_SAB",
+        "97": "N128_SAB",
+        "98": "N128_SAB",
+        "99": "N128_SAB",
+        "100": "N128_SAB",
+        "101": "N128_SAB",
+        "102": "N128_SAB",
+        "103": "N128_SAB",
+        "104": "N128_SAB",
+        "105": "N128_SAB",
+        "106": "N128_SAB",
+        "107": "N128_SAB",
+        "108": "N128_SAB",
+        "109": "N128_SAB",
+        "110": "N128_SAB",
+        "111": "N128_SAB",
+        "112": "N128_SAB",
+        "113": "N128_SAB",
+        "114": "N128_SAB",
+        "115": "N128_SAB",
+        "116": "N128_SAB",
+        "117": "N128_SAB",
+        "118": "N128_SAB",
+        "119": "N128_SAB",
+        "120": "N128_SAB",
+        "121": "N128_SAB",
+        "122": "N128_SAB",
+        "123": "N128_SAB",
+        "124": "N128_SAB",
+        "125": "N128_SAB",
+        "126": "N128_SAB",
+        "127": "N128_SAB",
+        "128": "N128_SAB",
+        "129": "N144_SAB",
+        "130": "N144_SAB",
+        "131": "N144_SAB",
+        "132": "N144_SAB",
+        "133": "N144_SAB",
+        "134": "N144_SAB",
+        "135": "N144_SAB",
+        "136": "N144_SAB",
+        "137": "N144_SAB",
+        "138": "N144_SAB",
+        "139": "N144_SAB",
+        "140": "N144_SAB",
+        "141": "N144_SAB",
+        "142": "N144_SAB",
+        "143": "N144_SAB",
+        "144": "N144_SAB",
+        "145": "N160_SAB",
+        "146": "N160_SAB",
+        "147": "N160_SAB",
+        "148": "N160_SAB",
+        "149": "N160_SAB",
+        "150": "N160_SAB",
+        "151": "N160_SAB",
+        "152": "N160_SAB",
+        "153": "N160_SAB",
+        "154": "N160_SAB",
+        "155": "N160_SAB",
+        "156": "N160_SAB",
+        "157": "N160_SAB",
+        "158": "N160_SAB",
+        "159": "N160_SAB",
+        "160": "N160_SAB",
+        "161": "N176_SAB",
+        "162": "N176_SAB",
+        "163": "N176_SAB",
+        "164": "N176_SAB",
+        "165": "N176_SAB",
+        "166": "N176_SAB",
+        "167": "N176_SAB",
+        "168": "N176_SAB",
+        "169": "N176_SAB",
+        "170": "N176_SAB",
+        "171": "N176_SAB",
+        "172": "N176_SAB",
+        "173": "N176_SAB",
+        "174": "N176_SAB",
+        "175": "N176_SAB",
+        "176": "N176_SAB",
+        "177": "M192_PF_SAB",
+        "178": "M192_PF_SAB",
+        "179": "M192_PF_SAB",
+        "180": "M192_PF_SAB",
+        "181": "M192_PF_SAB",
+        "182": "M192_PF_SAB",
+        "183": "M192_PF_SAB",
+        "184": "M192_PF_SAB",
+        "185": "M192_PF_SAB",
+        "186": "M192_PF_SAB",
+        "187": "M192_PF_SAB",
+        "188": "M192_PF_SAB",
+        "189": "M192_PF_SAB",
+        "190": "M192_PF_SAB",
+        "191": "M192_PF_SAB",
+        "192": "M192_PF_SAB",
+        "193": "N208_SP7_SAB",
+        "194": "N208_SP7_SAB",
+        "195": "N208_SP7_SAB",
+        "196": "N208_SP7_SAB",
+        "197": "N208_SP7_SAB",
+        "198": "N208_SP7_SAB",
+        "199": "N208_SP7_SAB",
+        "200": "N208_SP7_SAB",
+        "201": "N208_SP7_SAB",
+        "202": "N208_SP7_SAB",
+        "203": "N208_SP7_SAB",
+        "204": "N208_SP7_SAB",
+        "205": "N208_SP7_SAB",
+        "206": "N208_SP7_SAB",
+        "207": "N208_SP7_SAB",
+        "208": "N208_SP7_SAB",
+        "209": "N224_SP10_SAB",
+        "210": "N224_SP10_SAB",
+        "211": "N224_SP10_SAB",
+        "212": "N224_SP10_SAB",
+        "213": "N224_SP10_SAB",
+        "214": "N224_SP10_SAB",
+        "215": "N224_SP10_SAB",
+        "216": "N224_SP10_SAB",
+        "217": "N224_SP10_SAB",
+        "218": "N224_SP10_SAB",
+        "219": "N224_SP10_SAB",
+        "220": "N224_SP10_SAB",
+        "221": "N224_SP10_SAB",
+        "222": "N224_SP10_SAB",
+        "223": "N224_SP10_SAB",
+        "224": "N224_SP10_SAB",
+        "225": "M256_PF_SAB",
+        "226": "M256_PF_SAB",
+        "227": "M256_PF_SAB",
+        "228": "M256_PF_SAB",
+        "229": "M256_PF_SAB",
+        "230": "M256_PF_SAB",
+        "231": "M256_PF_SAB",
+        "232": "M256_PF_SAB",
+        "233": "M256_PF_SAB",
+        "234": "M256_PF_SAB",
+        "235": "M256_PF_SAB",
+        "236": "M256_PF_SAB",
+        "237": "M256_PF_SAB",
+        "238": "M256_PF_SAB",
+        "239": "M256_PF_SAB",
+        "240": "M256_PF_SAB",
+        "241": "M256_PF_SAB",
+        "242": "M256_PF_SAB",
+        "243": "M256_PF_SAB",
+        "244": "M256_PF_SAB",
+        "245": "M256_PF_SAB",
+        "246": "M256_PF_SAB",
+        "247": "M256_PF_SAB",
+        "248": "M256_PF_SAB",
+        "249": "M256_PF_SAB",
+        "250": "M256_PF_SAB",
+        "251": "M256_PF_SAB",
+        "252": "M256_PF_SAB",
+        "253": "M256_PF_SAB",
+        "254": "M256_PF_SAB",
+        "255": "M256_PF_SAB",
+        "256": "M256_PF_SAB"
+      }
+    },
+    "selection": "Small M nearest measured point; M129+ upper 16-row endpoint. Minimum measured fused latency among legal tiles. BF16 E030 excluded because split-K changes intermediate BF16 rounding relative to current baseline."
+  },
+  "preserved": [
+    {
+      "type": "int8",
+      "source": "/home/metic/lightop-gemm-alignment-20261114-193801/aligned-bf16-release.tar.gz",
+      "saved": "/home/metic/gate-up-fused-20261115-122610/frozen-int8.tar.gz",
+      "sha256": "aca9566e0fffc330a0dc7683abe0d03dc6939b8ffa141edee1a7002ad7591348",
+      "top_entries": [
+        "aligned-bf16"
+      ]
+    },
+    {
+      "type": "bf16",
+      "source": "/home/metic/bf16-gemm-extension-20261114-203046/bf16-in-bf16-out-release.tar.gz",
+      "saved": "/home/metic/gate-up-fused-20261115-122610/frozen-bf16.tar.gz",
+      "sha256": "ee750d7ec4794df15592c362c521894dd1e9b47dacfb402b7572548ab7447839",
+      "top_entries": [
+        "bf16-gemm"
+      ]
+    }
+  ]
+}

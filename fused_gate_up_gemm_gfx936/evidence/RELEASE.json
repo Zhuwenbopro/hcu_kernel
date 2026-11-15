@@ -1,0 +1,66 @@
+{
+  "status": "frozen",
+  "time": "2026-11-15T05:07:27.256693+00:00",
+  "scope": "INT8/BF16 packed gate/up GEMM + SiLU(gate)*up -> BF16 [M,8704]",
+  "M": [
+    1,
+    256
+  ],
+  "N": 17408,
+  "K": 5120,
+  "H": 8704,
+  "validation_cases": 1024,
+  "timing_groups": 198,
+  "measured_M": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    32,
+    48,
+    64,
+    80,
+    96,
+    112,
+    128,
+    129,
+    144,
+    160,
+    176,
+    192,
+    193,
+    208,
+    224,
+    240,
+    256
+  ],
+  "policy_sha256": "c3be1d9ef3e03471339bad19e18fd3ca7064c47e9d9cb54291f100bd3be65eef",
+  "runtime": "fused_gemm.py",
+  "report": "REPORT.md",
+  "GPU5_released": true,
+  "seed_wins_out_of_33": {
+    "int8": {
+      "202611153041": 33,
+      "202611153042": 33,
+      "202611153043": 33
+    },
+    "bf16": {
+      "202611153041": 33,
+      "202611153042": 33,
+      "202611153043": 33
+    }
+  },
+  "model_dispatch_modified": false
+}

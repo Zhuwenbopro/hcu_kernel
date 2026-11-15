@@ -1,0 +1,9 @@
+{
+  "torch": "2.11.0",
+  "hip": "7.2.26365",
+  "device": "_CudaDeviceProperties(name='BW1000 64G', major=9, minor=3, gcnArchName='gfx936:sramecc+:xnack-', total_memory=65520MB, multi_processor_count=80, uuid=30303135-3338-6139-6634-653434313031, pci_bus_id=193, pci_device_id=0, pci_domain_id=0, L2_cache_size=8MB)",
+  "aiter_available": true,
+  "activation_file": "/usr/local/lib/python3.12/site-packages/aiter/jit/utils/torch_guard.py",
+  "max_abs": 0.00390625,
+  "bit_equal_fraction": 0.999992847442627
+}
