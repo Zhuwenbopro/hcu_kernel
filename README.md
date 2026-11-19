@@ -9,7 +9,7 @@
 - `decode_gemm_int8_gfx936/`：gfx936 INT8 decode GEMM，含14种HIP配置、独立编译/Python入口、正确性与冷权重池基准，以及TP1/2/4/8、bs1–1024结果摘要
 
 - [gemma_fused_add_rmsnorm_int8_fp32_gfx936/](gemma_fused_add_rmsnorm_int8_fp32_gfx936/) 支持 5120 维的 Gemma 残差加法、RMSNorm 和 per-token INT8 量化，在 FP32 中合并平方和与带权最大值规约，支持独立 HIP 编译
-- `fuse_rms_norm_gated_per_token_quant_int8/`：GDN RMSNorm + SiLU gate + per-token INT8 quant
+- [gated_rms_norm_per_token_int8_quant/](gated_rms_norm_per_token_int8_quant/) 提供 GDN RMSNorm、SiLU gate 和 per-token INT8 的 Triton 融合，包含 gfx936 24-head 特化。
 - `fused_sigmoid_mul_per_token_quant/`：Attention sigmoid-mul + per-token INT8 quant
 
 LightOp 目录保留 kernel、Python 接口、必要的 `reduce.h` 和 focused tests/benchmark helper；完整注册、编译系统和运行时依赖仍由上游 LightOp 工程提供。GEMM 目录可用 DTK hipcc 独立编译，调用依赖 HCU 版 PyTorch。
