@@ -1,8 +1,8 @@
 [
   {
     "path": "README.md",
-    "sha256": "50a1570850923cc30a802d110ca0a9e6f5598925237dcaf57dfc9357c6bf2cde",
-    "bytes": 1446
+    "sha256": "8b353be9304378b67a0271ecfdff1e086f0d068ee18955503e37a2cecdb72e04",
+    "bytes": 4065
   },
   {
     "path": "decode_gemm_int8_gfx936/README.md",
@@ -438,25 +438,5 @@
     "path": "gemma_fused_add_rmsnorm_int8_fp32_gfx936/test_gemma_int8_5120.py",
     "sha256": "1fb64c6468ab042b04565745b18c531bcd7851c834b68b9670933ee7c7b663ce",
     "bytes": 1834
-  },
-  {
-    "path": "gemma_rms_norm_dynamic_per_token_quant/README.md",
-    "sha256": "2e6d82d1661c88b6164db49f00ad52e183cb39766b3bc12115476634a065a1c9",
-    "bytes": 336
-  },
-  {
-    "path": "gemma_rms_norm_dynamic_per_token_quant/gemma_rms_norm_dynamic_per_token_quant.cu",
-    "sha256": "7c499c4e010313ba7aa1627c1c1719581a50ca8227da08a3d49c4271937d0c13",
-    "bytes": 31011
-  },
-  {
-    "path": "gemma_rms_norm_dynamic_per_token_quant/python_api.py",
-    "sha256": "6d78f961f0b06066ed1ca252a195b5c5044a2620bce8a51a14d53079e1137535",
-    "bytes": 1134
-  },
-  {
-    "path": "gemma_rms_norm_dynamic_per_token_quant/test_gemma_rms_norm_dynamic_per_token_quant.py",
-    "sha256": "2d734e8a3218dc529f9b5b752be9ef0f71e12a87e636a7702fb87a70b12835c0",
-    "bytes": 2373
   }
 ]
