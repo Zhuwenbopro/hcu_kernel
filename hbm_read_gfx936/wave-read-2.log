@@ -1,0 +1,5 @@
+{"device": "BW1000 64G", "arch": "gfx936:sramecc+:xnack-", "samples": 61, "timer": "hipExtModuleLaunchKernel"}
+{"tokens": 4096, "case": "xr_plain_window", "p50_us": 64.16, "read_bytes": 83886080, "written_bytes": 0, "payload_TBps": 1.30745}
+{"tokens": 4096, "case": "xr_c3_window", "p50_us": 56.959, "read_bytes": 83886080, "written_bytes": 0, "payload_TBps": 1.47274}
+{"tokens": 4096, "case": "xr_c3_batch", "p50_us": 62.4, "read_bytes": 83886080, "written_bytes": 0, "payload_TBps": 1.34433}
+{"tokens": 4096, "case": "xr_c3_serial", "p50_us": 55.84, "read_bytes": 83886080, "written_bytes": 0, "payload_TBps": 1.50226}
