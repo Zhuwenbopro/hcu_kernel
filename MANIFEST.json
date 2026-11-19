@@ -406,13 +406,28 @@
   },
   {
     "path": "gemma_fused_add_rmsnorm_int8_fp32_gfx936/README.md",
-    "sha256": "0867cd42fc7544a69526bdc3aa7e48abd262403f712f36c60a4296a47a9cef0c",
-    "bytes": 2967
+    "sha256": "c82cb7499afa48d4a60093baaf4dab1978b4e30a7fe749145f1967edc1618fa6",
+    "bytes": 4730
+  },
+  {
+    "path": "gemma_fused_add_rmsnorm_int8_fp32_gfx936/benchmark.py",
+    "sha256": "44b7a6683a9f8f0d62d742f032956442f353704a79e29b5a37893f1ac723a9f1",
+    "bytes": 5293
   },
   {
     "path": "gemma_fused_add_rmsnorm_int8_fp32_gfx936/gemma_fused_add_rmsnorm_int8_5120.cu",
     "sha256": "a481be3905ebabb325dcb9cbd1151ce56cbaed99edcf07028671f422042846b2",
     "bytes": 9567
+  },
+  {
+    "path": "gemma_fused_add_rmsnorm_int8_fp32_gfx936/latency-vs-lightop.csv",
+    "sha256": "0e640e2d45bffd537e6d1c00d54ee08e34cd5cdda6b4e9de8c1b151e99f38d79",
+    "bytes": 139673
+  },
+  {
+    "path": "gemma_fused_add_rmsnorm_int8_fp32_gfx936/latency-vs-lightop.png",
+    "sha256": "9b11418950db2fceb7d0adf9c47291dfa690460870cfa3c017a523188d7d1efd",
+    "bytes": 163018
   },
   {
     "path": "gemma_fused_add_rmsnorm_int8_fp32_gfx936/python_api.py",
