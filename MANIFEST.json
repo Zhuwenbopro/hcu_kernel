@@ -1,8 +1,8 @@
 [
   {
     "path": "README.md",
-    "sha256": "197c808633024b77b5f3a1a6b0ed8a8c67eab9b286f8fc5a9f0c511c11ed99e0",
-    "bytes": 1203
+    "sha256": "50a1570850923cc30a802d110ca0a9e6f5598925237dcaf57dfc9357c6bf2cde",
+    "bytes": 1446
   },
   {
     "path": "decode_gemm_int8_gfx936/README.md",
@@ -398,6 +398,31 @@
     "path": "fused_sigmoid_mul_per_token_quant/test_fused_sigmoid_mul_per_token_quant.py",
     "sha256": "a7496ded56f4bbc645c26cf37e79ceded1ea92eeb38554a5141d3ddfd6bff74f",
     "bytes": 6807
+  },
+  {
+    "path": "gemma_fused_add_rmsnorm_int8_fp32_gfx936/Makefile",
+    "sha256": "8a846f79e9a9cc2f839ed571fc4f5f6cf519a2c3a1033266fdfff6aecbd8537b",
+    "bytes": 193
+  },
+  {
+    "path": "gemma_fused_add_rmsnorm_int8_fp32_gfx936/README.md",
+    "sha256": "0867cd42fc7544a69526bdc3aa7e48abd262403f712f36c60a4296a47a9cef0c",
+    "bytes": 2967
+  },
+  {
+    "path": "gemma_fused_add_rmsnorm_int8_fp32_gfx936/gemma_fused_add_rmsnorm_int8_5120.cu",
+    "sha256": "a481be3905ebabb325dcb9cbd1151ce56cbaed99edcf07028671f422042846b2",
+    "bytes": 9567
+  },
+  {
+    "path": "gemma_fused_add_rmsnorm_int8_fp32_gfx936/python_api.py",
+    "sha256": "4e0109094c1bb0e7aa28a25252ea231c5e5c9b5f032c71462dee9c324ac19724",
+    "bytes": 2571
+  },
+  {
+    "path": "gemma_fused_add_rmsnorm_int8_fp32_gfx936/test_gemma_int8_5120.py",
+    "sha256": "1fb64c6468ab042b04565745b18c531bcd7851c834b68b9670933ee7c7b663ce",
+    "bytes": 1834
   },
   {
     "path": "gemma_rms_norm_dynamic_per_token_quant/README.md",
