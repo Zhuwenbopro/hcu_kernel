@@ -1,8 +1,8 @@
 [
   {
     "path": "README.md",
-    "sha256": "e78319701f91a033f03d6ed26701c6ed4c31b5f86f70c93b9867c08ad8f78acb",
-    "bytes": 4151
+    "sha256": "b950c49b6a4166bf6fef078bdac078361c8ee9d746ca51172c386664737a58e0",
+    "bytes": 4158
   },
   {
     "path": "decode_gemm_int8_gfx936/README.md",
@@ -336,8 +336,13 @@
   },
   {
     "path": "fused_sigmoid_mul_per_token_quant/README.md",
-    "sha256": "b9f3548b2e9375125b3d7b39e6efd930bf9abece3c27a80215835374ded9e0e8",
-    "bytes": 487
+    "sha256": "3eee7a6da918627b7130b541b3868584be781e0d574ed12c31db2fab78a44f58",
+    "bytes": 1384
+  },
+  {
+    "path": "fused_sigmoid_mul_per_token_quant/__init__.py",
+    "sha256": "2c65d8c9647e758fb869f3580cb84d45fcb2627cb3f46b2eb1af2639f89134f3",
+    "bytes": 167
   },
   {
     "path": "fused_sigmoid_mul_per_token_quant/attention_sigmoid_int8_reference.py",
@@ -346,28 +351,18 @@
   },
   {
     "path": "fused_sigmoid_mul_per_token_quant/benchmark.py",
-    "sha256": "a9fa375e0d94a2725d6e913d9a8d4064230f63f437349daf56de53f22c7776aa",
-    "bytes": 4359
-  },
-  {
-    "path": "fused_sigmoid_mul_per_token_quant/fused_sigmoid_mul_per_token_quant.cu",
-    "sha256": "1ad8574a6c72888abad8016cc37e9b216555eb8d35977cb20d47f7d207c0de5f",
-    "bytes": 15971
+    "sha256": "d8fe5438a11431a4af4e6bf20364ffbbb6f990dfe1ae99098dd8e034c2ddc1ea",
+    "bytes": 4812
   },
   {
     "path": "fused_sigmoid_mul_per_token_quant/python_api.py",
-    "sha256": "a662aa86bb0fd1fe5d474e23ceb4998b791b22dc934dae9f501066c7295a9ce5",
-    "bytes": 2229
-  },
-  {
-    "path": "fused_sigmoid_mul_per_token_quant/reduce.h",
-    "sha256": "ffd59338d730e61d2999f2bba4f293e9299c7e723923aca811e835238ca2aab4",
-    "bytes": 11062
+    "sha256": "6868190115f5cdb4b9cca9e9e3846e5868af8a97eb59e769ba5a5f57c2b37e98",
+    "bytes": 4715
   },
   {
     "path": "fused_sigmoid_mul_per_token_quant/test_fused_sigmoid_mul_per_token_quant.py",
-    "sha256": "a7496ded56f4bbc645c26cf37e79ceded1ea92eeb38554a5141d3ddfd6bff74f",
-    "bytes": 6807
+    "sha256": "c712d42480a624493591d49adf119e16b18ec860bf130bf802e8735f1f61bb41",
+    "bytes": 6407
   },
   {
     "path": "gated_rms_norm_per_token_int8_quant/README.md",

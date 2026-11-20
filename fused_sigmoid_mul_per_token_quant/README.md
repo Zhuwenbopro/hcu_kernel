@@ -1,7 +1,30 @@
-# Attention sigmoid-mul + per-token INT8
+# Attention sigmoid × mul + per-token INT8 quantization
 
-对应 LightOp kernel：`fused_sigmoid_mul_per_token_quant.cu`。
+This Triton operator fuses `attention * sigmoid(gate)` and symmetric
+per-token INT8 quantization for the activation before attention `o_proj`.
+It rounds the gated activation to the input dtype before computing the row
+amax. The BF16 path for hidden size 3072 processes three 1024-element segments
+with one shared row scale. Other shapes and FP16 use the generic masked kernel.
 
-计算 `attn_output * sigmoid(gate)`，保留 BF16/FP16 中间舍入，然后进行 per-token INT8 量化。对对齐的 `hidden=4096, head_dim=256` 生产布局使用 Vec8 快路径，其余布局走通用 fallback。`reduce.h` 是该 kernel 所需的共享归约辅助头文件。
+```python
+from fused_sigmoid_mul_per_token_quant import fuse_sigmoid_mul_int8_quant
 
-来源：LightOp Attention PR !75，最终提交 `6866db940198c266e1688fd797879ced17ea132a`。
+quantized, scales = fuse_sigmoid_mul_int8_quant(attention, gate)
+```
+
+Pass contiguous BF16 or FP16 activation of shape `[tokens, hidden]`. The
+matching gate may be `[tokens, hidden]` or a strided
+`[tokens, heads, head_dim]` view with unit last-dimension stride. Outputs are
+INT8 `[tokens, hidden]` and FP32 scales `[tokens, 1]`. Existing callers can
+also use the `fused_sigmoid_mul_per_token_quant` alias.
+
+The operator needs PyTorch and Triton. The test and benchmark additionally use
+LightOp's `per_token_quant_int8` as the reference. Run from the repository root
+on a supported GPU.
+
+```sh
+python -m pytest -q fused_sigmoid_mul_per_token_quant
+python -m fused_sigmoid_mul_per_token_quant.benchmark --hidden 3072 --output /tmp/sigmoid_int8.json
+```
+
+The BF16 Triton implementation is shared with [LightOp PR #182](https://github.com/HYGON-AI/lightop/pull/182).

@@ -7,10 +7,14 @@ from pathlib import Path
 
 import torch
 
-from lightop import fused_sigmoid_mul_per_token_quant
 from lightop.quant import per_token_quant_int8
 
-from attention_sigmoid_int8_reference import assert_accuracy, comparison_stats, sigmoid_mul_reference
+if __package__:
+    from .attention_sigmoid_int8_reference import assert_accuracy, comparison_stats, sigmoid_mul_reference
+    from .python_api import fuse_sigmoid_mul_int8_quant
+else:
+    from attention_sigmoid_int8_reference import assert_accuracy, comparison_stats, sigmoid_mul_reference
+    from python_api import fuse_sigmoid_mul_int8_quant
 
 
 def percentile(values, fraction):
@@ -61,21 +65,25 @@ def main():
     parser.add_argument("--warmup", type=int, default=50)
     parser.add_argument("--repetitions", type=int, default=500)
     parser.add_argument("--graph-repeats", type=int, default=128)
+    parser.add_argument("--hidden", type=int, choices=(3072, 4096), default=4096)
+    parser.add_argument("--tokens", type=int, nargs="+", default=(1, 4, 26, 104, 257, 1024, 20000))
     args = parser.parse_args()
+    if min(args.tokens) < 1:
+        parser.error("--tokens must be positive")
     if args.graph_repeats < 1:
         parser.error("--graph-repeats must be positive")
     records = []
     for dtype in (torch.bfloat16, torch.float16):
-        for tokens in (1, 4, 26, 104, 257, 1024, 20000):
+        for tokens in args.tokens:
             torch.manual_seed(20261107 + tokens)
-            x = torch.randn((tokens, 4096), device="cuda", dtype=dtype)
-            gate = torch.randn((tokens, 16, 2, 256), device=x.device, dtype=dtype)[:, :, 1, :]
+            x = torch.randn((tokens, args.hidden), device="cuda", dtype=dtype)
+            gate = torch.randn((tokens, args.hidden // 256, 2, 256), device=x.device, dtype=dtype)[:, :, 1, :]
 
             def old():
                 return per_token_quant_int8(sigmoid_mul_reference(x, gate))
 
             def new():
-                return fused_sigmoid_mul_per_token_quant(x, gate)
+                return fuse_sigmoid_mul_int8_quant(x, gate)
 
             stats = comparison_stats(new(), old())
             assert_accuracy(stats, dtype)
@@ -85,7 +93,7 @@ def main():
                 before = measure(old, args.warmup, args.repetitions, graph, batch)
                 after = measure(new, args.warmup, args.repetitions, graph, batch)
                 row = {
-                    "dtype": str(dtype), "tokens": tokens, "hidden": 4096,
+                    "dtype": str(dtype), "tokens": tokens, "hidden": args.hidden,
                     "gate_shape": list(gate.shape), "gate_stride": list(gate.stride()),
                     "mode": "graph" if graph else "eager", "old": before, "new": after,
                     "graph_repeats": batch if graph else 1,
