@@ -5,18 +5,20 @@ from itertools import chain
 
 import torch
 
-from . import K, MAX_M, N, LMHead, route
+from . import K, MAX_M, N, LMHead, rolling, route
 
 
 INT32_M = (2**31 - 1) // N
 SMOKE = (1, 2, 3, 4, 15, 64, 65, 128, 129, 256, 257, 4096)
+TUNED = (1, 2, 4, 5, 8, 9, 32, 33, 48, 49, 64, 65, 128, 129, 192,
+         193, 255, 256, 257, 272, 273, 384, 512, 513, 640, 768, 769, 928, 1024, 1025)
 LONG = (INT32_M, INT32_M + 1, 20_000, MAX_M - 1, MAX_M)
 ATOL, RTOL = 0.04, 0.0044
 
 
 def selected_shapes(args, parser):
     if args.m is None:
-        return list(LONG if args.preset == "20k" else SMOKE)
+        return list({"smoke": SMOKE, "20k": LONG, "tuned": TUNED}[args.preset])
     try:
         sizes = sorted({int(value) for value in args.m.split(",")})
     except ValueError:
@@ -66,7 +68,7 @@ def check_accuracy(x, w, output):
 
 
 @torch.no_grad()
-def run(sizes):
+def run(sizes, tuned=False, graph=False):
     torch.cuda.set_device(0)
     torch.set_float32_matmul_precision("highest")
     torch.backends.cuda.matmul.allow_tf32 = False
@@ -74,21 +76,37 @@ def run(sizes):
 
     w = torch.randn((K, N), device="cuda:0", dtype=torch.bfloat16)
     allocated = torch.cuda.memory_allocated()
-    head = LMHead(w)
+    head = LMHead(w, tuned=tuned)
     if torch.cuda.memory_allocated() != allocated or head.weight is not w:
         raise AssertionError("LMHead must retain the supplied W without allocating another weight")
     x = w.new_empty((max(sizes), K)).normal_()
 
     for m in sizes:
-        method, _, _, p = route(m)
+        method, tm, _, p = route(m, tuned=tuned)
         activation = x[:m]
         storage = None
         workspace = None
-        if p > m:
-            # Start with NaN to expose unwritten workspace or output tail rows.
+        if p > m or method == "rolling":
+            # Start with NaN to expose unwritten output or workspace rows.
             storage = w.new_full((p, N), float("nan"))
+        if method == "rolling" and rolling.route(m).config.xt:
+            workspace = w.new_full((K, tm), float("nan"))
+        elif p > m:
             workspace = w.new_full((K, p), float("nan"))
-        output = head(activation, out=storage, workspace=workspace)
+
+        if graph:
+            stream = torch.cuda.Stream()
+            stream.wait_stream(torch.cuda.current_stream())
+            with torch.cuda.stream(stream):
+                head(activation, out=storage, workspace=workspace)
+            stream.synchronize()
+            replay = torch.cuda.CUDAGraph()
+            with torch.cuda.graph(replay, stream=stream):
+                output = head(activation, out=storage, workspace=workspace)
+            replay.replay()
+            torch.cuda.synchronize()
+        else:
+            output = head(activation, out=storage, workspace=workspace)
         if output.shape != (m, N) or output.stride() != (N, 1) or output.dtype != torch.bfloat16:
             raise AssertionError(f"M={m}: unexpected output shape, layout or dtype")
         if head.weight.data_ptr() != w.data_ptr():
@@ -96,10 +114,13 @@ def run(sizes):
         if storage is not None:
             if output.data_ptr() != storage.data_ptr():
                 raise AssertionError(f"M={m}: output does not use the supplied storage")
+            if p > m and torch.count_nonzero(storage[m:]).item():
+                raise AssertionError(f"M={m}: nonzero output in padding")
+        if workspace is not None:
             if not torch.equal(workspace[:, :m], activation.T):
                 raise AssertionError(f"M={m}: workspace contents disagree with the transposed input")
-            if torch.count_nonzero(workspace[:, m:]).item() or torch.count_nonzero(storage[m:]).item():
-                raise AssertionError(f"M={m}: nonzero workspace or output in padding")
+            if torch.count_nonzero(workspace[:, m:]).item():
+                raise AssertionError(f"M={m}: nonzero workspace in padding")
 
         count, ratio = check_accuracy(activation, w, output)
         print(f"M={m:5d} {method:7s} P={p:5d} passed {count:,} FP32 checks, max error/limit {ratio:.4f}",
@@ -110,9 +131,11 @@ def run(sizes):
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--m", help="Comma-separated M values, overriding the preset")
-    parser.add_argument("--preset", choices=("smoke", "20k"), default="smoke")
+    parser.add_argument("--preset", choices=("smoke", "20k", "tuned"), default="smoke")
+    parser.add_argument("--tuned", action="store_true", help="Use the rolling and segmented dispatch")
+    parser.add_argument("--graph", action="store_true", help="Validate after HIP Graph replay")
     args = parser.parse_args()
-    run(selected_shapes(args, parser))
+    run(selected_shapes(args, parser), tuned=args.tuned or args.preset == "tuned", graph=args.graph)
 
 
 if __name__ == "__main__":

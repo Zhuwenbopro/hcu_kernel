@@ -10,7 +10,8 @@ import shutil
 import subprocess
 import tempfile
 
-from . import K, MAX_M, N, LMHead, route
+from . import K, MAX_M, N, LMHead, rolling, route
+from .lm_head import _medium_policy
 
 
 PACKAGE = Path(__file__).resolve().parent
@@ -34,17 +35,17 @@ def launches(trace_path):
     return sorted(kernels, key=lambda event: event["ts"])
 
 
-def capture(sizes, device, trace_path):
+def capture(sizes, device, trace_path, tuned=False):
     import torch
     from torch.profiler import ProfilerActivity, profile, record_function
 
     torch.manual_seed(723)
-    rows = max(route(m)[-1] for m in sizes)
+    rows = max(route(m, tuned=tuned)[-1] for m in sizes)
     x = torch.randn((rows, K), device=device, dtype=torch.bfloat16)
     weight = torch.randn((K, N), device=device, dtype=torch.bfloat16)
     out = x.new_empty((rows, N))
     workspace = x.new_empty((K * rows,))
-    head = LMHead(weight)
+    head = LMHead(weight, tuned=tuned)
     # Shapes and strides determine dispatch. Both layouts are viewed in one
     # synthetic allocation for this structural audit.
     baseline_weight = weight.view(N, K).T
@@ -53,8 +54,8 @@ def capture(sizes, device, trace_path):
         if mode == "baseline":
             torch.mm(x[:m], baseline_weight, out=out[:m])
         else:
-            family, _, _, p = route(m)
-            work = workspace[:K * p].view(K, p) if family == "large" else None
+            family, _, _, p = route(m, tuned=tuned)
+            work = workspace[:K * p].view(K, p) if family in ("large", "segmented") else None
             head(x[:m], out=out[:p], workspace=work)
 
     for mode in ("baseline", "optimized"):
@@ -74,12 +75,72 @@ def native_symbol(m):
     return f"_Z9vector_knILi{m}ELi8ELi2ELi4EEvPKtS1_Pt"
 
 
-def audit_dispatches(sizes, events, policy):
+
+def launch_grid(kernel, expected_wgs, label):
+    grid = kernel["args"]["grid"]
+    block = kernel["args"]["block"]
+    raw_grid, block_size = math.prod(grid), math.prod(block)
+    if raw_grid == expected_wgs:
+        unit = "workgroups"
+    elif raw_grid == expected_wgs * block_size:
+        unit = "work-items"
+    else:
+        raise RuntimeError(f"{label}: grid {grid}, block {block}, expected {expected_wgs} workgroups")
+    return {"grid": grid, "block": block, "grid_unit": unit, "workgroups": expected_wgs}
+
+
+def tuned_dispatches(events, m, p, family):
+    if family == "rolling":
+        obj = rolling.route(m)
+        cfg = obj.config
+        ntiles = N // cfg.bn
+        parts = [ntiles * (i + 1) // obj.parts - ntiles * i // obj.parts
+                 for i in range(obj.parts)]
+        widths = [cfg.bn * count for count in parts]
+        prepared = (1 + int(m != cfg.bm)) if cfg.xt else 0
+    else:
+        tiles, _ = _medium_policy()[p]
+        widths = [256 * count for count in tiles]
+        prepared = 1 + int(m != p)
+
+    count = prepared + len(widths)
+    if len(events) < count:
+        raise RuntimeError(f"M={m}: incomplete {family} GPU trace")
+    auxiliary = [e["name"] for e in events[:prepared]]
+    if auxiliary and "copy" not in auxiliary[0].lower():
+        raise RuntimeError(f"M={m}: expected X packing before {family} GEMM")
+    rows = []
+    for part, (event, width) in enumerate(zip(events[prepared:count], widths)):
+        symbol = event["name"]
+        if family == "rolling":
+            if symbol != "rolling_mmac" or math.prod(event["args"]["block"]) != cfg.nw * 64:
+                raise RuntimeError(f"M={m}: unexpected rolling kernel {symbol}")
+            tm, tn, tk = cfg.bm, cfg.bn, cfg.bk
+        else:
+            match = re.search(r"_MT(\d+)x(\d+)x(\d+)_", symbol)
+            if not symbol.startswith("Cijk_") or not match or "_GSU1_" not in symbol:
+                raise RuntimeError(f"M={m}: unexpected packed-X kernel {symbol}")
+            tn, tm, tk = (int(value) for value in match.groups())
+        grid = launch_grid(event, math.ceil(p / tm) * math.ceil(width / tn), f"M={m} {family}")
+        rows.append(dict(mode="optimized", m=m, p=p, family=family, part=part, columns=width,
+                         tile=[tm, tn, tk], kernel=symbol, auxiliary=auxiliary if part == 0 else [],
+                         **grid))
+        if family == "rolling":
+            rows[-1]["rolling_stem"] = obj.stem
+    return rows, count
+
+
+def audit_dispatches(sizes, events, policy, tuned=False):
     by_shape = []
     cursor = 0
     for mode in ("baseline", "optimized"):
         for m in sizes:
-            family, tm, tn, p = route(m)
+            family, tm, tn, p = route(m, tuned=tuned)
+            if mode == "optimized" and family in ("rolling", "segmented"):
+                rows, count = tuned_dispatches(events[cursor:], m, p, family)
+                cursor += count
+                by_shape.extend(rows)
+                continue
             if mode == "baseline":
                 family, tm, tn, tk, p = "rocblas", 256, 256, 32, m
             elif family == "large":
@@ -110,22 +171,10 @@ def audit_dispatches(sizes, events, policy):
                 raise RuntimeError(f"{mode} M={m}: unexpected kernel {name!r} for {family}")
             if family == "large" and "copy" not in auxiliary[0].lower():
                 raise RuntimeError(f"{mode} M={m}: expected an X copy before GEMM")
-            expected_wgs = math.ceil(p / tm) * math.ceil(N / tn)
-            grid = kernel["args"]["grid"]
-            block = kernel["args"]["block"]
-            # HIP profiler builds report the launch grid in either work-items
-            # or workgroups. Preserve both raw dimensions in the report.
-            raw_grid, block_size = math.prod(grid), math.prod(block)
-            if raw_grid == expected_wgs:
-                grid_unit = "workgroups"
-            elif raw_grid == expected_wgs * block_size:
-                grid_unit = "work-items"
-            else:
-                raise RuntimeError(f"{mode} M={m}: grid {grid}, block {block}, expected {expected_wgs} workgroups")
+            grid = launch_grid(kernel, math.ceil(p / tm) * math.ceil(N / tn), f"{mode} M={m}")
             by_shape.append({
                 "mode": mode, "m": m, "p": p, "family": family, "tile": [tm, tn, tk],
-                "kernel": name, "grid": grid, "block": block, "grid_unit": grid_unit,
-                "workgroups": expected_wgs, "auxiliary": auxiliary,
+                "kernel": name, "auxiliary": auxiliary, **grid,
             })
     if cursor != len(events):
         raise RuntimeError(f"Profiler trace contains {len(events) - cursor} unexpected kernels")
@@ -244,8 +293,9 @@ def rocblas_isa(rows, output, root, library_dir):
     return results
 
 
-def collect_isa(sizes, rows, output, root, library_dir, triton_cache):
-    native = [native_isa(m, output, root) for m in sizes if m in (1, 2)]
+def collect_isa(rows, output, root, library_dir, triton_cache):
+    gemv_shapes = sorted({row["m"] for row in rows if row["family"] == "gemv"})
+    native = [native_isa(m, output, root) for m in gemv_shapes]
     triton = []
     if any(row["family"] == "triton" for row in rows):
         objects = sorted(triton_cache.rglob("_head.hsaco"))
@@ -261,7 +311,10 @@ def collect_isa(sizes, rows, output, root, library_dir, triton_cache):
             prefix = output / f"triton-{digest[:12]}"
             prefix.with_suffix(".hsaco").write_bytes(binary)
             triton.append(dump_isa(obj, "_head", prefix, root))
-    return {"native": native, "triton": triton,
+    stems = sorted({row["rolling_stem"] for row in rows if "rolling_stem" in row})
+    rolling_isa = [dump_isa(BUILD / "rolling" / f"{stem}.hsaco", "rolling_mmac", output / stem, root)
+                   for stem in stems]
+    return {"native": native, "triton": triton, "rolling": rolling_isa,
             "rocblas": rocblas_isa(rows, output, root, library_dir)}
 
 
@@ -274,10 +327,11 @@ def main():
     parser.add_argument("--rocblas-library-dir", type=Path, default=os.environ.get("ROCBLAS_TENSILE_LIBPATH"),
                         help="Optional rocBLAS gfx936 code-object directory")
     parser.add_argument("--dispatch-only", action="store_true", help="Check launch symbols and grids without disassembly")
+    parser.add_argument("--tuned", action="store_true", help="Audit the opt-in rolling and segmented paths")
     args = parser.parse_args()
     if not args.dispatch_only and args.dtk_root is None:
         parser.error("Set --dtk-root or DTKROOT/ROCM_PATH, or use --dispatch-only")
-    output = BUILD / "audit"
+    output = BUILD / ("audit-tuned" if args.tuned else "audit")
     output.mkdir(parents=True, exist_ok=True)
     trace_path = output / "trace.json"
     policy = json.loads((PACKAGE / "small-policy.json").read_text())
@@ -293,12 +347,12 @@ def main():
     with tempfile.TemporaryDirectory(prefix="triton-", dir=output) as tmp:
         os.environ["TRITON_CACHE_DIR"] = tmp
         with torch.cuda.device(device):
-            capture(args.m, device, trace_path)
-        rows = audit_dispatches(args.m, launches(trace_path), policy)
+            capture(args.m, device, trace_path, tuned=args.tuned)
+        rows = audit_dispatches(args.m, launches(trace_path), policy, tuned=args.tuned)
         report = {"device": str(props), "torch_version": str(torch.__version__),
                   "hip": str(torch.version.hip), "launches": rows}
         if not args.dispatch_only:
-            report["isa"] = collect_isa(args.m, rows, output, args.dtk_root,
+            report["isa"] = collect_isa(rows, output, args.dtk_root,
                                         args.rocblas_library_dir, Path(tmp))
     (output / "audit.json").write_text(json.dumps(report, indent=2) + "\n")
     print(f"Verified {len(rows)} launches. See {output / 'audit.json'}")

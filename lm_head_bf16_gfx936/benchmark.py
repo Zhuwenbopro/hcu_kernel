@@ -42,6 +42,8 @@ def selected_shapes(args, parser):
         if sizes[0] < 1 or sizes[-1] > MAX_M:
             parser.error(f"--m values must be between 1 and {MAX_M}")
         return sizes
+    if args.preset == "medium":
+        return list(range(256, 1025))
     if args.preset == "dense-4k":
         return list(range(1, 4097))
     if args.preset == "long-sample":
@@ -156,25 +158,99 @@ def run(sizes, block_size, order_seed):
     return [summarize(m, measurements[False, m], measurements[True, m]) for m in sizes]
 
 
+
+@torch.no_grad()
+def run_tuned(sizes):
+    """Pair original, incumbent, and opt-in steady Graph timings."""
+    torch.cuda.set_device(0)
+    torch.manual_seed(22011)
+    torch.backends.cuda.matmul.allow_tf32 = False
+    w = torch.randn((K, N), device="cuda", dtype=torch.bfloat16)
+    original = w.T.contiguous().T
+    off = LMHead(w)
+    on = LMHead(w, tuned=True)
+    x = w.new_empty((max(sizes), K)).normal_()
+    y = w.new_empty((max(route(m, tuned=enabled)[-1] for m in sizes
+                        for enabled in (False, True)), N))
+    stream = torch.cuda.Stream()
+    timers = {key: (torch.cuda.Event(enable_timing=True), torch.cuda.Event(enable_timing=True))
+              for key in ("original", "off", "on")}
+
+    def capture(call):
+        stream.wait_stream(torch.cuda.current_stream())
+        with torch.cuda.stream(stream):
+            call()
+        stream.synchronize()
+        graph = torch.cuda.CUDAGraph()
+        with torch.cuda.graph(graph, stream=stream):
+            call()
+        return graph
+
+    rng = random.Random(46120480)
+    order = sizes.copy()
+    rng.shuffle(order)
+    results = {}
+    for m in order:
+        p_off = route(m)[-1]
+        tuned = route(m, tuned=True)
+        p_on = tuned[-1]
+        graphs = {
+            "original": capture(lambda: torch.mm(x[:m], original, out=y[:m])),
+            "off": capture(lambda: off(x[:m], out=y[:p_off])),
+        }
+        if tuned != route(m):
+            graphs["on"] = capture(lambda: on(x[:m], out=y[:p_on]))
+        cases = list(graphs)
+        samples = {key: [] for key in cases}
+        for sample in range(11):
+            rng.shuffle(cases)
+            for key in cases:
+                begin, end = timers[key]
+                graphs[key].replay()
+                begin.record()
+                graphs[key].replay()
+                end.record()
+            timers[cases[-1]][1].synchronize()
+            if sample >= 2:
+                for key in cases:
+                    begin, end = timers[key]
+                    samples[key].append(begin.elapsed_time(end)*1000)
+        times = {key: statistics.median(ts) for key, ts in samples.items()}
+        times.setdefault("on", times["off"])
+        results[m] = {"m": m, "tuned_method": tuned[0],
+                      **{key + "_us": value for key, value in times.items()},
+                      "added_speedup": times["off"] / times["on"],
+                      "total_speedup": times["original"] / times["on"]}
+    return [results[m] for m in sizes]
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--m", help="Comma-separated M values, overriding the preset")
-    parser.add_argument("--preset", choices=("smoke", "dense-4k", "long-sample"), default="smoke")
+    parser.add_argument("--preset", choices=("smoke", "dense-4k", "long-sample", "medium"), default="smoke")
     parser.add_argument("--csv", type=Path, help="Write medians, floors, and individual event times")
+    parser.add_argument("--tuned", action="store_true", help="Run a steady Graph comparison with tuning off and on")
     args = parser.parse_args()
     sizes = selected_shapes(args, parser)
-    long_sweep = args.preset == "long-sample" and args.m is None
-    block_size = 16 if long_sweep else 32
-    order_seed = 46120480 if long_sweep else 272011
-    rows = run(sizes, block_size, order_seed)
-
-    print("M method baseline_us optimized_us speedup io_floor_us floor_pct")
-    for row in rows:
-        print(
-            f"{row['m']:5d} {row['method']:7s} {row['baseline_us']:12.3f} "
-            f"{row['actual_us']:12.3f} {row['speedup']:7.3f}x "
-            f"{row['floor_us']:12.3f} {row['floor_pct']:6.2f}%"
-        )
+    if args.tuned:
+        rows = run_tuned(sizes)
+        print("M tuned_method original_us off_us on_us added_speedup total_speedup")
+        for row in rows:
+            print(f"{row['m']:5d} {row['tuned_method']:9s} {row['original_us']:12.3f} "
+                  f"{row['off_us']:12.3f} {row['on_us']:12.3f} "
+                  f"{row['added_speedup']:7.3f}x {row['total_speedup']:7.3f}x")
+    else:
+        long_sweep = args.preset == "long-sample" and args.m is None
+        block_size = 16 if long_sweep else 32
+        order_seed = 46120480 if long_sweep else 272011
+        rows = run(sizes, block_size, order_seed)
+        print("M method baseline_us optimized_us speedup io_floor_us floor_pct")
+        for row in rows:
+            print(
+                f"{row['m']:5d} {row['method']:7s} {row['baseline_us']:12.3f} "
+                f"{row['actual_us']:12.3f} {row['speedup']:7.3f}x "
+                f"{row['floor_us']:12.3f} {row['floor_pct']:6.2f}%"
+            )
     if args.csv is not None:
         args.csv.parent.mkdir(parents=True, exist_ok=True)
         with args.csv.open("w", newline="") as output:

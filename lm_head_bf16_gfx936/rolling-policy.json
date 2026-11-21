@@ -1,0 +1,134 @@
+{
+  "k": 5120,
+  "n": 124160,
+  "kernels": {
+    "m64-n128-w2x2-d2-c0-k16-x1-p64-nparts3": {
+      "bm": 64,
+      "bn": 128,
+      "nw": 2,
+      "wm": 2,
+      "depth": 2,
+      "cache": 0,
+      "bk": 16,
+      "xt": 1,
+      "wpad": 64,
+      "parts": 3,
+      "reference_sha256": "0f84a97a1876536ea096f32c1fcd9005320a3b941069bf0fbe4581e5d87a30d6"
+    },
+    "m64-n128-w2x2-d2-c0-k16-x1-p32-nparts3": {
+      "bm": 64,
+      "bn": 128,
+      "nw": 2,
+      "wm": 2,
+      "depth": 2,
+      "cache": 0,
+      "bk": 16,
+      "xt": 1,
+      "wpad": 32,
+      "parts": 3,
+      "reference_sha256": "ed10acf4dad91531962fe6c76964020a5bb5bc800828c4df3588762938728dbf"
+    },
+    "m64-n128-w2x2-d2-c0-k16-x1-nparts3": {
+      "bm": 64,
+      "bn": 128,
+      "nw": 2,
+      "wm": 2,
+      "depth": 2,
+      "cache": 0,
+      "bk": 16,
+      "xt": 1,
+      "wpad": 0,
+      "parts": 3,
+      "reference_sha256": "6799abe9929d5095bb00f84de2049ecdec60843a06b16934e849c1bd63b019e8"
+    },
+    "m48-n128-w2x1-d2-c0-k16-x0-p32-nparts3": {
+      "bm": 48,
+      "bn": 128,
+      "nw": 2,
+      "wm": 1,
+      "depth": 2,
+      "cache": 0,
+      "bk": 16,
+      "xt": 0,
+      "wpad": 32,
+      "parts": 3,
+      "reference_sha256": "49de14a832df9e7ce963ce34eccb9ca11f4260b6f20e9eaf53f6a0ad0582cb29"
+    },
+    "m64-n128-w2x1-d2-c0-k16-x1-nparts3": {
+      "bm": 64,
+      "bn": 128,
+      "nw": 2,
+      "wm": 1,
+      "depth": 2,
+      "cache": 0,
+      "bk": 16,
+      "xt": 1,
+      "wpad": 0,
+      "parts": 3,
+      "reference_sha256": "ba140a6260a39142c335c98770914889a1af846c6783bc497931ae8806415819"
+    },
+    "m128-n128-w4x2-d2-c0-k16-x1-nparts4": {
+      "bm": 128,
+      "bn": 128,
+      "nw": 4,
+      "wm": 2,
+      "depth": 2,
+      "cache": 0,
+      "bk": 16,
+      "xt": 1,
+      "wpad": 0,
+      "parts": 4,
+      "reference_sha256": "60ca5964c90951153466252ebeaec291819c68ffe6d17b9ee081e58d9a5a27fa"
+    },
+    "m192-n256-w8x2-d2-c0-k16-x1-nparts4": {
+      "bm": 192,
+      "bn": 256,
+      "nw": 8,
+      "wm": 2,
+      "depth": 2,
+      "cache": 0,
+      "bk": 16,
+      "xt": 1,
+      "wpad": 0,
+      "parts": 4,
+      "reference_sha256": "a0c48d5fa2753eb4e4933e5ceb096e57ae4a716dbe75b3844dc6098b28e0fedf"
+    }
+  },
+  "ranges": [
+    [
+      2,
+      4,
+      "m64-n128-w2x2-d2-c0-k16-x1-p64-nparts3"
+    ],
+    [
+      5,
+      8,
+      "m64-n128-w2x2-d2-c0-k16-x1-p32-nparts3"
+    ],
+    [
+      9,
+      32,
+      "m64-n128-w2x2-d2-c0-k16-x1-nparts3"
+    ],
+    [
+      33,
+      48,
+      "m48-n128-w2x1-d2-c0-k16-x0-p32-nparts3"
+    ],
+    [
+      49,
+      64,
+      "m64-n128-w2x1-d2-c0-k16-x1-nparts3"
+    ],
+    [
+      65,
+      128,
+      "m128-n128-w4x2-d2-c0-k16-x1-nparts4"
+    ],
+    [
+      129,
+      192,
+      "m192-n256-w8x2-d2-c0-k16-x1-nparts4"
+    ]
+  ]
+}
