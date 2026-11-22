@@ -1,8 +1,8 @@
 [
   {
     "path": "README.md",
-    "sha256": "f3a563a9c713b0e6d34b3c844ed46007cd08926cc3c564ed765ffd9b7be2db5e",
-    "bytes": 4647
+    "sha256": "dd230723a8c1bd5b66d259ea150a9fb20964420fec7087341e661489b304f6e0",
+    "bytes": 4864
   },
   {
     "path": "decode_gemm_int8_gfx936/README.md",
@@ -363,6 +363,91 @@
     "path": "fused_sigmoid_mul_per_token_quant/test_fused_sigmoid_mul_per_token_quant.py",
     "sha256": "c712d42480a624493591d49adf119e16b18ec860bf130bf802e8735f1f61bb41",
     "bytes": 6407
+  },
+  {
+    "path": "gate_up_gemm_gfx936/README.md",
+    "sha256": "4a0f6c6b0b319790f0f9feeae55e26d410fe43d0b981e42332949c3ee191c104",
+    "bytes": 3692
+  },
+  {
+    "path": "gate_up_gemm_gfx936/__init__.py",
+    "sha256": "b80c2485ffa171083972271d06363879f3a37e7eb8d245050524e4aee673a926",
+    "bytes": 46
+  },
+  {
+    "path": "gate_up_gemm_gfx936/bf16-policy.json",
+    "sha256": "729135b36919568aa88256752698e222e50912a3408a40737b375ee4247c8910",
+    "bytes": 22234
+  },
+  {
+    "path": "gate_up_gemm_gfx936/bf16-rolling.json",
+    "sha256": "5fa500975e5e1bd81c569a318e2b71d5ac3f91288995e2abba512bce115dd250",
+    "bytes": 1345
+  },
+  {
+    "path": "gate_up_gemm_gfx936/bf16.py",
+    "sha256": "35a97d027d3fe5f6c11e2b888ff9269045c7c2c6a779a1e5d95b75d452d78d0c",
+    "bytes": 8421
+  },
+  {
+    "path": "gate_up_gemm_gfx936/build_bf16.py",
+    "sha256": "f73a78deadea2a7689cd11ab5f839245d6c8acaec1b63557d1286b62808c807f",
+    "bytes": 2378
+  },
+  {
+    "path": "gate_up_gemm_gfx936/build_int8.py",
+    "sha256": "5381679b42e5f379cd58a2bbf75af8773339a696994fc1aeae165d9a16ada38e",
+    "bytes": 2970
+  },
+  {
+    "path": "gate_up_gemm_gfx936/build_tools.py",
+    "sha256": "b1a05744d824741f5adf3af0a3b9460756d67cb3011fc85806e935a509cffb88",
+    "bytes": 1579
+  },
+  {
+    "path": "gate_up_gemm_gfx936/int8-policy.json",
+    "sha256": "2bf0ac2c2c842aed9d2e22f369b0bb8ff8a971daae04643bb3acf8e2279b947e",
+    "bytes": 47838
+  },
+  {
+    "path": "gate_up_gemm_gfx936/int8.py",
+    "sha256": "4a174b15706d6debfa1a87084c07bd74e86aefbb51ba104d2c8e1a9e7700d152",
+    "bytes": 5212
+  },
+  {
+    "path": "gate_up_gemm_gfx936/kernels/gate_up_gemv.hip",
+    "sha256": "3770a69fa8f36d5d7e093e2c99d9a0c12acdccfd1f6850a06d90bc84905122c0",
+    "bytes": 2600
+  },
+  {
+    "path": "gate_up_gemm_gfx936/kernels/int8_metadata.yaml",
+    "sha256": "bfe4543d796a532880836292e3b6cc2d6e171d6bc8513735c92d1d388b33808d",
+    "bytes": 2107
+  },
+  {
+    "path": "gate_up_gemm_gfx936/kernels/int8_output.py",
+    "sha256": "ab002f1912d9e8aad36ef2ec042ced4bdb622f98cb3185a5a16408be8b4ebac0",
+    "bytes": 4218
+  },
+  {
+    "path": "gate_up_gemm_gfx936/kernels/kn_blas.cpp",
+    "sha256": "fd082f81f0b3f6127ec3d2b22e4b0b6d047c39ba05ddb7f08eddc17ae5c684c1",
+    "bytes": 1160
+  },
+  {
+    "path": "gate_up_gemm_gfx936/kernels/packed_asm.py",
+    "sha256": "b4ec477cd7cd477e418e45719f3502c6ef90d18a89627bbf5d2a09f081804d73",
+    "bytes": 20164
+  },
+  {
+    "path": "gate_up_gemm_gfx936/policy.py",
+    "sha256": "e16ba44e2a154c27d7b1934a9e7961f89cbee11fa76e957222c70075551396d7",
+    "bytes": 1986
+  },
+  {
+    "path": "gate_up_gemm_gfx936/runtime.py",
+    "sha256": "b23e7e462eff70cb3b871f6ab773df47fedd272e0d26982d813943c1fb736d14",
+    "bytes": 4718
   },
   {
     "path": "gated_rms_norm_per_token_fp8_quant_gfx938/README.md",
