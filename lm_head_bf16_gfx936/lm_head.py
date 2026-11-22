@@ -7,7 +7,7 @@ from pathlib import Path
 import torch
 
 from . import rolling
-from .native import launch_gemv, launch_indexed, launch_packed_x
+from .native import launch_active_x, launch_gemv, launch_indexed, launch_packed_x
 
 K = 5120
 N = 124160
@@ -27,11 +27,32 @@ def _medium_policy():
     result = {}
     for key, value in rows.items():
         p, tiles, index = int(key), tuple(value["tiles"]), value["solution"]
-        if not (256 <= p <= 1024 and p % 16 == 0 and tiles and
-                min(tiles) > 0 and 256 * sum(tiles) == N and index >= 0):
+        if not (256 <= p <= 512 and p % 16 == 0 and len(tiles) >= 2 and
+                min(tiles) > 0 and 256 * sum(tiles) == N and index == 0):
             raise RuntimeError(f"Invalid packed-X route at P={p}")
         result[p] = tiles, index
+    if set(result) != set(range(256, 513, 16)):
+        raise RuntimeError("Incomplete segmented LM-head policy")
     return result
+
+
+@lru_cache(maxsize=1)
+def _active_x_policy():
+    """Map each measured active-row route to its number of vocabulary groups."""
+    with Path(__file__).with_name("active-x-policy.json").open() as file:
+        rows = json.load(file)
+    result = {}
+    for key, parts in (("single", 1), ("split2", 2)):
+        for m in rows[key]:
+            if (type(m) is not int or not 193 <= m <= 2048 or
+                    256 <= m <= 512 or m in result):
+                raise RuntimeError(f"Invalid active-X route at M={m}")
+            result[m] = parts
+    return result
+
+
+def _padded_rows(m):
+    return (m + 15) // 16 * 16
 
 
 def route(m, *, tuned=False):
@@ -42,11 +63,23 @@ def route(m, *, tuned=False):
     if kernel is not None:
         return "rolling", kernel.config.bm, kernel.config.bn, m
     if m > 128:
-        p = (m + 15) // 16 * 16
-        family = "segmented" if tuned and m >= 256 and p in _medium_policy() else "large"
-        return family, 256, 256, p
+        if tuned and 256 <= m <= 512:
+            return "segmented", 256, 256, _padded_rows(m)
+        if tuned and 193 <= m <= 2048 and m in _active_x_policy():
+            return "active_x", 256, 256, m
+        return "large", 256, 256, _padded_rows(m)
     config = _small_policy()[m]
     return config["method"], config["tm"], config["tn"], m
+
+
+def workspace_rows(m, *, tuned=False):
+    """Return the second dimension of the contiguous [K, rows] workspace, or zero."""
+    family, bm, _, p = route(m, tuned=tuned)
+    if family == "rolling":
+        return bm if rolling.route(m).config.xt else 0
+    if family == "active_x":
+        return _padded_rows(m)
+    return p if family in ("large", "segmented") else 0
 
 
 def _check_buffer(tensor, shape, device, name):
@@ -95,7 +128,10 @@ class LMHead:
 
         if out is None:
             out = x.new_empty((p, N))
-        _check_buffer(out, (p, N), x.device, "out")
+        # Accept the old padded output buffer on shapes whose tuned GEMM now
+        # computes only the requested rows.
+        padded = family == "active_x" and out.shape == (_padded_rows(m), N)
+        _check_buffer(out, (_padded_rows(m) if padded else p, N), x.device, "out")
 
         with torch.cuda.device(x.device):
             stream = torch.cuda.current_stream(x.device)
@@ -106,6 +142,18 @@ class LMHead:
                     launch_packed_x(index, workspace, self.weight, out, tiles, stream.cuda_stream)
                 else:
                     torch.mm(workspace.T, self.weight, out=out)
+                workspace.record_stream(stream)
+            elif family == "active_x":
+                from .triton_kernel import pack_active_x
+
+                rows = _padded_rows(m)
+                if workspace is None:
+                    workspace = x.new_empty((K, rows))
+                _check_buffer(workspace, (K, rows), x.device, "workspace")
+                pack_active_x(x, workspace)
+                launch_active_x(workspace, self.weight, out[:m], _active_x_policy()[m], stream.cuda_stream)
+                if padded and m < rows:
+                    out[m:].zero_()
                 workspace.record_stream(stream)
             elif family == "rolling":
                 kernel = rolling.route(m)

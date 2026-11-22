@@ -10,8 +10,8 @@ import shutil
 import subprocess
 import tempfile
 
-from . import K, MAX_M, N, LMHead, rolling, route
-from .lm_head import _medium_policy
+from . import K, MAX_M, N, LMHead, rolling, route, workspace_rows
+from .lm_head import _active_x_policy, _medium_policy
 
 
 PACKAGE = Path(__file__).resolve().parent
@@ -44,7 +44,8 @@ def capture(sizes, device, trace_path, tuned=False):
     x = torch.randn((rows, K), device=device, dtype=torch.bfloat16)
     weight = torch.randn((K, N), device=device, dtype=torch.bfloat16)
     out = x.new_empty((rows, N))
-    workspace = x.new_empty((K * rows,))
+    max_work = max(workspace_rows(m, tuned=tuned) for m in sizes)
+    workspace = x.new_empty((K * max_work,))
     head = LMHead(weight, tuned=tuned)
     # Shapes and strides determine dispatch. Both layouts are viewed in one
     # synthetic allocation for this structural audit.
@@ -54,8 +55,9 @@ def capture(sizes, device, trace_path, tuned=False):
         if mode == "baseline":
             torch.mm(x[:m], baseline_weight, out=out[:m])
         else:
-            family, _, _, p = route(m, tuned=tuned)
-            work = workspace[:K * p].view(K, p) if family in ("large", "segmented") else None
+            p = route(m, tuned=tuned)[-1]
+            work_rows = workspace_rows(m, tuned=tuned)
+            work = workspace[:K * work_rows].view(K, work_rows) if work_rows else None
             head(x[:m], out=out[:p], workspace=work)
 
     for mode in ("baseline", "optimized"):
@@ -98,6 +100,10 @@ def tuned_dispatches(events, m, p, family):
                  for i in range(obj.parts)]
         widths = [cfg.bn * count for count in parts]
         prepared = (1 + int(m != cfg.bm)) if cfg.xt else 0
+    elif family == "active_x":
+        parts = _active_x_policy()[m]
+        widths = [N // parts] * parts
+        prepared = 1
     else:
         tiles, _ = _medium_policy()[p]
         widths = [256 * count for count in tiles]
@@ -107,7 +113,8 @@ def tuned_dispatches(events, m, p, family):
     if len(events) < count:
         raise RuntimeError(f"M={m}: incomplete {family} GPU trace")
     auxiliary = [e["name"] for e in events[:prepared]]
-    if auxiliary and "copy" not in auxiliary[0].lower():
+    packing_kernel = "_transpose_active_x" if family == "active_x" else "copy"
+    if auxiliary and packing_kernel not in auxiliary[0].lower():
         raise RuntimeError(f"M={m}: expected X packing before {family} GEMM")
     rows = []
     for part, (event, width) in enumerate(zip(events[prepared:count], widths)):
@@ -136,7 +143,7 @@ def audit_dispatches(sizes, events, policy, tuned=False):
     for mode in ("baseline", "optimized"):
         for m in sizes:
             family, tm, tn, p = route(m, tuned=tuned)
-            if mode == "optimized" and family in ("rolling", "segmented"):
+            if mode == "optimized" and family in ("rolling", "segmented", "active_x"):
                 rows, count = tuned_dispatches(events[cursor:], m, p, family)
                 cursor += count
                 by_shape.extend(rows)
@@ -327,7 +334,7 @@ def main():
     parser.add_argument("--rocblas-library-dir", type=Path, default=os.environ.get("ROCBLAS_TENSILE_LIBPATH"),
                         help="Optional rocBLAS gfx936 code-object directory")
     parser.add_argument("--dispatch-only", action="store_true", help="Check launch symbols and grids without disassembly")
-    parser.add_argument("--tuned", action="store_true", help="Audit the opt-in rolling and segmented paths")
+    parser.add_argument("--tuned", action="store_true", help="Audit the opt-in merged TP2 paths")
     args = parser.parse_args()
     if not args.dispatch_only and args.dtk_root is None:
         parser.error("Set --dtk-root or DTKROOT/ROCM_PATH, or use --dispatch-only")

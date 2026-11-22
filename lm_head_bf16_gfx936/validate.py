@@ -5,13 +5,14 @@ from itertools import chain
 
 import torch
 
-from . import K, MAX_M, N, LMHead, rolling, route
+from . import K, MAX_M, N, LMHead, route, workspace_rows
 
 
 INT32_M = (2**31 - 1) // N
 SMOKE = (1, 2, 3, 4, 15, 64, 65, 128, 129, 256, 257, 4096)
 TUNED = (1, 2, 4, 5, 8, 9, 32, 33, 48, 49, 64, 65, 128, 129, 192,
-         193, 255, 256, 257, 272, 273, 384, 512, 513, 640, 768, 769, 928, 1024, 1025)
+         193, 255, 256, 257, 272, 273, 384, 512, 513, 640, 752, 753, 754, 768, 769,
+         928, 1008, 1009, 1024, 1025, 1125, 1379, 2047, 2048, 2049)
 LONG = (INT32_M, INT32_M + 1, 20_000, MAX_M - 1, MAX_M)
 ATOL, RTOL = 0.04, 0.0044
 
@@ -82,17 +83,18 @@ def run(sizes, tuned=False, graph=False):
     x = w.new_empty((max(sizes), K)).normal_()
 
     for m in sizes:
-        method, tm, _, p = route(m, tuned=tuned)
+        method, _, _, p = route(m, tuned=tuned)
         activation = x[:m]
         storage = None
         workspace = None
-        if p > m or method == "rolling":
+        # Exercise the legacy padded output as well as the exact-row output.
+        storage_rows = (m + 15) // 16 * 16 if method == "active_x" and m == 1009 else p
+        if storage_rows > m or method in ("rolling", "active_x"):
             # Start with NaN to expose unwritten output or workspace rows.
-            storage = w.new_full((p, N), float("nan"))
-        if method == "rolling" and rolling.route(m).config.xt:
-            workspace = w.new_full((K, tm), float("nan"))
-        elif p > m:
-            workspace = w.new_full((K, p), float("nan"))
+            storage = w.new_full((storage_rows, N), float("nan"))
+        work_rows = workspace_rows(m, tuned=tuned)
+        if work_rows:
+            workspace = w.new_full((K, work_rows), float("nan"))
 
         if graph:
             stream = torch.cuda.Stream()
@@ -114,7 +116,7 @@ def run(sizes, tuned=False, graph=False):
         if storage is not None:
             if output.data_ptr() != storage.data_ptr():
                 raise AssertionError(f"M={m}: output does not use the supplied storage")
-            if p > m and torch.count_nonzero(storage[m:]).item():
+            if storage_rows > m and torch.count_nonzero(storage[m:]).item():
                 raise AssertionError(f"M={m}: nonzero output in padding")
         if workspace is not None:
             if not torch.equal(workspace[:, :m], activation.T):
@@ -132,7 +134,7 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--m", help="Comma-separated M values, overriding the preset")
     parser.add_argument("--preset", choices=("smoke", "20k", "tuned"), default="smoke")
-    parser.add_argument("--tuned", action="store_true", help="Use the rolling and segmented dispatch")
+    parser.add_argument("--tuned", action="store_true", help="Use the merged TP2 dispatch")
     parser.add_argument("--graph", action="store_true", help="Validate after HIP Graph replay")
     args = parser.parse_args()
     run(selected_shapes(args, parser), tuned=args.tuned or args.preset == "tuned", graph=args.graph)

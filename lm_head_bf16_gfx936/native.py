@@ -51,3 +51,18 @@ def launch_packed_x(index, x, w, y, tiles, stream):
             raise RuntimeError(f"rocBLAS packed-X solution {index} for P={p} columns "
                                f"[{columns}, {columns + width}) returned status {status}")
         columns += width
+
+
+def launch_active_x(x, w, y, parts, stream):
+    """Run automatic rocBLAS GEMMs for the logical rows of packed X."""
+    m, p = y.shape[0], x.shape[1]
+    columns = w.shape[1]
+    width = columns // parts
+    fn = _entry("indexed", "head_active_x", (_INT, _INT, _INT, _INT, _PTR, _PTR, _PTR, _PTR))
+    for first in range(0, columns, width):
+        offset = first * w.element_size()
+        status = fn(m, width, p, x.device.index, stream, x.data_ptr(),
+                    w.data_ptr() + offset, y.data_ptr() + offset)
+        if status:
+            raise RuntimeError(f"rocBLAS active-X GEMM for M={m} columns "
+                               f"[{first}, {first + width}) returned status {status}")

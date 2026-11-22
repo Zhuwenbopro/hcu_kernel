@@ -28,3 +28,21 @@ def _head(X,W,Y,M,N:tl.constexpr,K:tl.constexpr,BM:tl.constexpr,BN:tl.constexpr,
 def launch(x,w,y,config):
     bm,bn,bk,nw=config
     return _head[(triton.cdiv(x.shape[0],bm)*(N//bn),)](x,w,y,x.shape[0],N,K,bm,bn,bk,num_warps=nw,num_stages=2,matrix_instr_nonkdim=16)
+
+
+@triton.jit
+def _transpose_active_x(X, Packed, M, P, K: tl.constexpr, BLOCK: tl.constexpr):
+    row = tl.program_id(0) * BLOCK + tl.arange(0, BLOCK)
+    inner = tl.program_id(1) * BLOCK + tl.arange(0, BLOCK)
+    values = tl.load(X + row[:, None] * K + inner[None, :], row[:, None] < M, 0)
+    tl.store(Packed + inner[None, :] * P + row[:, None], values, row[:, None] < P)
+
+
+def pack_active_x(x, workspace):
+    """Transpose X and zero its aligned tail in one GPU launch."""
+    m, k = x.shape
+    p = workspace.shape[1]
+    block = 32
+    return _transpose_active_x[(triton.cdiv(p, block), k // block)](
+        x, workspace, m, p, k, block, num_warps=4,
+    )
