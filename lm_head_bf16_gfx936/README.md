@@ -77,3 +77,38 @@ M=1–4096 全整数测量，首轮 4053 点更快，中位加速 1.104×。对�
 M=20480 的 X 转置独立计时为 0.567 ms。M=20479 与它使用相同的 P 和 GEMM 目标，但 X 转置走通用跨步拷贝，转置加补零独立计时为 2.827 ms。M=20480 的 BF16 输出为 5,085,593,600 B，PyTorch 峰值分配为 6,809,976,832 B。
 
 独立 FP32 参考对比覆盖了 M=1–256 和 4 个较长 M 的全部约 48.16 亿个输出。20K 校验覆盖 `2^31` 个输出元素边界两侧、补零尾行和隐式分配路径，抽查 47,331,712 个输出。两组 FP32 对比均零超阈，容限为 `abs(got-ref) <= 0.04 + 0.0044*abs(ref)`。实测摘要、依赖版本和 ISA 资源见 [results.json](results.json)。
+
+## 后续调优
+
+在已验证的 DTK 26.10 nightly-1112 环境下构建滚动 MMAC 扩展。每次构建都会反汇编 7 个 code object，检查固定寄存器、LDS、scratch 和稳态循环中 W 的发射顺序。审计记录位于 `build/rolling/audit.json`。
+
+```bash
+python3 -m lm_head_bf16_gfx936.build --tuned
+HIP_VISIBLE_DEVICES=0 python3 -m lm_head_bf16_gfx936.validate --preset tuned --graph
+HIP_VISIBLE_DEVICES=0 python3 -m lm_head_bf16_gfx936.audit --tuned --m 1,4,33,65,129,192,256,257,512,768,1024
+HIP_VISIBLE_DEVICES=0 python3 -m lm_head_bf16_gfx936.benchmark --tuned --preset medium --csv build/lm-head-medium-ab.csv
+```
+
+```python
+head = LMHead(weight_kn, tuned=True)
+logits = head(hidden_states)
+```
+
+开关启用后，`route(M, tuned=True)` 给出当前派发和输出行数 P。滚动路径的 P=M。若预分配其 X 转置工作区，行高采用 `route` 中的 BM。分段 rocBLAS 路径的 P 仍向上对齐到 16，X 在 `workspace[K,P]` 转置、补零一次，再由各子 grid 写入各自的 Y 列。每个路径直接读取同一份连续 `W[K,N]`。
+
+- M=2–192 使用固定寄存器的双槽汇编，W 经向量 load 直达 LDS。下一段 W 的读取与当前 K 步的 BF16 MMAC 重叠。每个 M 按选定的 tile 沿 N 发射 3 或 4 段。
+- M=256 时，原 `256×256×16` GEMM 的 485 个 CTA 沿 N 分 7 段，每段 69–70 个。
+- M=257–512 采用分段分发表。M=512 将列切成 160/160/160/5 个 256 列单元。前三段使用 `BM256×BN256×BK16`，末段 1,280 列由库选择 `BM64×BN128×BK32`。
+- M=513–1024 中的 96 个形状采用已复测的切分或显式方案编号 25440、25442。更换 DTK 时，按上述入口复核显式方案及实际派发。
+
+BW1000 gfx936 双卡逐点对照使用等值 X 和 W。每卡采集九次同路径预热后的 HIP Graph 区间，取两卡 p50 的均值。时间计入 X 转置、补零和 Y 写回。原始布置为 `torch.mm(X, W_NK.T)`，关闭本轮调优时用此前的 packed-X GEMM。
+
+| M | 原始 `torch.mm` | 调优关 | 调优开 |
+|---:|---:|---:|---:|
+| 256 | 1.640 ms | 1.255 ms | 1.084 ms |
+| 257 | 2.639 ms | 1.695 ms | 1.630 ms |
+| 512 | 2.112 ms | 1.720 ms | 1.656 ms |
+| 768 | 2.926 ms | 2.633 ms | 2.550 ms |
+| 1024 | 3.941 ms | 3.456 ms | 3.402 ms |
+
+M=257–512 的 256 个形状全部提速，中位省 62 µs。M=256–1024 的 769 个形状等权汇总，开启本轮调优额外减少 0.94% 延迟。派发表命中的 353 个形状中，349 个提速，4 个形状的回退均小于 0.1%。完整摘要见 [tuned-results.json](tuned-results.json)。
