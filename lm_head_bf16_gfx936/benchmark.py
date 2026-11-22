@@ -44,6 +44,8 @@ def selected_shapes(args, parser):
         return sizes
     if args.preset == "medium":
         return list(range(256, 1025))
+    if args.preset == "dense-2k":
+        return list(range(1, 2049))
     if args.preset == "dense-4k":
         return list(range(1, 4097))
     if args.preset == "long-sample":
@@ -227,7 +229,7 @@ def run_tuned(sizes):
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--m", help="Comma-separated M values, overriding the preset")
-    parser.add_argument("--preset", choices=("smoke", "dense-4k", "long-sample", "medium"), default="smoke")
+    parser.add_argument("--preset", choices=("smoke", "dense-2k", "dense-4k", "long-sample", "medium"), default="smoke")
     parser.add_argument("--csv", type=Path, help="Write medians, floors, and individual event times")
     parser.add_argument("--tuned", action="store_true", help="Run a steady Graph comparison with tuning off and on")
     args = parser.parse_args()

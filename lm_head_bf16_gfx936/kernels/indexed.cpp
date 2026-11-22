@@ -67,3 +67,9 @@ extern "C" int head_packed_x(int index, int m, int width, int device, hipStream_
                             const void* x, const void* w, void* y) {
     return gemm(index, m, width, rocblas_operation_transpose, m, device, stream, x, w, y);
 }
+
+
+extern "C" int head_active_x(int m, int width, int pitch_x, int device, hipStream_t stream,
+                            const void* x, const void* w, void* y) {
+    return gemm(0, m, width, rocblas_operation_transpose, pitch_x, device, stream, x, w, y);
+}
