@@ -29,3 +29,28 @@ y = op(x)
 `bf16-policy.json` 每条记录包含当前路由的 M 上界，该条覆盖上一条上界之后的所有 M。`exact` 只记录 M=1–256，之后沿用 `default`。rolling 汇编复用仓库中的 LM head 生成器。
 
 在 BW47 GPU2 上重建后，8 个 rolling HSACO 与实验版逐字节一致。TP1/TP2 的全量路由和缓冲区尺寸一致，184 组实跑输出逐元素一致。各 TP 的 Graph 时延中位数变化均在 0.02% 内。
+
+## INT8 单份 packed W
+
+`Int8GateUpGemm` 用一份 packed INT8 W 和 FP32 `scale_w[N,1]`。每次调用接受连续 INT8 `X[M,5120]` 和 FP32 `scale_x[M,1]`。固定寄存器汇编完成 INT32 累加，乘以两份 scale 后写回 BF16 `Y[M,N]`。
+
+`pack_int8_weight` 在权重加载时把连续 `W[N,5120]` 转成不透明的一维存储。布局按 K64 分段，每段按 16 行一组重新排列。初始化算子后即可释放原始 INT8 W。
+
+```bash
+source /opt/dtk/env.sh
+python -m gate_up_gemm_gfx936.build_int8
+```
+
+```python
+from gate_up_gemm_gfx936.int8 import Int8GateUpGemm, pack_int8_weight
+
+packed_w = pack_int8_weight(weight_nk)
+op = Int8GateUpGemm(packed_w, scale_w)
+y = op(x, scale_x)
+```
+
+可以传入精确形状的 `out[M,N]` 和工作区。`workspace_elements(M)` 返回当前路由所需的 INT8 元素数，包含补齐和已选路由的 X pitch 偏移。权重准备、X 打包和 GEMM 会提交到调用方当前 stream。跨 stream 交接权重或复用工作区时，由调用方同步。
+
+`int8-policy.json` 记录 M=1–256 的原有 packed 路由和 M=257–4096 的已验证优化路由。汇编构建使用 PyYAML 并复用 `fused_gate_up_gemm_gfx936` 的公共装载、MMAC 和同步宏。
+
+在 BW47 GPU2 上重建后，50 个 INT8 HSACO 与实验版逐字节一致。TP1/TP2 的全量路由和 X 工作区尺寸一致，168 组实跑输出逐元素一致。各 TP 的 Graph 时延中位数变化均在 0.02% 内。TP1 的 M=4095 首轮慢 4.4%，6 次交替重捕获的时延比中位数为 +0.76%。

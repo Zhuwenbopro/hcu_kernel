@@ -6,7 +6,7 @@
 
 - [lm_head_bf16_gfx936/](lm_head_bf16_gfx936/) 提供 Qwen3.8-27B TP2 的单 rank BF16 LM head，所有路径共用连续 W[K,N]。支持 M=1–20480，附独立构建、正确性、基准和 ISA 审计入口。 提供可选的滚动 MMAC 与中段 CTA 分组调优。
 
-- [gate_up_gemm_gfx936/](gate_up_gemm_gfx936/) 提供 gfx936 非融合 GateUp BF16 GEMM，TP1/TP2 全部 M=1–4096 共用一份连续 W[K,N]，直接输出 BF16 [M,N]。
+- [gate_up_gemm_gfx936/](gate_up_gemm_gfx936/) 提供 gfx936 非融合 GateUp GEMM。BF16 使用连续 W[K,N]，INT8 使用 packed W，各自用一份权重覆盖 TP1/TP2 的 M=1–4096 并直接输出 BF16 [M,N]。
 
 - [fused_gate_up_gemm_gfx936/](fused_gate_up_gemm_gfx936/)：gfx936 INT8/BF16 特殊布局 gate/up GEMM 融合 SiLU×up，直接输出 BF16 [M,8704]；含源码快照、完整可校验复现包和正确性/性能记录
 

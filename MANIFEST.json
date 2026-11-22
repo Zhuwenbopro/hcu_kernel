@@ -1,8 +1,8 @@
 [
   {
     "path": "README.md",
-    "sha256": "5e590bac708b0b32b067480ce4885b01301f9a2ca45a1654e33fbb2a8f983691",
-    "bytes": 4819
+    "sha256": "dd230723a8c1bd5b66d259ea150a9fb20964420fec7087341e661489b304f6e0",
+    "bytes": 4864
   },
   {
     "path": "decode_gemm_int8_gfx936/README.md",
@@ -366,8 +366,8 @@
   },
   {
     "path": "gate_up_gemm_gfx936/README.md",
-    "sha256": "c74d7e9228dc2e7c68ce59d6ffb7098942d713c58dc3435b43bdd9600fa0597f",
-    "bytes": 1691
+    "sha256": "0e7baa8256b6797b650bf7446d955221c8393d149442508811b6a843056efd3b",
+    "bytes": 3230
   },
   {
     "path": "gate_up_gemm_gfx936/__init__.py",
@@ -395,9 +395,24 @@
     "bytes": 2378
   },
   {
+    "path": "gate_up_gemm_gfx936/build_int8.py",
+    "sha256": "5381679b42e5f379cd58a2bbf75af8773339a696994fc1aeae165d9a16ada38e",
+    "bytes": 2970
+  },
+  {
     "path": "gate_up_gemm_gfx936/build_tools.py",
     "sha256": "b1a05744d824741f5adf3af0a3b9460756d67cb3011fc85806e935a509cffb88",
     "bytes": 1579
+  },
+  {
+    "path": "gate_up_gemm_gfx936/int8-policy.json",
+    "sha256": "2bf0ac2c2c842aed9d2e22f369b0bb8ff8a971daae04643bb3acf8e2279b947e",
+    "bytes": 47838
+  },
+  {
+    "path": "gate_up_gemm_gfx936/int8.py",
+    "sha256": "4a174b15706d6debfa1a87084c07bd74e86aefbb51ba104d2c8e1a9e7700d152",
+    "bytes": 5212
   },
   {
     "path": "gate_up_gemm_gfx936/kernels/gate_up_gemv.hip",
@@ -405,9 +420,24 @@
     "bytes": 2600
   },
   {
+    "path": "gate_up_gemm_gfx936/kernels/int8_metadata.yaml",
+    "sha256": "bfe4543d796a532880836292e3b6cc2d6e171d6bc8513735c92d1d388b33808d",
+    "bytes": 2107
+  },
+  {
+    "path": "gate_up_gemm_gfx936/kernels/int8_output.py",
+    "sha256": "ab002f1912d9e8aad36ef2ec042ced4bdb622f98cb3185a5a16408be8b4ebac0",
+    "bytes": 4218
+  },
+  {
     "path": "gate_up_gemm_gfx936/kernels/kn_blas.cpp",
     "sha256": "fd082f81f0b3f6127ec3d2b22e4b0b6d047c39ba05ddb7f08eddc17ae5c684c1",
     "bytes": 1160
+  },
+  {
+    "path": "gate_up_gemm_gfx936/kernels/packed_asm.py",
+    "sha256": "b4ec477cd7cd477e418e45719f3502c6ef90d18a89627bbf5d2a09f081804d73",
+    "bytes": 20164
   },
   {
     "path": "gate_up_gemm_gfx936/policy.py",
