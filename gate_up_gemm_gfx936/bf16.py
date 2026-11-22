@@ -8,7 +8,7 @@ import torch
 import triton
 import triton.language as tl
 
-from .policy import K, SHARDS, SMALL_M, check_m, routes
+from .policy import K, SHARDS, SMALL_M, bf16_padded_routes, check_m, routes
 from .runtime import (
     INT,
     PTR,
@@ -63,7 +63,8 @@ class BF16GateUpGemm:
         check_tensor(weight_kn, (K, self.n), torch.bfloat16, self.device, 16, "W")
         check_device(self.device)
         self.weight = weight_kn
-        self._default = routes("bf16", self.n)
+        self._base = routes("bf16", self.n)
+        self._default = bf16_padded_routes(self.n)
         self._exact = routes("bf16", self.n, "exact")
         self._handles = {}
         self._lock = Lock()
@@ -86,7 +87,9 @@ class BF16GateUpGemm:
 
     def route(self, m, *, exact=False):
         check_m(m)
-        return self._exact[m] if exact and m <= SMALL_M else self._default[m]
+        if exact:
+            return self._exact[m] if m <= SMALL_M else self._base[m]
+        return self._default[m]
 
     def _geometry(self, name, m):
         if name.startswith("roll:"):
@@ -94,6 +97,10 @@ class BF16GateUpGemm:
             if m > q["bm"]:
                 raise ValueError(f"{name} does not cover M={m}")
             return (q["bm"] if q["xt"] else 0), m
+        if name.startswith("kn-tail-"):
+            alignment = int(name.split("-")[2])
+            pitch = triton.cdiv(m, 16) * 16
+            return pitch, triton.cdiv(m, alignment) * alignment
         if name.startswith("kn-pad-"):
             alignment = int(name.split("-")[2])
             rows = triton.cdiv(m, alignment) * alignment
@@ -167,7 +174,7 @@ class BF16GateUpGemm:
                     INT(0),
                 )
                 kernel.launch((last - first, 1, 1), q["nw"] * 64, args, stream)
-        elif name.startswith("kn-pad-"):
+        elif name.startswith(("kn-pad-", "kn-tail-")):
             parts = int(name.split("-")[-1])
             self._blas_gemm(operand, out, rows, parts, 1, stream)
         elif name.startswith("kn-blas-"):
