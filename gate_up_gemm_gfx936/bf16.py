@@ -8,7 +8,15 @@ import torch
 import triton
 import triton.language as tl
 
-from .policy import K, SHARDS, SMALL_M, bf16_padded_routes, check_m, routes
+from .policy import (
+    K,
+    SHARDS,
+    SMALL_M,
+    bf16_padded_routes,
+    check_m,
+    policy_sections,
+    routes,
+)
 from .runtime import (
     INT,
     PTR,
@@ -63,16 +71,16 @@ class BF16GateUpGemm:
         check_tensor(weight_kn, (K, self.n), torch.bfloat16, self.device, 16, "W")
         check_device(self.device)
         self.weight = weight_kn
-        self._base = routes("bf16", self.n)
         self._default = bf16_padded_routes(self.n)
-        self._exact = routes("bf16", self.n, "exact")
+        exact = list(routes("bf16", self.n, "exact"))
+        exact.extend(routes("bf16", self.n)[SMALL_M + 1 :])
         self._handles = {}
         self._lock = Lock()
 
         catalog = build_catalog("bf16")
         self._blas = _load_blas(checked_path("bf16", catalog["blas"]))
         self._rolling = {}
-        for name in set(self._default[1:]) | set(self._exact[1:]):
+        for name in set(self._default[1:]) | set(exact[1:]):
             if name.startswith("roll:"):
                 _, key, parts = name.split(":")
                 spec = catalog["rolling"][f"{self.n}/{key}"]
@@ -81,15 +89,21 @@ class BF16GateUpGemm:
                     spec["config"],
                     int(parts),
                 )
+        # Reuse measured overrides when existing exact-output buffers suffice.
+        for first, last, name in policy_sections("bf16", self.n).get("overrides", ()):
+            for m in range(first, last + 1):
+                pitch, rows = self._geometry(name, m)
+                if rows == m and pitch <= self._geometry(exact[m], m)[0]:
+                    exact[m] = name
+        self._exact = tuple(exact)
+
         self._gemv = None
         if str(self.n) in catalog["gemv"]:
             self._gemv = _load_gemv(checked_path("bf16", catalog["gemv"][str(self.n)]))
 
     def route(self, m, *, exact=False):
         check_m(m)
-        if exact:
-            return self._exact[m] if m <= SMALL_M else self._base[m]
-        return self._default[m]
+        return self._exact[m] if exact else self._default[m]
 
     def _geometry(self, name, m):
         if name.startswith("roll:"):

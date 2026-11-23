@@ -366,8 +366,8 @@
   },
   {
     "path": "gate_up_gemm_gfx936/README.md",
-    "sha256": "4a0f6c6b0b319790f0f9feeae55e26d410fe43d0b981e42332949c3ee191c104",
-    "bytes": 3692
+    "sha256": "3169ee4963a011b88f11602b5f2ce455d2ff4831b871f64af4e5dae570cc047b",
+    "bytes": 4269
   },
   {
     "path": "gate_up_gemm_gfx936/__init__.py",
@@ -376,8 +376,8 @@
   },
   {
     "path": "gate_up_gemm_gfx936/bf16-policy.json",
-    "sha256": "729135b36919568aa88256752698e222e50912a3408a40737b375ee4247c8910",
-    "bytes": 22234
+    "sha256": "ba73d1147d011eb03261441890605fa97d5a055aeb4529b81eccd7eadae4893d",
+    "bytes": 37864
   },
   {
     "path": "gate_up_gemm_gfx936/bf16-rolling.json",
@@ -386,8 +386,8 @@
   },
   {
     "path": "gate_up_gemm_gfx936/bf16.py",
-    "sha256": "35a97d027d3fe5f6c11e2b888ff9269045c7c2c6a779a1e5d95b75d452d78d0c",
-    "bytes": 8421
+    "sha256": "42aba8902105ee0bbe1e629ced6b2737b80882f00d62757b939da4d4a5b71088",
+    "bytes": 8834
   },
   {
     "path": "gate_up_gemm_gfx936/build_bf16.py",
@@ -441,8 +441,8 @@
   },
   {
     "path": "gate_up_gemm_gfx936/policy.py",
-    "sha256": "e16ba44e2a154c27d7b1934a9e7961f89cbee11fa76e957222c70075551396d7",
-    "bytes": 1986
+    "sha256": "c1277fc46e5385e71a2aab63ab3519f3c8613b0d0f29ab2ae3fbbcfcea591579",
+    "bytes": 2304
   },
   {
     "path": "gate_up_gemm_gfx936/runtime.py",

@@ -6,7 +6,7 @@
 
 `BF16GateUpGemm` 直接持有调用方传入的连续 BF16 `W[5120,N]`。如果 checkpoint 保存为 `W[N,5120]`，加载时转置一次即可。
 
-M=1–256 使用带实测路由的 GEMV、rolling MMAC、`torch.mm` 和 rocBLAS。M=257–4096 使用单 W `torch.mm` / rocBLAS，M=257–2048 的部分尾块在默认路径补齐实际计算和输出行数。补齐保留原 X 的物理 pitch、分段方式和本轮实测的内核及 CTA 网格。输出返回前 M 行。传入精确形状的 `out[M,N]` 时走精确输出路径。
+M=1–256 使用实测选择的 GEMV、rolling MMAC、`torch.mm` 或 rocBLAS。M=257–4096 使用同一份 W 的 `torch.mm` 或 rocBLAS。TP2 默认路径按 M 选择是否转置 X、沿 N 分段，以及是否将 X 的 pitch 和计算行数补齐到 16、32、64 或 128 的倍数。补齐路径只返回前 M 行。显式传入 `out[M,N]` 时只用物理输出恰好为 M 行的路由。
 
 从仓库根目录构建。所需环境为 gfx936 BW1000、DTK 和 HCU 版 PyTorch / Triton。
 
@@ -26,11 +26,13 @@ y = op(x)
 
 推理时可以在目标 stream 预热后捕获 HIP Graph。所有工作完成并释放 Graph 后，用 `op.close()` 释放该实例的 rocBLAS handle。
 
-`bf16-policy.json` 每条记录包含当前路由的 M 上界，该条覆盖上一条上界之后的所有 M。`exact` 记录 M=1–256 的精确输出路由，后续精确输出沿用基础 `default`。`tail` 记录只有默认输出路径应用的逐 M 对齐粒度。rolling 汇编复用仓库中的 LM head 生成器。
+`bf16-policy.json` 中，`default` 和 `exact` 记录一段连续 M 的上界。精确输出在 M≤256 使用 `exact`，之后以 `default` 为基础。`tail` 记录默认路径的尾块对齐。TP2 的 `overrides` 按闭区间 `[first, last, route]` 覆盖默认路径。精确输出可以复用其中物理输出为 M 行、且 X 工作区需求不增加的路由。rolling 汇编复用仓库中的 LM head 生成器。
 
 在 BW47 GPU2 上重建后，8 个 rolling HSACO 与实验版逐字节一致。TP1/TP2 的全量路由和缓冲区尺寸一致，184 组实跑输出逐元素一致。各 TP 的 Graph 时延中位数变化均在 0.02% 内。
 
 BW47 尾块实验在 TP1 和 TP2 各逐点复测 M=1–2048。TP1 保留 332 个补齐点，TP2 保留 114 个。M=257–2048 的 Graph 平均时延分别从 1.262 降至 1.212 ms、从 0.643 降至 0.638 ms。计时包含在线 X 转置和 BF16 写回。
+
+BW46 定频复测中，TP2 使用 Qwen3.8-27B 第 0 层权重和随机输入。相对 ce256fe，默认路径修改的 637 个 M 的几何平均加速为 1.078×，4096 个 M 的等权平均延迟从 1062.5 降到 1051.6 µs。预分配精确输出的 136 个变更点几何平均加速为 1.172×。按 M 预分配默认工作区的调用方应查询 `workspace_elements(M)`，覆盖所有 M 的最大容量仍为 40 MiB。计时包含在线 X 处理和 BF16 写回。
 
 ## INT8 单份 packed W
 

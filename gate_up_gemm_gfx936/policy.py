@@ -56,4 +56,10 @@ def bf16_padded_routes(n):
             )
         parts = original.split("-")[3]
         table[m] = f"kn-tail-{alignment}-{parts}"
+    previous = 0
+    for first, last, route in policy_sections("bf16", n).get("overrides", ()):
+        if not previous < first <= last <= MAX_M:
+            raise ValueError(f"Invalid BF16 default route interval {first}..{last}")
+        table[first : last + 1] = [route] * (last - first + 1)
+        previous = last
     return tuple(table)
