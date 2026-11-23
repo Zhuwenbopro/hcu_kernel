@@ -421,8 +421,8 @@
   },
   {
     "path": "gemm_gfx936/gate_up_gemm_gfx936/README.md",
-    "sha256": "b7cbba952d8bae1f5c2a531e6d5113a0bdf211aecc175e0f17734780418dfe29",
-    "bytes": 7303
+    "sha256": "97f6e19138c9d9d387575408ac4e52e612f634329f2c329e26b70e7f2903df08",
+    "bytes": 10256
   },
   {
     "path": "gemm_gfx936/gate_up_gemm_gfx936/__init__.py",
@@ -455,9 +455,19 @@
     "bytes": 4796
   },
   {
+    "path": "gemm_gfx936/gate_up_gemm_gfx936/build_int8_direct.py",
+    "sha256": "a272ce371f8a2d307631c1bfba742f6b9df5edee6ef6c695c144a1489f043af4",
+    "bytes": 3171
+  },
+  {
     "path": "gemm_gfx936/gate_up_gemm_gfx936/build_tools.py",
     "sha256": "b1a05744d824741f5adf3af0a3b9460756d67cb3011fc85806e935a509cffb88",
     "bytes": 1579
+  },
+  {
+    "path": "gemm_gfx936/gate_up_gemm_gfx936/int8-direct-policy.json",
+    "sha256": "a0845bd5b39bf5100730991529618a0835939250a3b8051812833253ef756b18",
+    "bytes": 25133
   },
   {
     "path": "gemm_gfx936/gate_up_gemm_gfx936/int8-policy.json",
@@ -468,6 +478,21 @@
     "path": "gemm_gfx936/gate_up_gemm_gfx936/int8.py",
     "sha256": "a3ae1786ecc244c7fd8aaf2d02869170afd560bfc37b17d18b6bbb83b6dcd42d",
     "bytes": 6763
+  },
+  {
+    "path": "gemm_gfx936/gate_up_gemm_gfx936/int8_direct.py",
+    "sha256": "634091beb116554dbbef84a811c6562eef1840b34f80f8cefb7a4047e1c3d302",
+    "bytes": 3367
+  },
+  {
+    "path": "gemm_gfx936/gate_up_gemm_gfx936/int8_direct_policy.py",
+    "sha256": "05152bf12f426c6109ad16dbe9deb6c525ed30e06bf3e8dbcc06a84d6cad86f6",
+    "bytes": 1004
+  },
+  {
+    "path": "gemm_gfx936/gate_up_gemm_gfx936/kernels/direct_x.py",
+    "sha256": "23c61d28f80588dc77984244919f03b5a144d5333c9855e8f4a544fd09c16a72",
+    "bytes": 13620
   },
   {
     "path": "gemm_gfx936/gate_up_gemm_gfx936/kernels/e047_bf16.s",

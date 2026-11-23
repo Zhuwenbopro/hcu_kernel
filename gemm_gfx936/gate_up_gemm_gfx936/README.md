@@ -82,3 +82,43 @@ BW47 GPU3、核心 1499 MHz / 显存 1800 MHz 定频复测，以 2bb232a 为基�
 | 512 | 191.68 | 183.60 |
 
 另在全部 200 个变更点和 22 个边界点用 3 个独立随机种子、每种子 7 轮交替复测。变更点整次调用几何平均加速为 1.073×，全部仍快于 main；合并版相对原调优版的整次调用时延比为 1.0009，重建未改变其性能。TP1 全部 4096 个 M 的路由及工作区尺寸保持一致，覆盖 19 个内核的 38 个实跑形状逐元素正确。
+
+### Direct X：M=1–128
+
+`DirectXInt8GateUpGemm` 是独立入口，支持 TP2 的 N=17408、K=5120、M=1–128。输入是连续、16 字节对齐的 INT8 `X[M,5120]` 和 FP32 `scale_x[M,1]`，输出 BF16 `Y[M,17408]`。每次调用只提交一个 GEMM kernel，`workspace_elements(M)` 为 0，无需补齐或单独打包 X。M>128 会报错。
+
+构建不需要先生成 packed-X 代码对象。结果写入独立的 `build/int8_direct`，不修改 `build/int8`：
+
+```bash
+source /opt/dtk/env.sh
+python -m gemm_gfx936.gate_up_gemm_gfx936.build_int8_direct
+```
+
+```python
+from gemm_gfx936.gate_up_gemm_gfx936.int8 import pack_int8_weight
+from gemm_gfx936.gate_up_gemm_gfx936.int8_direct import DirectXInt8GateUpGemm
+
+packed_w = pack_int8_weight(weight_nk)
+direct = DirectXInt8GateUpGemm(packed_w, scale_w)
+y = direct(x, scale_x)
+```
+
+packed W 格式与 `Int8GateUpGemm` 完全相同。若同时使用两种入口，可以将同一个 `packed_w` 传给两个实例，共享权重存储。原 `Int8GateUpGemm`、`int8-policy.json` 及其 M=1–4096 分发保持原样。可以传入精确形状的 `out[M,N]`；输出存储必须与输入分离。两种入口都使用调用方当前 stream，跨 stream 交接由调用方同步。
+
+`int8-direct-policy.json` 独立保存逐 M 路由及 33 个内核的生成参数，不读取 packed-X 路由表或历史实验二进制。M=1–63 保留此前的 direct 方案，M=64–128 使用重新调优的 tile、读取方式、拆分预取和 MMAC 分组。沿 N 分工时，coalesced 方式让相邻四个 lane 读取同一行的 K64 片段，并通过 LDS 读地址的逆映射恢复 MMAC 操作数。部分内核复用地址寄存器，或在同一个 GEMM 内通过寄存器预取 X、在原有同步点写入 LDS。
+
+这里“纯 GEMM＝整次”指预分配输出时的 GPU 执行时间，不包含输入量化、静态 W 准备或 CPU 调用开销。M 接近 128 时 direct 与 packed 整次调用接近，独立入口便于调用方按实际形状选择；默认入口仍为 packed-X 方案。
+
+在 BW47 GPU7 独占、核心1499 MHz / 显存1800 MHz 下验证：33 个 direct 代码对象与保存的实验方案逐字节一致，M=1–128 的随机输入、紧凑 X one-hot、输出边界、Graph 及非默认 stream 校验通过。重新构建 direct 前后，packed 构建目录内 157 个文件的哈希和修改时间均不变，其 53 个内核与 12bf4c2 一致。
+
+逐点使用 3 个独立种子、每种子 7 轮交替计时，每轮轮换 32 份独立 W。仓库入口相对实验入口的时延比几何平均为 0.99998，最慢点为 +0.31%；相对当前 packed 整次调用，M=1–128 的几何平均加速为 1.057×。同轮结果如下，单位 µs：
+
+| M | Direct X（纯＝整次） | packed X 整次 |
+|---:|---:|---:|
+| 1 | 66.08 | 68.70 |
+| 32 | 65.07 | 69.41 |
+| 64 | 66.71 | 72.83 |
+| 65 | 67.63 | 75.70 |
+| 96 | 74.79 | 77.24 |
+| 112 | 77.01 | 78.61 |
+| 128 | 79.27 | 79.85 |
