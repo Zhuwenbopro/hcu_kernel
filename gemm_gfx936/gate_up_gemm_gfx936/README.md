@@ -12,11 +12,11 @@ M=1–256 使用带实测路由的 GEMV、rolling MMAC、`torch.mm` 和 rocBLAS�
 
 ```bash
 source /opt/dtk/env.sh
-python -m gate_up_gemm_gfx936.build_bf16
+python -m gemm_gfx936.gate_up_gemm_gfx936.build_bf16
 ```
 
 ```python
-from gate_up_gemm_gfx936.bf16 import BF16GateUpGemm
+from gemm_gfx936.gate_up_gemm_gfx936.bf16 import BF16GateUpGemm
 
 op = BF16GateUpGemm(weight_kn)
 y = op(x)
@@ -40,11 +40,11 @@ BW47 尾块实验在 TP1 和 TP2 各逐点复测 M=1–2048。TP1 保留 332 个
 
 ```bash
 source /opt/dtk/env.sh
-python -m gate_up_gemm_gfx936.build_int8
+python -m gemm_gfx936.gate_up_gemm_gfx936.build_int8
 ```
 
 ```python
-from gate_up_gemm_gfx936.int8 import Int8GateUpGemm, pack_int8_weight
+from gemm_gfx936.gate_up_gemm_gfx936.int8 import Int8GateUpGemm, pack_int8_weight
 
 packed_w = pack_int8_weight(weight_nk)
 op = Int8GateUpGemm(packed_w, scale_w)

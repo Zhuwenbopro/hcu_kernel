@@ -39,7 +39,7 @@ def check_hip(status):
 def build_catalog(kind):
     path = BUILD / kind / "kernels.json"
     if not path.is_file():
-        raise RuntimeError(f"Run python -m gate_up_gemm_gfx936.build_{kind} first")
+        raise RuntimeError(f"Run python -m {__package__}.build_{kind} first")
     return json.loads(path.read_text(encoding="utf-8"))
 
 

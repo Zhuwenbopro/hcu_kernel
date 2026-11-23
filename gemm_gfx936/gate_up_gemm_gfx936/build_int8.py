@@ -7,7 +7,7 @@ from .kernels.int8_output import metadata, patch_generated
 from .kernels.packed_asm import render_kernel
 from .policy import K, MAX_M, ROOT, SHARDS, routes
 
-INCLUDES = ROOT.parent / "fused_gate_up_gemm_gfx936" / "sources"
+INCLUDES = ROOT.parent.parent / "fused_gate_up_gemm_gfx936" / "sources"
 FAMILY = re.compile(r"gu_int8_(\d+)_(n|m)(\d+)x(\d+)_(n|m)(?:_sp(\d+))?")
 
 

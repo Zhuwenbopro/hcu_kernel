@@ -3,7 +3,7 @@
 import json
 import re
 
-from lm_head_bf16_gfx936.kernels import rolling_asm
+from ..lm_head_bf16_gfx936.kernels import rolling_asm
 
 from .build_tools import (
     BUILD,

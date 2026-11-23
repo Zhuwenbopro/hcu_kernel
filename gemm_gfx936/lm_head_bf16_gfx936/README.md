@@ -9,14 +9,14 @@ Qwen3.8-27B TP2 的单 rank 前向算子。计算 `Y = X @ W`，覆盖 `1 <= M <
 从仓库根目录运行。
 
 ```bash
-python3 -m lm_head_bf16_gfx936.build
-HIP_VISIBLE_DEVICES=0 python3 -m lm_head_bf16_gfx936.validate
-HIP_VISIBLE_DEVICES=0 python3 -m lm_head_bf16_gfx936.validate --preset 20k
-HIP_VISIBLE_DEVICES=0 python3 -m lm_head_bf16_gfx936.audit
+python3 -m gemm_gfx936.lm_head_bf16_gfx936.build
+HIP_VISIBLE_DEVICES=0 python3 -m gemm_gfx936.lm_head_bf16_gfx936.validate
+HIP_VISIBLE_DEVICES=0 python3 -m gemm_gfx936.lm_head_bf16_gfx936.validate --preset 20k
+HIP_VISIBLE_DEVICES=0 python3 -m gemm_gfx936.lm_head_bf16_gfx936.audit
 ```
 
 ```python
-from lm_head_bf16_gfx936 import K, MAX_M, N, LMHead, route
+from gemm_gfx936.lm_head_bf16_gfx936 import K, MAX_M, N, LMHead, route
 
 # 在加载 rank 的 [N,K] checkpoint 分片时生成一份连续 [K,N] GPU 权重。
 weight_kn = weight_nk_cpu.T.contiguous().to("cuda")
@@ -45,9 +45,9 @@ W 必须是行连续 `[K,N]`，stride 为 `(N,1)`。X 必须是连续 `[M,K]`。
 ## 性能复现
 
 ```bash
-HIP_VISIBLE_DEVICES=0 python3 -m lm_head_bf16_gfx936.benchmark --m 1,2,3,4,15,65,129,4096,20479,20480
-HIP_VISIBLE_DEVICES=0 python3 -m lm_head_bf16_gfx936.benchmark --preset dense-4k --csv build/lm-head-4k.csv
-HIP_VISIBLE_DEVICES=0 python3 -m lm_head_bf16_gfx936.benchmark --preset long-sample --csv build/lm-head-20k.csv
+HIP_VISIBLE_DEVICES=0 python3 -m gemm_gfx936.lm_head_bf16_gfx936.benchmark --m 1,2,3,4,15,65,129,4096,20479,20480
+HIP_VISIBLE_DEVICES=0 python3 -m gemm_gfx936.lm_head_bf16_gfx936.benchmark --preset dense-4k --csv build/lm-head-4k.csv
+HIP_VISIBLE_DEVICES=0 python3 -m gemm_gfx936.lm_head_bf16_gfx936.benchmark --preset long-sample --csv build/lm-head-20k.csv
 ```
 
 每个测量使用等值的合成输入和权重。原服务基线为 `torch.mm(X, W_NK.T)`，物理 W 为连续 `[N,K]`。优化版与基线在同一卡上交替测试，重用同一块 GPU 权重分配。每个 M 预热一次，取 5 个 HIP event 区间的中位数。在打乱 M 后按批次交替基线与优化的执行顺序。计时覆盖 X 在线转置、尾部补零和输出写回。权重布局转换、上传和分配在计时区间外。
@@ -83,15 +83,15 @@ M=20480 的 X 转置独立计时为 0.567 ms。M=20479 与它使用相同的 P �
 在 DTK 26.10 nightly-1112 环境下构建可选调优路径。构建会反汇编 7 个 rolling code object，检查固定寄存器、LDS、scratch 和稳态循环中 W 的发射顺序。审计记录位于 `build/rolling/audit.json`。
 
 ```bash
-python3 -m lm_head_bf16_gfx936.build --tuned
-HIP_VISIBLE_DEVICES=0 python3 -m lm_head_bf16_gfx936.validate --preset tuned --graph
-HIP_VISIBLE_DEVICES=0 python3 -m lm_head_bf16_gfx936.validate --preset 20k --tuned --graph
-HIP_VISIBLE_DEVICES=0 python3 -m lm_head_bf16_gfx936.audit --tuned --dispatch-only --m 1,4,33,65,128,192,193,256,257,512,754,768,1009,1024,1125,2049
-HIP_VISIBLE_DEVICES=0 python3 -m lm_head_bf16_gfx936.benchmark --tuned --preset dense-2k --csv build/lm-head-merged-2k.csv
+python3 -m gemm_gfx936.lm_head_bf16_gfx936.build --tuned
+HIP_VISIBLE_DEVICES=0 python3 -m gemm_gfx936.lm_head_bf16_gfx936.validate --preset tuned --graph
+HIP_VISIBLE_DEVICES=0 python3 -m gemm_gfx936.lm_head_bf16_gfx936.validate --preset 20k --tuned --graph
+HIP_VISIBLE_DEVICES=0 python3 -m gemm_gfx936.lm_head_bf16_gfx936.audit --tuned --dispatch-only --m 1,4,33,65,128,192,193,256,257,512,754,768,1009,1024,1125,2049
+HIP_VISIBLE_DEVICES=0 python3 -m gemm_gfx936.lm_head_bf16_gfx936.benchmark --tuned --preset dense-2k --csv build/lm-head-merged-2k.csv
 ```
 
 ```python
-from lm_head_bf16_gfx936 import LMHead, route, workspace_rows
+from gemm_gfx936.lm_head_bf16_gfx936 import LMHead, route, workspace_rows
 
 head = LMHead(weight_kn, tuned=True)
 logits = head(hidden_states)

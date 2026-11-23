@@ -99,7 +99,7 @@ def preload(device):
 
         audit = _BUILD / "audit.json"
         if not audit.is_file():
-            raise RuntimeError("Run python -m lm_head_bf16_gfx936.build --tuned")
+            raise RuntimeError(f"Run python -m {__package__}.build --tuned")
         hashes = json.loads(audit.read_text())
         paths = {}
         for kernel in policy()[0]:

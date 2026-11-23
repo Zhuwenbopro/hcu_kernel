@@ -1,8 +1,8 @@
 [
   {
     "path": "README.md",
-    "sha256": "dd230723a8c1bd5b66d259ea150a9fb20964420fec7087341e661489b304f6e0",
-    "bytes": 4864
+    "sha256": "28813fe92fc48883876e0f9970421db34d569dedd657af89efc73fcd7ce57b46",
+    "bytes": 4944
   },
   {
     "path": "decode_gemm_int8_gfx936/README.md",
@@ -365,91 +365,6 @@
     "bytes": 6407
   },
   {
-    "path": "gate_up_gemm_gfx936/README.md",
-    "sha256": "4a0f6c6b0b319790f0f9feeae55e26d410fe43d0b981e42332949c3ee191c104",
-    "bytes": 3692
-  },
-  {
-    "path": "gate_up_gemm_gfx936/__init__.py",
-    "sha256": "b80c2485ffa171083972271d06363879f3a37e7eb8d245050524e4aee673a926",
-    "bytes": 46
-  },
-  {
-    "path": "gate_up_gemm_gfx936/bf16-policy.json",
-    "sha256": "729135b36919568aa88256752698e222e50912a3408a40737b375ee4247c8910",
-    "bytes": 22234
-  },
-  {
-    "path": "gate_up_gemm_gfx936/bf16-rolling.json",
-    "sha256": "5fa500975e5e1bd81c569a318e2b71d5ac3f91288995e2abba512bce115dd250",
-    "bytes": 1345
-  },
-  {
-    "path": "gate_up_gemm_gfx936/bf16.py",
-    "sha256": "35a97d027d3fe5f6c11e2b888ff9269045c7c2c6a779a1e5d95b75d452d78d0c",
-    "bytes": 8421
-  },
-  {
-    "path": "gate_up_gemm_gfx936/build_bf16.py",
-    "sha256": "f73a78deadea2a7689cd11ab5f839245d6c8acaec1b63557d1286b62808c807f",
-    "bytes": 2378
-  },
-  {
-    "path": "gate_up_gemm_gfx936/build_int8.py",
-    "sha256": "5381679b42e5f379cd58a2bbf75af8773339a696994fc1aeae165d9a16ada38e",
-    "bytes": 2970
-  },
-  {
-    "path": "gate_up_gemm_gfx936/build_tools.py",
-    "sha256": "b1a05744d824741f5adf3af0a3b9460756d67cb3011fc85806e935a509cffb88",
-    "bytes": 1579
-  },
-  {
-    "path": "gate_up_gemm_gfx936/int8-policy.json",
-    "sha256": "2bf0ac2c2c842aed9d2e22f369b0bb8ff8a971daae04643bb3acf8e2279b947e",
-    "bytes": 47838
-  },
-  {
-    "path": "gate_up_gemm_gfx936/int8.py",
-    "sha256": "4a174b15706d6debfa1a87084c07bd74e86aefbb51ba104d2c8e1a9e7700d152",
-    "bytes": 5212
-  },
-  {
-    "path": "gate_up_gemm_gfx936/kernels/gate_up_gemv.hip",
-    "sha256": "3770a69fa8f36d5d7e093e2c99d9a0c12acdccfd1f6850a06d90bc84905122c0",
-    "bytes": 2600
-  },
-  {
-    "path": "gate_up_gemm_gfx936/kernels/int8_metadata.yaml",
-    "sha256": "bfe4543d796a532880836292e3b6cc2d6e171d6bc8513735c92d1d388b33808d",
-    "bytes": 2107
-  },
-  {
-    "path": "gate_up_gemm_gfx936/kernels/int8_output.py",
-    "sha256": "ab002f1912d9e8aad36ef2ec042ced4bdb622f98cb3185a5a16408be8b4ebac0",
-    "bytes": 4218
-  },
-  {
-    "path": "gate_up_gemm_gfx936/kernels/kn_blas.cpp",
-    "sha256": "fd082f81f0b3f6127ec3d2b22e4b0b6d047c39ba05ddb7f08eddc17ae5c684c1",
-    "bytes": 1160
-  },
-  {
-    "path": "gate_up_gemm_gfx936/kernels/packed_asm.py",
-    "sha256": "b4ec477cd7cd477e418e45719f3502c6ef90d18a89627bbf5d2a09f081804d73",
-    "bytes": 20164
-  },
-  {
-    "path": "gate_up_gemm_gfx936/policy.py",
-    "sha256": "e16ba44e2a154c27d7b1934a9e7961f89cbee11fa76e957222c70075551396d7",
-    "bytes": 1986
-  },
-  {
-    "path": "gate_up_gemm_gfx936/runtime.py",
-    "sha256": "b23e7e462eff70cb3b871f6ab773df47fedd272e0d26982d813943c1fb736d14",
-    "bytes": 4718
-  },
-  {
     "path": "gated_rms_norm_per_token_fp8_quant_gfx938/README.md",
     "sha256": "5ecae92544aba498a2e932ed4dece6bc9fd3939f06acc660a5c1b8120945d085",
     "bytes": 1589
@@ -500,6 +415,196 @@
     "bytes": 3837
   },
   {
+    "path": "gemm_gfx936/__init__.py",
+    "sha256": "38fa17f741ad4559c0907fae1be62d6cae7110a9c9f54b90c4abe115b0337640",
+    "bytes": 31
+  },
+  {
+    "path": "gemm_gfx936/gate_up_gemm_gfx936/README.md",
+    "sha256": "27665684c94a7ce6460a3a386d33ae26685f351c65a010086ea632c952eff550",
+    "bytes": 3740
+  },
+  {
+    "path": "gemm_gfx936/gate_up_gemm_gfx936/__init__.py",
+    "sha256": "b80c2485ffa171083972271d06363879f3a37e7eb8d245050524e4aee673a926",
+    "bytes": 46
+  },
+  {
+    "path": "gemm_gfx936/gate_up_gemm_gfx936/bf16-policy.json",
+    "sha256": "729135b36919568aa88256752698e222e50912a3408a40737b375ee4247c8910",
+    "bytes": 22234
+  },
+  {
+    "path": "gemm_gfx936/gate_up_gemm_gfx936/bf16-rolling.json",
+    "sha256": "5fa500975e5e1bd81c569a318e2b71d5ac3f91288995e2abba512bce115dd250",
+    "bytes": 1345
+  },
+  {
+    "path": "gemm_gfx936/gate_up_gemm_gfx936/bf16.py",
+    "sha256": "35a97d027d3fe5f6c11e2b888ff9269045c7c2c6a779a1e5d95b75d452d78d0c",
+    "bytes": 8421
+  },
+  {
+    "path": "gemm_gfx936/gate_up_gemm_gfx936/build_bf16.py",
+    "sha256": "90d1beedb279951f8b01a2c2b5e38419f401bed36ad9321e6553cfd4e5b5aa99",
+    "bytes": 2380
+  },
+  {
+    "path": "gemm_gfx936/gate_up_gemm_gfx936/build_int8.py",
+    "sha256": "23b86ec8f08e6a0239593410de928a55adb6fffb7a0538a29eb6f7f092ab2731",
+    "bytes": 2977
+  },
+  {
+    "path": "gemm_gfx936/gate_up_gemm_gfx936/build_tools.py",
+    "sha256": "b1a05744d824741f5adf3af0a3b9460756d67cb3011fc85806e935a509cffb88",
+    "bytes": 1579
+  },
+  {
+    "path": "gemm_gfx936/gate_up_gemm_gfx936/int8-policy.json",
+    "sha256": "2bf0ac2c2c842aed9d2e22f369b0bb8ff8a971daae04643bb3acf8e2279b947e",
+    "bytes": 47838
+  },
+  {
+    "path": "gemm_gfx936/gate_up_gemm_gfx936/int8.py",
+    "sha256": "4a174b15706d6debfa1a87084c07bd74e86aefbb51ba104d2c8e1a9e7700d152",
+    "bytes": 5212
+  },
+  {
+    "path": "gemm_gfx936/gate_up_gemm_gfx936/kernels/gate_up_gemv.hip",
+    "sha256": "3770a69fa8f36d5d7e093e2c99d9a0c12acdccfd1f6850a06d90bc84905122c0",
+    "bytes": 2600
+  },
+  {
+    "path": "gemm_gfx936/gate_up_gemm_gfx936/kernels/int8_metadata.yaml",
+    "sha256": "bfe4543d796a532880836292e3b6cc2d6e171d6bc8513735c92d1d388b33808d",
+    "bytes": 2107
+  },
+  {
+    "path": "gemm_gfx936/gate_up_gemm_gfx936/kernels/int8_output.py",
+    "sha256": "ab002f1912d9e8aad36ef2ec042ced4bdb622f98cb3185a5a16408be8b4ebac0",
+    "bytes": 4218
+  },
+  {
+    "path": "gemm_gfx936/gate_up_gemm_gfx936/kernels/kn_blas.cpp",
+    "sha256": "fd082f81f0b3f6127ec3d2b22e4b0b6d047c39ba05ddb7f08eddc17ae5c684c1",
+    "bytes": 1160
+  },
+  {
+    "path": "gemm_gfx936/gate_up_gemm_gfx936/kernels/packed_asm.py",
+    "sha256": "b4ec477cd7cd477e418e45719f3502c6ef90d18a89627bbf5d2a09f081804d73",
+    "bytes": 20164
+  },
+  {
+    "path": "gemm_gfx936/gate_up_gemm_gfx936/policy.py",
+    "sha256": "e16ba44e2a154c27d7b1934a9e7961f89cbee11fa76e957222c70075551396d7",
+    "bytes": 1986
+  },
+  {
+    "path": "gemm_gfx936/gate_up_gemm_gfx936/runtime.py",
+    "sha256": "0323cb58e64e04de321b4d5bef24a7fa4147bdc9112c3f64920a11e38e88658d",
+    "bytes": 4712
+  },
+  {
+    "path": "gemm_gfx936/lm_head_bf16_gfx936/README.md",
+    "sha256": "f13983cd71ecd352792a6a560e15214df52b045259327d60369e61343ce012b3",
+    "bytes": 7678
+  },
+  {
+    "path": "gemm_gfx936/lm_head_bf16_gfx936/__init__.py",
+    "sha256": "1a6389dbddb00cd4ba34159760d302669b4c7bb756e7c8a39b74874d0a1f0285",
+    "bytes": 182
+  },
+  {
+    "path": "gemm_gfx936/lm_head_bf16_gfx936/active-x-policy.json",
+    "sha256": "63e5d78d9c8c2ada629936aecbab6a4b3298e7e727258fdd4d34501c184f3b8e",
+    "bytes": 5152
+  },
+  {
+    "path": "gemm_gfx936/lm_head_bf16_gfx936/audit.py",
+    "sha256": "1d258ea2786c86df9369797e339adf4dcf468a306797be5fbaf13f551c539b69",
+    "bytes": 16846
+  },
+  {
+    "path": "gemm_gfx936/lm_head_bf16_gfx936/benchmark.py",
+    "sha256": "bfbe6ae3a7c19756df0f087f50d74a8a5492a5bc62afeb01da415a622ac4e432",
+    "bytes": 9630
+  },
+  {
+    "path": "gemm_gfx936/lm_head_bf16_gfx936/build.py",
+    "sha256": "2b065e46ea1cea0c24b3415fed80825dc9b2f0aad6db9ed5483ca0507a1120a0",
+    "bytes": 5393
+  },
+  {
+    "path": "gemm_gfx936/lm_head_bf16_gfx936/kernels/indexed.cpp",
+    "sha256": "b204bab97730249994847e424dca43c5b44baf35ad21974131efd1800180c2ce",
+    "bytes": 2693
+  },
+  {
+    "path": "gemm_gfx936/lm_head_bf16_gfx936/kernels/rolling_asm.py",
+    "sha256": "abd71a249a7452f086b74e7e8cfc5325664fc3a02760d3a3cf6e6872af9be794",
+    "bytes": 12413
+  },
+  {
+    "path": "gemm_gfx936/lm_head_bf16_gfx936/kernels/scalar.hip",
+    "sha256": "94449f216fd9402cf2d1868f2613aa8b12d82eb10873885df96361738fabdaa9",
+    "bytes": 2963
+  },
+  {
+    "path": "gemm_gfx936/lm_head_bf16_gfx936/kernels/single.hip",
+    "sha256": "289de84293abee8befd909b078d8fe9e6c86e99e3fc5e1aac6d2811dec5fede6",
+    "bytes": 2593
+  },
+  {
+    "path": "gemm_gfx936/lm_head_bf16_gfx936/lm_head.py",
+    "sha256": "743f49e42ab24ff2bd4e47b46a1513bd4a49b88a9858b2d5da040971728a3f95",
+    "bytes": 7071
+  },
+  {
+    "path": "gemm_gfx936/lm_head_bf16_gfx936/medium-policy.json",
+    "sha256": "113f62aa0d19533a4ab8f1ddcd7722e0658833cc6154c69e0cbb4d31360c7577",
+    "bytes": 1000
+  },
+  {
+    "path": "gemm_gfx936/lm_head_bf16_gfx936/native.py",
+    "sha256": "0378936b78add8469958df143a7a38f333d7b0a629b1f2509b1e9276b62142b3",
+    "bytes": 2679
+  },
+  {
+    "path": "gemm_gfx936/lm_head_bf16_gfx936/results.json",
+    "sha256": "d0e6414958bd141f6321fd149f3b81267e75ca5a1cb073bd9eddc7b52f82bbf3",
+    "bytes": 12487
+  },
+  {
+    "path": "gemm_gfx936/lm_head_bf16_gfx936/rolling-policy.json",
+    "sha256": "ffb13ba307781d0b439d05124474c30f0aa1e80ce34d01a04f3abbbbfb83e70d",
+    "bytes": 2794
+  },
+  {
+    "path": "gemm_gfx936/lm_head_bf16_gfx936/rolling.py",
+    "sha256": "5fb9f6ef76d5aeaf3aec7614e15077404d8caf4f1fe2de882b94075cc6c8230e",
+    "bytes": 5074
+  },
+  {
+    "path": "gemm_gfx936/lm_head_bf16_gfx936/small-policy.json",
+    "sha256": "5d8ad7e85fc1b7c50b50bd332def463285069f3b70b11bec26d6b329d1883e72",
+    "bytes": 41577
+  },
+  {
+    "path": "gemm_gfx936/lm_head_bf16_gfx936/triton_kernel.py",
+    "sha256": "e6d16dad0e4550f18749a11a1ff805d2aed797f447be82c29608bfac797d6840",
+    "bytes": 1623
+  },
+  {
+    "path": "gemm_gfx936/lm_head_bf16_gfx936/tuned-results.json",
+    "sha256": "101c9f47e870bd2bd11b868e6ef882f88a7769be7959658d235a1bae36f58fe5",
+    "bytes": 5633
+  },
+  {
+    "path": "gemm_gfx936/lm_head_bf16_gfx936/validate.py",
+    "sha256": "ecac9f6c58015a4e617b609da10a5ff6c0e9635607f5c00bf4f8c9739e4c648e",
+    "bytes": 6406
+  },
+  {
     "path": "gemma_fused_add_rmsnorm_int8_fp32_gfx936/Makefile",
     "sha256": "8a846f79e9a9cc2f839ed571fc4f5f6cf519a2c3a1033266fdfff6aecbd8537b",
     "bytes": 193
@@ -538,100 +643,5 @@
     "path": "gemma_fused_add_rmsnorm_int8_fp32_gfx936/test_gemma_int8_5120.py",
     "sha256": "1fb64c6468ab042b04565745b18c531bcd7851c834b68b9670933ee7c7b663ce",
     "bytes": 1834
-  },
-  {
-    "path": "lm_head_bf16_gfx936/README.md",
-    "sha256": "1e404b60e7d41e941baa7abaa9c8bca45813bf65e1fd82dfc26ed84e9295be4a",
-    "bytes": 8012
-  },
-  {
-    "path": "lm_head_bf16_gfx936/__init__.py",
-    "sha256": "693ffce253d1d44bc9802cd4c48c8a6c2db817cc38ea136cb641a59f8ec537af",
-    "bytes": 148
-  },
-  {
-    "path": "lm_head_bf16_gfx936/audit.py",
-    "sha256": "9f333768e7fe52598ee8d42229b33f2a7dd396ebf01fc6357a04b20cd0872781",
-    "bytes": 16488
-  },
-  {
-    "path": "lm_head_bf16_gfx936/benchmark.py",
-    "sha256": "5c6e87a48e86ae4dfdeb5d87d60ae2dd85d8e5574af5fc5eded2ec54835e5c6e",
-    "bytes": 9548
-  },
-  {
-    "path": "lm_head_bf16_gfx936/build.py",
-    "sha256": "2b065e46ea1cea0c24b3415fed80825dc9b2f0aad6db9ed5483ca0507a1120a0",
-    "bytes": 5393
-  },
-  {
-    "path": "lm_head_bf16_gfx936/kernels/indexed.cpp",
-    "sha256": "2ea32eed7065e8fb3c54361663775a1aa6373cf404c7e87ecb9884b8f5655097",
-    "bytes": 2435
-  },
-  {
-    "path": "lm_head_bf16_gfx936/kernels/rolling_asm.py",
-    "sha256": "abd71a249a7452f086b74e7e8cfc5325664fc3a02760d3a3cf6e6872af9be794",
-    "bytes": 12413
-  },
-  {
-    "path": "lm_head_bf16_gfx936/kernels/scalar.hip",
-    "sha256": "94449f216fd9402cf2d1868f2613aa8b12d82eb10873885df96361738fabdaa9",
-    "bytes": 2963
-  },
-  {
-    "path": "lm_head_bf16_gfx936/kernels/single.hip",
-    "sha256": "289de84293abee8befd909b078d8fe9e6c86e99e3fc5e1aac6d2811dec5fede6",
-    "bytes": 2593
-  },
-  {
-    "path": "lm_head_bf16_gfx936/lm_head.py",
-    "sha256": "0a03f6af2dd4954879be3dd3f09f623ed86fc4882267c010571f05323f704eeb",
-    "bytes": 5033
-  },
-  {
-    "path": "lm_head_bf16_gfx936/medium-policy.json",
-    "sha256": "55e5d487d5a04e9969de3b9dfdd6e39a514a967113be4e5cbf2563a9c4f4220f",
-    "bytes": 1346
-  },
-  {
-    "path": "lm_head_bf16_gfx936/native.py",
-    "sha256": "3cd4e5f7eaa7bb3207536374324811d613fcb6e1583ada7cdd538d2797154e7c",
-    "bytes": 1981
-  },
-  {
-    "path": "lm_head_bf16_gfx936/results.json",
-    "sha256": "d0e6414958bd141f6321fd149f3b81267e75ca5a1cb073bd9eddc7b52f82bbf3",
-    "bytes": 12487
-  },
-  {
-    "path": "lm_head_bf16_gfx936/rolling-policy.json",
-    "sha256": "ffb13ba307781d0b439d05124474c30f0aa1e80ce34d01a04f3abbbbfb83e70d",
-    "bytes": 2794
-  },
-  {
-    "path": "lm_head_bf16_gfx936/rolling.py",
-    "sha256": "ac646744e503a14c78a9410a1487b57d23a7653361b275025d9271b57b1ba0f6",
-    "bytes": 5079
-  },
-  {
-    "path": "lm_head_bf16_gfx936/small-policy.json",
-    "sha256": "5d8ad7e85fc1b7c50b50bd332def463285069f3b70b11bec26d6b329d1883e72",
-    "bytes": 41577
-  },
-  {
-    "path": "lm_head_bf16_gfx936/triton_kernel.py",
-    "sha256": "9c82fd9280ad386e48b9fee0c8fd6bd1896b915c1f7ff0375642d9c55775d794",
-    "bytes": 960
-  },
-  {
-    "path": "lm_head_bf16_gfx936/tuned-results.json",
-    "sha256": "101c9f47e870bd2bd11b868e6ef882f88a7769be7959658d235a1bae36f58fe5",
-    "bytes": 5633
-  },
-  {
-    "path": "lm_head_bf16_gfx936/validate.py",
-    "sha256": "72c10313d8918b5c748233bdd82a1a953ccf05b397a6495d834470df56fa0d07",
-    "bytes": 6193
   }
 ]

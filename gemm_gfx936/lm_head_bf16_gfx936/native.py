@@ -13,7 +13,7 @@ _INT = ctypes.c_int
 def _entry(name, symbol, argtypes):
     library = _BUILD / f"{name}.so"
     if not library.is_file():
-        raise RuntimeError(f"{library.name} is missing. Run python -m lm_head_bf16_gfx936.build")
+        raise RuntimeError(f"{library.name} is missing. Run python -m {__package__}.build")
     fn = getattr(ctypes.CDLL(str(library)), symbol)
     fn.argtypes = argtypes
     fn.restype = _INT
