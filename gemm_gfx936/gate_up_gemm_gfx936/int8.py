@@ -41,6 +41,21 @@ def _pack(
     tl.store(Dst + stage * Pad * Stage + z, value, z < Pad * Stage)
 
 
+@triton.jit
+def _pack_x_tile(Src, Dst, M, Pitch):
+    # Read 16 contiguous row segments and reorder four K64 stages to match
+    # the assembly kernel's packed-X fragment order.
+    rows = tl.program_id(0) * 16 + tl.arange(0, 16)
+    cols = tl.program_id(1) * 256 + tl.arange(0, 256)
+    tile = tl.load(Src + rows[:, None] * 5120 + cols[None, :], rows[:, None] < M, 0)
+    tile = tl.reshape(tile, (16, 4, 4, 16))
+    tile = tl.permute(tile, (1, 2, 0, 3))
+    tile = tl.reshape(tile, (4, 1024))
+    stages = tl.program_id(1) * 4 + tl.arange(0, 4)
+    offsets = tl.program_id(0) * 1024 + tl.arange(0, 1024)
+    tl.store(Dst + stages[:, None] * (Pitch * 64) + offsets[None, :], tile)
+
+
 def _pack_into(source, dest, rows, *, weight=False):
     _pack[(triton.cdiv(rows * STAGE_K, 4096), K // STAGE_K)](
         source,
@@ -131,7 +146,10 @@ class Int8GateUpGemm:
                 raise ValueError(
                     "Output and workspace require separate storage from each other and the inputs"
                 )
-            _pack_into(x, workspace, pitch)
+            if self.n == 17408 and m >= 257:
+                _pack_x_tile[(pitch // 16, K // 256)](x, workspace, m, pitch, num_warps=4)
+            else:
+                _pack_into(x, workspace, pitch)
             active = torch.cuda.current_stream(self.device)
             args = (
                 PTR(workspace.data_ptr()),

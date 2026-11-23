@@ -37,6 +37,16 @@ def routes(kind, n, mode="default"):
     return tuple(result)
 
 
+def bf16_override_ranges(n, section="overrides"):
+    ranges = policy_sections("bf16", n).get(section, ())
+    previous = 0
+    for first, last, _ in ranges:
+        if not previous < first <= last <= MAX_M:
+            raise ValueError(f"Invalid BF16 {section} interval {first}..{last} for N={n}")
+        previous = last
+    return ranges
+
+
 @lru_cache(maxsize=None)
 def bf16_padded_routes(n):
     """Apply the measured active-M overrides to the default output path."""
@@ -56,4 +66,6 @@ def bf16_padded_routes(n):
             )
         parts = original.split("-")[3]
         table[m] = f"kn-tail-{alignment}-{parts}"
+    for first, last, route in bf16_override_ranges(n):
+        table[first : last + 1] = [route] * (last - first + 1)
     return tuple(table)

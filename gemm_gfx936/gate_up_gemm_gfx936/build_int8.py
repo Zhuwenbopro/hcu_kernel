@@ -31,7 +31,9 @@ def build_family(name, n, dest):
     phase = "split_private_then_shared" if prefetch else "legacy"
     text, spec = render_kernel(direction, bm, prefetch, "both", phase, bn=bn)
     spec["direction"] = direction
-    text = metadata(patch_generated(text, spec)[0])
+    # Use ordinary global stores for TP2 M-major 256-column tiles.
+    store_flags = "" if n == 17408 and bn == 256 and order == "m" else "glc slc"
+    text = metadata(patch_generated(text, spec, store_flags)[0])
     text = re.sub(r"\b" + re.escape(spec["family"]) + r"\b", name, text)
     text = replace_once(text, "s_mov_b32 s17, 0x110000", f"s_mov_b32 s17, {n * 64}")
     rows = spec["PF"] if direction == "M" else spec["SF"]

@@ -60,7 +60,7 @@ def conversion(a, sx, sw, tmp, addr, offset, flags="glc slc"):
     return "\n".join(out) + "\n"
 
 
-def patch_generated(source, rec):
+def patch_generated(source, rec, store_flags="glc slc"):
     # All K-loop instructions remain verbatim. Only the final output region changes.
     addr = list(range(rec["address_registers"][0], rec["address_registers"][-1] + 1))
     col, row, offset = addr[3], addr[7], addr[8]
@@ -106,7 +106,7 @@ def patch_generated(source, rec):
         ptr, a, o = int(m[1]), int(m[2]), int(m[3], 0)
         prefix = "GEMM_WAIT_VM 0\n" if call[0] % len(offsets) == 0 else ""
         call[0] += 1
-        return prefix + conversion(a, sx, t + 4 * offsets.index(o), tmp, ptr, o)
+        return prefix + conversion(a, sx, t + 4 * offsets.index(o), tmp, ptr, o, store_flags)
 
     ep = re.sub(pat, repl, ep)
     assert call[0] == len(stores)
