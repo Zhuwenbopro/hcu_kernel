@@ -16,6 +16,7 @@
 - [gated_rms_norm_per_token_int8_quant/](gated_rms_norm_per_token_int8_quant/) 提供 GDN RMSNorm、SiLU gate 和 per-token INT8 的 Triton 融合，包含 gfx936 24-head 特化。
 - [gated_rms_norm_per_token_fp8_quant_gfx938/](gated_rms_norm_per_token_fp8_quant_gfx938/) 提供 gfx938 的 GDN gated RMSNorm、SiLU gate 和 per-token FP8 E4M3FN 融合，含正确性测试和两段式对照基准。
 - `fused_sigmoid_mul_per_token_quant/`：Triton Attention sigmoid-mul + per-token INT8 quant
+- [hbm_read_gfx938/](hbm_read_gfx938/) 提供 gfx938 的 BF16 LM head 权重纯读基准，含 CU mask、CTA 时间戳和 XProf 复测。
 
 LightOp 目录保留 kernel、Python 接口、必要的 `reduce.h` 和 focused tests/benchmark helper；完整注册、编译系统和运行时依赖仍由上游 LightOp 工程提供。GEMM 目录可用 DTK hipcc 独立编译，调用依赖 HCU 版 PyTorch。
 

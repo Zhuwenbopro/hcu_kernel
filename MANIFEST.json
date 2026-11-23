@@ -1,8 +1,8 @@
 [
   {
     "path": "README.md",
-    "sha256": "28813fe92fc48883876e0f9970421db34d569dedd657af89efc73fcd7ce57b46",
-    "bytes": 4944
+    "sha256": "7ce1e7336f9d3e8cd29edfb72a195e1cc69bcbfc848725984779c1ad65b48ef5",
+    "bytes": 5082
   },
   {
     "path": "decode_gemm_int8_gfx936/README.md",
@@ -678,5 +678,25 @@
     "path": "gemma_fused_add_rmsnorm_int8_fp32_gfx936/test_gemma_int8_5120.py",
     "sha256": "1fb64c6468ab042b04565745b18c531bcd7851c834b68b9670933ee7c7b663ce",
     "bytes": 1834
+  },
+  {
+    "path": "hbm_read_gfx938/README.md",
+    "sha256": "868507529f52ebc0d8ba18852a1dc1f1fad21675c03bd2183adfc32b6a8b38c0",
+    "bytes": 4558
+  },
+  {
+    "path": "hbm_read_gfx938/benchmark.py",
+    "sha256": "fd8571f5b6a201b7bae27424fcfffe7dc05b4c3c9d084af5f9957adfe0e6c26c",
+    "bytes": 11217
+  },
+  {
+    "path": "hbm_read_gfx938/build.py",
+    "sha256": "e67d8b0805b76aa24d24a887ff048ddd8814b0a3a1dec69d0eb5945a650e3ebd",
+    "bytes": 2026
+  },
+  {
+    "path": "hbm_read_gfx938/read_xr.s",
+    "sha256": "52dc71b25774424717b4514942e6faf52938b682af2ae158c63fb2e14c8dcc63",
+    "bytes": 4517
   }
 ]
