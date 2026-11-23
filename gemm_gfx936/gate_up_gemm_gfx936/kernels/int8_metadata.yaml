@@ -32,7 +32,7 @@ amdhsa.kernels:
     .language_version:
       - 2
       - 0
-    .max_flat_workgroup_size: 256
+    .max_flat_workgroup_size: {threads}
     .name:           {symbol}
     .private_segment_fixed_size: 0
     .sgpr_count:     36

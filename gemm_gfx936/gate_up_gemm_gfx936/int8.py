@@ -56,6 +56,16 @@ def _pack_x_tile(Src, Dst, M, Pitch):
     tl.store(Dst + stages[:, None] * (Pitch * 64) + offsets[None, :], tile)
 
 
+@triton.jit
+def _pack_x_linear(SRC, DST, rows, PAD: tl.constexpr, K: tl.constexpr, BLOCK: tl.constexpr):
+    # Traverse packed output contiguously; PAD is part of the tuned launch contract.
+    z = tl.program_id(0) * BLOCK + tl.arange(0, BLOCK)
+    row = ((z // 1024) % (PAD // 16)) * 16 + (z // 16) % 16
+    col = (z // (PAD * 64)) * 64 + ((z // 256) % 4) * 16 + z % 16
+    value = tl.load(SRC + row * K + col, (z < PAD * K) & (row < rows), 0)
+    tl.store(DST + z, value, z < PAD * K)
+
+
 def _pack_into(source, dest, rows, *, weight=False):
     _pack[(triton.cdiv(rows * STAGE_K, 4096), K // STAGE_K)](
         source,
@@ -107,7 +117,7 @@ class Int8GateUpGemm:
             family, _, skew = name.partition("+")
             spec = catalog[family]
             bias = int(skew) if skew else 0
-            if bias not in range(0, 129, 16):
+            if bias not in range(0, 257, 16):
                 raise ValueError(f"Unsupported X pitch skew in {name}")
             self._kernels[name] = (load_assembly("int8", self.device, spec), spec, bias)
 
@@ -146,7 +156,11 @@ class Int8GateUpGemm:
                 raise ValueError(
                     "Output and workspace require separate storage from each other and the inputs"
                 )
-            if self.n == 17408 and m >= 257:
+            if spec.get("x_packer") == "linear":
+                _pack_x_linear[(triton.cdiv(pitch * K, 4096),)](
+                    x, workspace, m, pitch, K, 4096, num_warps=4
+                )
+            elif self.n == 17408 and m >= 257:
                 _pack_x_tile[(pitch // 16, K // 256)](x, workspace, m, pitch, num_warps=4)
             else:
                 _pack_into(x, workspace, pitch)
@@ -162,6 +176,6 @@ class Int8GateUpGemm:
                 PTR(scale_x.data_ptr()),
                 PTR(self.scale_w.data_ptr()),
             )
-            kernel.launch(grid, 256, args, active.cuda_stream)
+            kernel.launch(grid, spec.get("waves", 4) * 64, args, active.cuda_stream)
             record_stream(active, *operands, out, workspace)
         return out

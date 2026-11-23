@@ -1,0 +1,192 @@
+{
+  "gu_int8_17408_tuned_e047": {
+    "source": "e047_bf16.s",
+    "symbol": "_Z8reg_E047ILi0ELi0ELi0EEvPKaS1_Piiiii",
+    "bm": 128,
+    "bn": 128,
+    "order": "n",
+    "lds": 16384,
+    "vgprs": 128,
+    "waves": 4,
+    "x_packer": "linear"
+  },
+  "gu_int8_17408_tuned_e047_fixed": {
+    "source": "e047_bf16.s",
+    "symbol": "_Z8reg_E047ILi128ELi17408ELi5120EEvPKaS1_Piiiii",
+    "bm": 128,
+    "bn": 128,
+    "order": "n",
+    "lds": 16384,
+    "vgprs": 123,
+    "waves": 4,
+    "x_packer": "linear"
+  },
+  "gu_int8_17408_tuned_m192_pf_sab": {
+    "symbol": "M192_PF_SAB",
+    "bm": 192,
+    "bn": 128,
+    "waves": 4,
+    "order": "n",
+    "lds": 16384,
+    "vgprs": 164,
+    "x_packer": "linear",
+    "generate": {
+      "direction": "M",
+      "bm": 192,
+      "bn": 128,
+      "waves": 4,
+      "mmac_group": 1,
+      "scalar_address": "both",
+      "read_first": 0,
+      "prefetch_order": "private_first"
+    },
+    "epilogue": "scalar"
+  },
+  "gu_int8_17408_tuned_n144_sp9_sab_bn256_w8__mfast": {
+    "symbol": "N144_SP9_SAB_BN256_W8",
+    "bm": 144,
+    "bn": 256,
+    "waves": 8,
+    "order": "m",
+    "lds": 18432,
+    "vgprs": 136,
+    "x_packer": "linear",
+    "generate": {
+      "direction": "N",
+      "bm": 144,
+      "bn": 256,
+      "waves": 8,
+      "mmac_group": 1,
+      "scalar_address": "both",
+      "read_first": 9,
+      "prefetch_order": "split_private_then_shared"
+    },
+    "epilogue": "scalar"
+  },
+  "gu_int8_17408_tuned_n192_sp11_sab_bn256_w8__mfast": {
+    "symbol": "N192_SP11_SAB_BN256_W8",
+    "bm": 192,
+    "bn": 256,
+    "waves": 8,
+    "order": "m",
+    "lds": 24576,
+    "vgprs": 172,
+    "x_packer": "linear",
+    "generate": {
+      "direction": "N",
+      "bm": 192,
+      "bn": 256,
+      "waves": 8,
+      "mmac_group": 1,
+      "scalar_address": "both",
+      "read_first": 11,
+      "prefetch_order": "split_private_then_shared"
+    },
+    "epilogue": "scalar"
+  },
+  "gu_int8_17408_tuned_n208_sp5_sab": {
+    "symbol": "N208_SP5_SAB",
+    "bm": 208,
+    "bn": 128,
+    "waves": 4,
+    "order": "n",
+    "lds": 26624,
+    "vgprs": 184,
+    "x_packer": "linear",
+    "generate": {
+      "direction": "N",
+      "bm": 208,
+      "bn": 128,
+      "waves": 4,
+      "mmac_group": 1,
+      "scalar_address": "both",
+      "read_first": 5,
+      "prefetch_order": "split_private_then_shared"
+    },
+    "epilogue": "scalar"
+  },
+  "gu_int8_17408_tuned_n208_sp7_sab": {
+    "symbol": "N208_SP7_SAB",
+    "bm": 208,
+    "bn": 128,
+    "waves": 4,
+    "order": "n",
+    "lds": 26624,
+    "vgprs": 184,
+    "x_packer": "linear",
+    "generate": {
+      "direction": "N",
+      "bm": 208,
+      "bn": 128,
+      "waves": 4,
+      "mmac_group": 1,
+      "scalar_address": "both",
+      "read_first": 7,
+      "prefetch_order": "split_private_then_shared"
+    },
+    "epilogue": "scalar"
+  },
+  "gu_int8_17408_tuned_n224_sp10_sab": {
+    "symbol": "N224_SP10_SAB",
+    "bm": 224,
+    "bn": 128,
+    "waves": 4,
+    "order": "n",
+    "lds": 28672,
+    "vgprs": 196,
+    "x_packer": "linear",
+    "generate": {
+      "direction": "N",
+      "bm": 224,
+      "bn": 128,
+      "waves": 4,
+      "mmac_group": 1,
+      "scalar_address": "both",
+      "read_first": 10,
+      "prefetch_order": "split_private_then_shared"
+    },
+    "epilogue": "scalar"
+  },
+  "gu_int8_17408_tuned_n224_sp9_sab": {
+    "symbol": "N224_SP9_SAB",
+    "bm": 224,
+    "bn": 128,
+    "waves": 4,
+    "order": "n",
+    "lds": 28672,
+    "vgprs": 196,
+    "x_packer": "linear",
+    "generate": {
+      "direction": "N",
+      "bm": 224,
+      "bn": 128,
+      "waves": 4,
+      "mmac_group": 1,
+      "scalar_address": "both",
+      "read_first": 9,
+      "prefetch_order": "split_private_then_shared"
+    },
+    "epilogue": "scalar"
+  },
+  "gu_int8_17408_tuned_n256_sp11_sab_g2__pkrne_mfast": {
+    "symbol": "N256_SP11_SAB_G2",
+    "bm": 256,
+    "bn": 128,
+    "waves": 4,
+    "order": "m",
+    "lds": 32768,
+    "vgprs": 220,
+    "x_packer": "linear",
+    "generate": {
+      "direction": "N",
+      "bm": 256,
+      "bn": 128,
+      "waves": 4,
+      "mmac_group": 2,
+      "scalar_address": "both",
+      "read_first": 11,
+      "prefetch_order": "split_private_then_shared"
+    },
+    "epilogue": "packed"
+  }
+}

@@ -22,7 +22,7 @@ def scale_u32(dst, src, factor):
             if vector
             else f"s_lshl_b32 {dst}, {src}, {shift}"
         )
-    # Vector callers supply only wave_id in0..3; both operands fit unsigned24bit.
+    # Vector callers supply only wave_id in0..7; both operands fit unsigned24bit.
     if vector:
         if factor >= 1 << 24:
             raise ValueError("vector wave-coordinate scale must fit unsigned24bit")
@@ -30,9 +30,9 @@ def scale_u32(dst, src, factor):
     return f"s_mul_i32 {dst}, {src}, {factor}"
 
 
-def shared_copy_rounds(sf):
+def shared_copy_rounds(sf, waves=4):
     """Each active wave copies one 1KiB fragment per round."""
-    return [(q, min(4, sf - 4 * q)) for q in range((sf + 3) // 4)]
+    return [(q, min(waves, sf - waves * q)) for q in range((sf + waves - 1) // waves)]
 
 
 ADDRESS_MODES = ("none", "private", "shared", "both")
@@ -40,20 +40,29 @@ PREFETCH_ORDERS = ("legacy", "private_first", "split_private_then_shared")
 
 
 def kernel_layout(
-    direction, bm, read_first=0, scalar_address="none", prefetch_order="legacy", bn=128
+    direction,
+    bm,
+    read_first=0,
+    scalar_address="none",
+    prefetch_order="legacy",
+    bn=128,
+    waves=4,
+    mmac_group=1,
 ):
     if direction not in ("M", "N"):
         raise ValueError("direction must be M or N")
     if type(bm) is not int or bm <= 0:
         raise ValueError("BM must be a positive integer")
-    align = 64 if direction == "M" else 16
+    if type(waves) is not int or waves not in (4, 8):
+        raise ValueError("waves must be 4 or 8")
+    align = 16 * waves if direction == "M" else 16
     if bm % align:
         raise ValueError(
-            f"{direction}-split BM must be a multiple of{align}: four waves must own whole16-row MMAC fragments"
+            f"{direction}-split BM must be a multiple of {align}: waves must own whole 16-row MMAC fragments"
         )
-    if bn not in (64, 128, 256):
+    if bn not in (64, 128, 256) or bn % (16 * waves):
         raise ValueError("Unsupported BN")
-    pf = bm // 64 if direction == "M" else bn // 64
+    pf = bm // (16 * waves) if direction == "M" else bn // (16 * waves)
     sf = bn // 16 if direction == "M" else bm // 16
     if type(read_first) is not int or not 0 <= read_first <= sf:
         raise ValueError(f"read_first must be an integer in0..{sf}")
@@ -61,6 +70,8 @@ def kernel_layout(
         raise ValueError(
             "current full LDS-read window supports at most16 fragments; change the read-window schedule before increasing this bound"
         )
+    if type(mmac_group) is not int or not 1 <= mmac_group <= sf:
+        raise ValueError(f"mmac_group must be an integer in 1..{sf}")
     if scalar_address not in ADDRESS_MODES:
         raise ValueError(f"scalar_address must be one of {ADDRESS_MODES}")
     if prefetch_order not in PREFETCH_ORDERS:
@@ -84,7 +95,7 @@ def kernel_layout(
         )
     if lds > 65536:
         raise ValueError(f"LDS budget{lds} exceeds64KiB")
-    by_wave = [len(range(wave, sf, 4)) for wave in range(4)]
+    by_wave = [len(range(wave, sf, waves)) for wave in range(waves)]
     fam = f"{direction}{bm}" + (
         f"_SP{read_first}"
         if prefetch_order == "split_private_then_shared"
@@ -96,8 +107,13 @@ def kernel_layout(
         fam += "_PF"
     if scalar_address != "none":
         fam += "_SA" + {"private": "P", "shared": "S", "both": "B"}[scalar_address]
+    if mmac_group != 1:
+        fam += f"_G{mmac_group}"
+    if waves != 4:
+        fam += f"_BN{bn}_W{waves}"
     return dict(
         family=fam,
+        mmac_group=mmac_group,
         read_first_fragments=read_first,
         scalar_address=scalar_address,
         prefetch_order=prefetch_order,
@@ -111,7 +127,7 @@ def kernel_layout(
         shared_operand="W" if direction == "M" else "X",
         BM=bm,
         BN=bn,
-        NW=4,
+        NW=waves,
         PF=pf,
         SF=sf,
         VGPR=vgpr,
@@ -128,7 +144,7 @@ def kernel_layout(
         direct_load_per_wave_K64=pf,
         LDS_global_load_per_wave_K64=by_wave[0] if len(set(by_wave)) == 1 else by_wave,
         LDS_global_loads_by_wave_K64=by_wave,
-        LDS_copy_rounds=shared_copy_rounds(sf),
+        LDS_copy_rounds=shared_copy_rounds(sf, waves),
     )
 
 
@@ -275,14 +291,23 @@ def _split_prefetch_source(src, cfg):
 
 
 def render_kernel(
-    direction, bm, read_first=0, scalar_address="none", prefetch_order="legacy", bn=128
+    direction,
+    bm,
+    read_first=0,
+    scalar_address="none",
+    prefetch_order="legacy",
+    bn=128,
+    waves=4,
+    mmac_group=1,
 ):
     cfg = kernel_layout(
-        direction, bm, read_first, scalar_address, prefetch_order, bn=bn
+        direction, bm, read_first, scalar_address, prefetch_order,
+        bn=bn, waves=waves, mmac_group=mmac_group,
     )
     if prefetch_order == "split_private_then_shared":
         source, parent = render_kernel(
-            direction, bm, 0, scalar_address, "legacy", bn=bn
+            direction, bm, 0, scalar_address, "legacy",
+            bn=bn, waves=waves, mmac_group=mmac_group,
         )
         source = re.sub(
             r"\b" + re.escape(parent["family"]) + r"\b", cfg["family"], source
@@ -357,7 +382,7 @@ def render_kernel(
     w(
         f"v_add_u32_e32 {vr(t + 2)}, {vr(t + 2)}, {vr(t)}\nv_add_u32_e32 {vr(t + 3)}, s20, {vr(t + 3)}"
     )
-    if sf % 4:
+    if sf % waves:
         w(f"v_readfirstlane_b32 s25, {vr(t + 1)}")
     issue_serial = [0]
 
@@ -391,25 +416,25 @@ def render_kernel(
                     else "GEMM_W_GLOBAL_TO_REG"
                 )
                 w(f"{macro} {v4(pr + 4 * p)}, {v2(ad)}")
-        for q, active_waves in shared_copy_rounds(sf):
+        for q, active_waves in shared_copy_rounds(sf, waves):
             label = f".L_copy_skip_{serial}_{q}"
-            if active_waves < 4:
+            if active_waves < waves:
                 w(f"s_cmp_lt_u32 s25, {active_waves}\ns_cbranch_scc0 {label}")
             macro = (
                 "GEMM_W_GLOBAL_TO_LDS" if direction == "M" else "GEMM_X_GLOBAL_TO_LDS"
             )
             if ss:
-                dest = slot * slotbytes + q * 4096
+                dest = slot * slotbytes + q * waves * 1024
                 w("s_mov_b32 m0, s26" if dest == 0 else f"s_add_u32 m0, s26, {dest}")
                 off = "0" if q == 0 else f"s{26 + q}"
                 w(f"{macro} {vr(t + 3)}, s[0:3], {off}")
             else:
                 w(
-                    f"v_add_u32_e32 {vr(t + 7)}, {slot * slotbytes + q * 4096}, {vr(t + 4)}\nv_readfirstlane_b32 s26, {vr(t + 7)}\ns_mov_b32 m0, s26"
+                    f"v_add_u32_e32 {vr(t + 7)}, {slot * slotbytes + q * waves * 1024}, {vr(t + 4)}\nv_readfirstlane_b32 s26, {vr(t + 7)}\ns_mov_b32 m0, s26"
                 )
-                w(f"v_add_u32_e32 {vr(t + 10)}, {q * 4096}, {vr(t + 3)}")
+                w(f"v_add_u32_e32 {vr(t + 10)}, {q * waves * 1024}, {vr(t + 3)}")
                 w(f"{macro} {vr(t + 10)}, s[0:3], 0")
-            if active_waves < 4:
+            if active_waves < waves:
                 w(label + ":")
         w(_advance_source(cfg).rstrip("\n"))
 
@@ -427,23 +452,26 @@ def render_kernel(
         pr = p0 if slot == 0 else p1
         if already_read < sf:
             read_shared(slot, already_read, sf)
-        for sh in range(sf):
-            w(f"GEMM_WAIT_LGKM {sf - 1 - sh}")
+        for first in range(0, sf, mmac_group):
+            group = range(first, min(sf, first + mmac_group))
             for h in range(2):
-                for pp in range(pf):
-                    acc = 4 * (sh * pf + pp)
-                    xs = (
-                        pr + 4 * pp + 2 * h if direction == "M" else ds + 4 * sh + 2 * h
-                    )
-                    ws = (
-                        ds + 4 * sh + 2 * h if direction == "M" else pr + 4 * pp + 2 * h
-                    )
-                    w(f"GEMM_MMA_I8 {v4(acc)}, {v2(xs)}, {v2(ws)}, {v4(acc)}")
+                for sh in group:
+                    if h == 0:
+                        w(f"GEMM_WAIT_LGKM {sf - 1 - sh}")
+                    for pp in range(pf):
+                        acc = 4 * (sh * pf + pp)
+                        xs = (
+                            pr + 4 * pp + 2 * h if direction == "M" else ds + 4 * sh + 2 * h
+                        )
+                        ws = (
+                            ds + 4 * sh + 2 * h if direction == "M" else pr + 4 * pp + 2 * h
+                        )
+                        w(f"GEMM_MMA_I8 {v4(acc)}, {v2(xs)}, {v2(ws)}, {v4(acc)}")
 
     w(f"v_mov_b32_e32 {vr(t + 11)}, s{phi}")
     if ss:
         w(
-            f"v_readfirstlane_b32 s26, {vr(t + 4)}\ns_mov_b32 s27, 4096\ns_mov_b32 s28, 8192\ns_mov_b32 s29, 12288"
+            f"v_readfirstlane_b32 s26, {vr(t + 4)}\ns_mov_b32 s27, {waves * 1024}\ns_mov_b32 s28, {waves * 2048}\ns_mov_b32 s29, {waves * 3072}"
         )
     issue(0)
     for a in range(ac):
@@ -529,7 +557,7 @@ def render_kernel(
     for k, v in directives.items():
         w(f".amdhsa_{k} {v}")
     w(".end_amdhsa_kernel")
-    metadata = METADATA.format(symbol=fam, lds=lds, vgpr=vgpr)
+    metadata = METADATA.format(symbol=fam, lds=lds, vgpr=vgpr, threads=waves * 64)
     w(".amdgpu_metadata\n---\n" + metadata + "...\n.end_amdgpu_metadata")
     src = "\n".join(L) + "\n"
     if prefetch_order == "private_first":

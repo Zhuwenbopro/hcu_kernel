@@ -60,7 +60,35 @@ def conversion(a, sx, sw, tmp, addr, offset, flags="glc slc"):
     return "\n".join(out) + "\n"
 
 
-def patch_generated(source, rec, store_flags="glc slc"):
+def conversion_packed(a, sx, sw, tmp, addr, offset, flags="glc slc"):
+    """Paired FP32 scaling with the same BF16 round-to-nearest-even result."""
+    out = [f"v_mov_b32_e32 v{tmp + 5}, 0x7fff"] + [
+        f"v_cvt_f32_i32 v{a + i}, v{a + i}" for i in range(4)
+    ]
+    out.append(f"v_mov_b32_e32 v{sx + 1}, v{sx}")
+    for j in (0, 2):
+        out += [
+            f"v_pk_mul_f32 v[{tmp + j}:{tmp + j + 1}], v[{sx}:{sx + 1}], v[{sw + j}:{sw + j + 1}]",
+            f"v_pk_mul_f32 v[{a + j}:{a + j + 1}], v[{a + j}:{a + j + 1}], v[{tmp + j}:{tmp + j + 1}]",
+        ]
+    for i in range(4):
+        out += [
+            f"v_bfe_u32 v{tmp + 4}, v{a + i}, 16, 1",
+            f"v_add3_u32 v{a + i}, v{a + i}, v{tmp + 4}, v{tmp + 5}",
+        ]
+    out += [
+        f"v_lshrrev_b32_e32 v{a}, 16, v{a}",
+        f"v_and_b32_e32 v{a + 1}, 0xffff0000, v{a + 1}",
+        f"v_or_b32_e32 v{a}, v{a}, v{a + 1}",
+        f"v_lshrrev_b32_e32 v{a + 2}, 16, v{a + 2}",
+        f"v_and_b32_e32 v{a + 3}, 0xffff0000, v{a + 3}",
+        f"v_or_b32_e32 v{a + 1}, v{a + 2}, v{a + 3}",
+        f"global_store_dwordx2 v[{addr}:{addr + 1}], v[{a}:{a + 1}], off offset:{offset // 2} {flags}",
+    ]
+    return "\n".join(out) + "\n"
+
+
+def patch_generated(source, rec, store_flags="glc slc", epilogue="scalar"):
     # All K-loop instructions remain verbatim. Only the final output region changes.
     addr = list(range(rec["address_registers"][0], rec["address_registers"][-1] + 1))
     col, row, offset = addr[3], addr[7], addr[8]
@@ -73,6 +101,11 @@ def patch_generated(source, rec, store_flags="glc slc"):
     to = sx + 1
     tmp = sx + 2
     assert tmp < addr[0], (rec["family"], tmp, addr)
+    if epilogue not in ("scalar", "packed"):
+        raise ValueError(f"Unsupported INT8 epilogue {epilogue}")
+    if epilogue == "packed":
+        assert tmp + 5 < addr[0], (rec["family"], tmp, addr)
+    convert = conversion_packed if epilogue == "packed" else conversion
     pos = source.rfind("GEMM_WAIT_VM 0\nv_mov_b32_e32")
     assert pos >= 0
     pre, ep = source[:pos], source[pos:]
@@ -95,7 +128,8 @@ def patch_generated(source, rec, store_flags="glc slc"):
         + r"\1",
         ep,
     )
-    assert num == rec["BM"] // 16 if rec["direction"] == "N" else num == rec["BM"] // 64
+    rows = rec["BM"] // (16 if rec["direction"] == "N" else 16 * rec.get("NW", 4))
+    assert num == rows
     line = f"v_add_u32_e32 v{offset}, v{col}, v{offset}\n"
     assert ep.count(line) == num
     ep = ep.replace(line, line + f"v_lshrrev_b32_e32 v{offset}, 1, v{offset}\n")
@@ -106,7 +140,7 @@ def patch_generated(source, rec, store_flags="glc slc"):
         ptr, a, o = int(m[1]), int(m[2]), int(m[3], 0)
         prefix = "GEMM_WAIT_VM 0\n" if call[0] % len(offsets) == 0 else ""
         call[0] += 1
-        return prefix + conversion(a, sx, t + 4 * offsets.index(o), tmp, ptr, o, store_flags)
+        return prefix + convert(a, sx, t + 4 * offsets.index(o), tmp, ptr, o, store_flags)
 
     ep = re.sub(pat, repl, ep)
     assert call[0] == len(stores)
