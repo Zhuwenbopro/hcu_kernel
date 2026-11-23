@@ -1,11 +1,11 @@
-"""Independent direct-X routes for TP2, M=1..128 and K=5120."""
+"""Independent direct-X routes for the K=5120 TP2 shard."""
 
 from functools import lru_cache
 
 from .policy import policy_sections
 
 N = 17408
-MAX_M = 128
+MAX_M = 4096
 
 
 def check_m(m):
@@ -24,7 +24,7 @@ def direct_policy():
             raise ValueError(f"Unknown direct-X family {name}")
         routes.extend([name] * (end + 1 - len(routes)))
     if len(routes) != MAX_M + 1:
-        raise ValueError("Incomplete direct-X M=1..128 policy")
+        raise ValueError(f"Incomplete direct-X M=1..{MAX_M} policy")
     if set(routes[1:]) != set(section["kernels"]):
         raise ValueError("Direct-X policy contains unused kernel families")
     return tuple(routes), section["kernels"]

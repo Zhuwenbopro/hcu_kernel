@@ -60,7 +60,8 @@ def kernel_layout(
         raise ValueError(
             f"{direction}-split BM must be a multiple of {align}: waves must own whole 16-row MMAC fragments"
         )
-    if bn not in (64, 128, 256) or bn % (16 * waves):
+    supported_bn = (64, 128, 256, 512) if direction == "N" and waves == 8 else (64, 128, 256)
+    if bn not in supported_bn or bn % (16 * waves):
         raise ValueError("Unsupported BN")
     pf = bm // (16 * waves) if direction == "M" else bn // (16 * waves)
     sf = bn // 16 if direction == "M" else bm // 16
