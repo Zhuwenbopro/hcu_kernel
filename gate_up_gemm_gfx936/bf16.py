@@ -2,6 +2,7 @@
 
 import ctypes as C
 from functools import lru_cache
+from itertools import chain
 from threading import Lock
 
 import torch
@@ -12,9 +13,9 @@ from .policy import (
     K,
     SHARDS,
     SMALL_M,
+    bf16_override_ranges,
     bf16_padded_routes,
     check_m,
-    policy_sections,
     routes,
 )
 from .runtime import (
@@ -90,7 +91,9 @@ class BF16GateUpGemm:
                     int(parts),
                 )
         # Reuse measured overrides when existing exact-output buffers suffice.
-        for first, last, name in policy_sections("bf16", self.n).get("overrides", ()):
+        for first, last, name in chain(
+            bf16_override_ranges(self.n), bf16_override_ranges(self.n, "exact_overrides")
+        ):
             for m in range(first, last + 1):
                 pitch, rows = self._geometry(name, m)
                 if rows == m and pitch <= self._geometry(exact[m], m)[0]:

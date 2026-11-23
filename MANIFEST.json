@@ -366,8 +366,8 @@
   },
   {
     "path": "gate_up_gemm_gfx936/README.md",
-    "sha256": "3169ee4963a011b88f11602b5f2ce455d2ff4831b871f64af4e5dae570cc047b",
-    "bytes": 4269
+    "sha256": "788e2ab32e2ce15ab9cb947d8c407ff6f78a421431d6f9f1557fd6759e23028f",
+    "bytes": 4979
   },
   {
     "path": "gate_up_gemm_gfx936/__init__.py",
@@ -376,8 +376,8 @@
   },
   {
     "path": "gate_up_gemm_gfx936/bf16-policy.json",
-    "sha256": "ba73d1147d011eb03261441890605fa97d5a055aeb4529b81eccd7eadae4893d",
-    "bytes": 37864
+    "sha256": "6c24d25313ded090afd7a1ede2710d8353fd855d6a1c428d72f73ecea48c1527",
+    "bytes": 39550
   },
   {
     "path": "gate_up_gemm_gfx936/bf16-rolling.json",
@@ -386,8 +386,8 @@
   },
   {
     "path": "gate_up_gemm_gfx936/bf16.py",
-    "sha256": "42aba8902105ee0bbe1e629ced6b2737b80882f00d62757b939da4d4a5b71088",
-    "bytes": 8834
+    "sha256": "fbc06cf5943b11a771bb7e7a9166c8db84f93cea11859e3c3353c31059456a93",
+    "bytes": 8921
   },
   {
     "path": "gate_up_gemm_gfx936/build_bf16.py",
@@ -396,8 +396,8 @@
   },
   {
     "path": "gate_up_gemm_gfx936/build_int8.py",
-    "sha256": "5381679b42e5f379cd58a2bbf75af8773339a696994fc1aeae165d9a16ada38e",
-    "bytes": 2970
+    "sha256": "a156b5bc319f2f09d496b0a8b1ef3b6de30f068af4bae247b486d1040abf6c3d",
+    "bytes": 3131
   },
   {
     "path": "gate_up_gemm_gfx936/build_tools.py",
@@ -411,8 +411,8 @@
   },
   {
     "path": "gate_up_gemm_gfx936/int8.py",
-    "sha256": "4a174b15706d6debfa1a87084c07bd74e86aefbb51ba104d2c8e1a9e7700d152",
-    "bytes": 5212
+    "sha256": "d5865e02b44cc0ed1f2f43c49a6bef53457f00c65a33d62e80a2967058294021",
+    "bytes": 6053
   },
   {
     "path": "gate_up_gemm_gfx936/kernels/gate_up_gemv.hip",
@@ -426,8 +426,8 @@
   },
   {
     "path": "gate_up_gemm_gfx936/kernels/int8_output.py",
-    "sha256": "ab002f1912d9e8aad36ef2ec042ced4bdb622f98cb3185a5a16408be8b4ebac0",
-    "bytes": 4218
+    "sha256": "0bf352d919fcba4e051c9c2214a94772380c52a77ee1622f7645ffa99621b5b3",
+    "bytes": 4254
   },
   {
     "path": "gate_up_gemm_gfx936/kernels/kn_blas.cpp",
@@ -441,8 +441,8 @@
   },
   {
     "path": "gate_up_gemm_gfx936/policy.py",
-    "sha256": "c1277fc46e5385e71a2aab63ab3519f3c8613b0d0f29ab2ae3fbbcfcea591579",
-    "bytes": 2304
+    "sha256": "ea8893ce87689dc77bdbc1fa6651fbc86c241c77bc9f0e3de8c5355c49783ebb",
+    "bytes": 2447
   },
   {
     "path": "gate_up_gemm_gfx936/runtime.py",
