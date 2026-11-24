@@ -1,8 +1,8 @@
 [
   {
     "path": "README.md",
-    "sha256": "1e076105ec4bd4313f6d9c2277ad8195c02d8234a91fcf99ecae5539f967e6a7",
-    "bytes": 5352
+    "sha256": "e4b853152a881d85ffaf88f6859989c3ed5f1d3d623a5faafe8278effd3cdc6f",
+    "bytes": 5588
   },
   {
     "path": "decode_gemm_int8_gfx936/README.md",
@@ -748,5 +748,45 @@
     "path": "hbm_read_gfx938/read_xr.s",
     "sha256": "52dc71b25774424717b4514942e6faf52938b682af2ae158c63fb2e14c8dcc63",
     "bytes": 4517
+  },
+  {
+    "path": "silu_mul_per_token_int8_quant_gfx936/README.md",
+    "sha256": "b3aba81a8031273c887f7f54a6f8b188373d053b927785677e7ec579d3a4ce27",
+    "bytes": 3920
+  },
+  {
+    "path": "silu_mul_per_token_int8_quant_gfx936/build.sh",
+    "sha256": "8a3371e9c318883433c3221ca63b0942efb7f3b7a30c6730e9e089f21d20c818",
+    "bytes": 316
+  },
+  {
+    "path": "silu_mul_per_token_int8_quant_gfx936/check.py",
+    "sha256": "b0998e144bb20b53871694713094d46abbf180b3c1c6759e52e31dacb5e8b6c5",
+    "bytes": 2751
+  },
+  {
+    "path": "silu_mul_per_token_int8_quant_gfx936/latency.png",
+    "sha256": "fcf8413064d7a6d623d2ccaa1a6d6fa4160ee6a21b40408b07c787ddbd17608a",
+    "bytes": 223003
+  },
+  {
+    "path": "silu_mul_per_token_int8_quant_gfx936/routes.inc",
+    "sha256": "c6684047bf4c0e285f595cdd211389843d36d932b2c6bba75ba3ac01b052eb6f",
+    "bytes": 2645
+  },
+  {
+    "path": "silu_mul_per_token_int8_quant_gfx936/silu_mul_int8.h",
+    "sha256": "e4c5bd812b520db383ca13ddda4d7970cc1576a8fde7cf547e274ef40350fced",
+    "bytes": 1040
+  },
+  {
+    "path": "silu_mul_per_token_int8_quant_gfx936/silu_mul_int8.hip",
+    "sha256": "75946bef8edf660fdb2a6ec53d9e77cfe37af8bbcadec7203b4375d9f43939f7",
+    "bytes": 11257
+  },
+  {
+    "path": "silu_mul_per_token_int8_quant_gfx936/speedup.png",
+    "sha256": "27d0e92bc32ddec98961aeec2f7c2ae7573ffbe46c75ac4ca3242bc69245f395",
+    "bytes": 288694
   }
 ]

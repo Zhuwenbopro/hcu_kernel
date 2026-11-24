@@ -16,6 +16,7 @@
 - `decode_gemm_int8_gfx936/`：gfx936 INT8 decode GEMM，含14种HIP配置、独立编译/Python入口、正确性与冷权重池基准，以及TP1/2/4/8、bs1–1024结果摘要
 
 - [gemma_fused_add_rmsnorm_int8_fp32_gfx936/](gemma_fused_add_rmsnorm_int8_fp32_gfx936/) 支持 5120 维的 Gemma 残差加法、RMSNorm 和 per-token INT8 量化，在 FP32 中合并平方和与带权最大值规约，支持独立 HIP 编译
+- [silu_mul_per_token_int8_quant_gfx936/](silu_mul_per_token_int8_quant_gfx936/) 提供两种输入布局的 gfx936 SiLU × up 查表内核，输出 per-token INT8 和 FP32 scale，附 D=17408 的逐点延迟与 LightOP 加速比图。
 - [gated_rms_norm_per_token_int8_quant/](gated_rms_norm_per_token_int8_quant/) 提供 GDN RMSNorm、SiLU gate 和 per-token INT8 的 Triton 融合，包含 gfx936 24-head 特化。
 - [gated_rms_norm_per_token_fp8_quant_gfx938/](gated_rms_norm_per_token_fp8_quant_gfx938/) 提供 gfx938 的 GDN gated RMSNorm、SiLU gate 和 per-token FP8 E4M3FN 融合，含正确性测试和两段式对照基准。
 - `fused_sigmoid_mul_per_token_quant/`：Triton Attention sigmoid-mul + per-token INT8 quant
