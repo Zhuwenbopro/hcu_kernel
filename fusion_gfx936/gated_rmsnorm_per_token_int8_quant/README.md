@@ -10,7 +10,7 @@
 
 ```python
 import torch
-from gated_rms_norm_per_token_int8_quant import gated_rms_norm_per_token_int8_quant
+from fusion_gfx936.gated_rmsnorm_per_token_int8_quant import gated_rms_norm_per_token_int8_quant
 
 M, heads, head_dim = 128, 24, 128
 opts = dict(device="cuda", dtype=torch.bfloat16)
@@ -47,8 +47,8 @@ TP2 每个 rank 有 24 个 value head，合计 3,072 维。连续 gate 把每个
 在有 HIP PyTorch 和 Triton 的环境里，从仓库根目录运行。
 
 ```sh
-python -m pytest -q gated_rms_norm_per_token_int8_quant
-python -m gated_rms_norm_per_token_int8_quant.benchmark --tokens 1 64 512 2048 4096 16384 --layout contiguous projection
+python -m pytest -q fusion_gfx936/gated_rmsnorm_per_token_int8_quant
+python -m fusion_gfx936.gated_rmsnorm_per_token_int8_quant.benchmark --tokens 1 64 512 2048 4096 16384 --layout contiguous projection
 ```
 
 原实现的开发背景见 [LightOp PR #181](https://github.com/HYGON-AI/lightop/pull/181)。

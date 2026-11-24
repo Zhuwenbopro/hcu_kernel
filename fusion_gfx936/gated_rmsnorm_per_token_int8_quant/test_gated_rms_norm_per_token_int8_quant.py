@@ -9,8 +9,8 @@ import triton
 import triton.language as tl
 from torch.nn import functional as F
 
-from gated_rms_norm_per_token_int8_quant import gated_rms_norm_per_token_int8_quant
-from gated_rms_norm_per_token_int8_quant import python_api as impl
+from fusion_gfx936.gated_rmsnorm_per_token_int8_quant import gated_rms_norm_per_token_int8_quant
+from fusion_gfx936.gated_rmsnorm_per_token_int8_quant import python_api as impl
 
 EPS = 1e-6
 HEAD_DIM = 128

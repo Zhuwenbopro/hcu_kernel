@@ -1,8 +1,8 @@
 [
   {
     "path": "README.md",
-    "sha256": "e4b853152a881d85ffaf88f6859989c3ed5f1d3d623a5faafe8278effd3cdc6f",
-    "bytes": 5588
+    "sha256": "e8c8fd763071a5356ed35d84c67d3d1eb2a25cd3068d73715990b7a8c4986b0b",
+    "bytes": 5067
   },
   {
     "path": "decode_gemm_int8_gfx936/README.md",
@@ -335,49 +335,174 @@
     "bytes": 6748
   },
   {
-    "path": "fused_sigmoid_mul_per_token_quant/README.md",
-    "sha256": "d817d19f800d1484e965fd5dbf0980919687ef17294ecb6cdb7a803db64955d6",
-    "bytes": 4047
+    "path": "fusion_gfx936/README.md",
+    "sha256": "c5cfd9597888ff50e2cbfa15f92b49babffa9c0d38d9ac875a33c1f249fffb46",
+    "bytes": 961
   },
   {
-    "path": "fused_sigmoid_mul_per_token_quant/__init__.py",
+    "path": "fusion_gfx936/__init__.py",
+    "sha256": "cb9795e4d1280cd41a20ae053d5274289fa40eac107b3d0725dd3e7f377ed63d",
+    "bytes": 32
+  },
+  {
+    "path": "fusion_gfx936/gated_rmsnorm_per_token_int8_quant/README.md",
+    "sha256": "584d6b4dade0864964e1b0ed2a73499219ad76085b7123854dc34638ca117ed1",
+    "bytes": 3822
+  },
+  {
+    "path": "fusion_gfx936/gated_rmsnorm_per_token_int8_quant/__init__.py",
+    "sha256": "1837c85b0898160d76baf9cecda24a3fb8af432db9d6f37314cf6ce218e6e4d1",
+    "bytes": 111
+  },
+  {
+    "path": "fusion_gfx936/gated_rmsnorm_per_token_int8_quant/benchmark.py",
+    "sha256": "52538c7dd0ebb90addcd0c69f2221bac4aad76100f4fc783305dc7ed65889fe6",
+    "bytes": 3348
+  },
+  {
+    "path": "fusion_gfx936/gated_rmsnorm_per_token_int8_quant/gdn_bandwidth.png",
+    "sha256": "eec3af6e24ff29eff3b335be70d26c66874a8dadcc9827481082529cbf040566",
+    "bytes": 394290
+  },
+  {
+    "path": "fusion_gfx936/gated_rmsnorm_per_token_int8_quant/python_api.py",
+    "sha256": "df7e1a7dab4e67bb0ab9d1676d8b259d231f421324db062acb5b01dd11690897",
+    "bytes": 10229
+  },
+  {
+    "path": "fusion_gfx936/gated_rmsnorm_per_token_int8_quant/test_gated_rms_norm_per_token_int8_quant.py",
+    "sha256": "6ee4db633d60d9e4ce6b488614187b8fff3c218685b899e8c05cf47f577a68a1",
+    "bytes": 6319
+  },
+  {
+    "path": "fusion_gfx936/gemma_add_rmsnorm_per_token_int8_quant/Makefile",
+    "sha256": "8a846f79e9a9cc2f839ed571fc4f5f6cf519a2c3a1033266fdfff6aecbd8537b",
+    "bytes": 193
+  },
+  {
+    "path": "fusion_gfx936/gemma_add_rmsnorm_per_token_int8_quant/README.md",
+    "sha256": "62ed6073002f8115c3527627b3a4898b7d4b3a76938e428f43f98a502894e106",
+    "bytes": 4790
+  },
+  {
+    "path": "fusion_gfx936/gemma_add_rmsnorm_per_token_int8_quant/benchmark.py",
+    "sha256": "44b7a6683a9f8f0d62d742f032956442f353704a79e29b5a37893f1ac723a9f1",
+    "bytes": 5293
+  },
+  {
+    "path": "fusion_gfx936/gemma_add_rmsnorm_per_token_int8_quant/gemma_fused_add_rmsnorm_int8_5120.cu",
+    "sha256": "a481be3905ebabb325dcb9cbd1151ce56cbaed99edcf07028671f422042846b2",
+    "bytes": 9567
+  },
+  {
+    "path": "fusion_gfx936/gemma_add_rmsnorm_per_token_int8_quant/latency-vs-lightop.csv",
+    "sha256": "0e640e2d45bffd537e6d1c00d54ee08e34cd5cdda6b4e9de8c1b151e99f38d79",
+    "bytes": 139673
+  },
+  {
+    "path": "fusion_gfx936/gemma_add_rmsnorm_per_token_int8_quant/latency-vs-lightop.png",
+    "sha256": "9b11418950db2fceb7d0adf9c47291dfa690460870cfa3c017a523188d7d1efd",
+    "bytes": 163018
+  },
+  {
+    "path": "fusion_gfx936/gemma_add_rmsnorm_per_token_int8_quant/python_api.py",
+    "sha256": "4e0109094c1bb0e7aa28a25252ea231c5e5c9b5f032c71462dee9c324ac19724",
+    "bytes": 2571
+  },
+  {
+    "path": "fusion_gfx936/gemma_add_rmsnorm_per_token_int8_quant/test_gemma_int8_5120.py",
+    "sha256": "b95645788f64afb6fbe95ada1c35f593dac4af0ca333d71eae1ba4b488e37d33",
+    "bytes": 1846
+  },
+  {
+    "path": "fusion_gfx936/sigmoid_mul_per_token_int8_quant/README.md",
+    "sha256": "ad01e451ef358095aca7fd851006d26fab7b64eaf7a2ce41b0dbaa09c7848d0f",
+    "bytes": 4086
+  },
+  {
+    "path": "fusion_gfx936/sigmoid_mul_per_token_int8_quant/__init__.py",
     "sha256": "2c65d8c9647e758fb869f3580cb84d45fcb2627cb3f46b2eb1af2639f89134f3",
     "bytes": 167
   },
   {
-    "path": "fused_sigmoid_mul_per_token_quant/_gfx936.py",
+    "path": "fusion_gfx936/sigmoid_mul_per_token_int8_quant/_gfx936.py",
     "sha256": "11573b7ed1d6e0edb5d77e79f4045e14a0afdb4f0b7a0c6feb856799c05c4e6a",
     "bytes": 2762
   },
   {
-    "path": "fused_sigmoid_mul_per_token_quant/attention_sigmoid_int8_reference.py",
+    "path": "fusion_gfx936/sigmoid_mul_per_token_int8_quant/attention_sigmoid_int8_reference.py",
     "sha256": "7ca2a16d90a836c0e0a0813db1db770a01c3027e7f2f994c57bccc95ddb66ff7",
     "bytes": 3339
   },
   {
-    "path": "fused_sigmoid_mul_per_token_quant/benchmark.py",
+    "path": "fusion_gfx936/sigmoid_mul_per_token_int8_quant/benchmark.py",
     "sha256": "28a8bf86ec385549d438c8bdb75bdb63b994a9a55f4f44be03812555126c244b",
     "bytes": 3957
   },
   {
-    "path": "fused_sigmoid_mul_per_token_quant/python_api.py",
+    "path": "fusion_gfx936/sigmoid_mul_per_token_int8_quant/python_api.py",
     "sha256": "9119381deaa89f8f85d4ababe117c9a637e4f0db31c51762f96986273d0bee7a",
     "bytes": 6516
   },
   {
-    "path": "fused_sigmoid_mul_per_token_quant/sigmoid_bandwidth.png",
+    "path": "fusion_gfx936/sigmoid_mul_per_token_int8_quant/sigmoid_bandwidth.png",
     "sha256": "7197529a9d301a3a0d7b8675082973af2a396e358618594206a17cb1c41384da",
     "bytes": 364807
   },
   {
-    "path": "fused_sigmoid_mul_per_token_quant/test_fused_sigmoid_mul_per_token_quant.py",
+    "path": "fusion_gfx936/sigmoid_mul_per_token_int8_quant/test_fused_sigmoid_mul_per_token_quant.py",
     "sha256": "c712d42480a624493591d49adf119e16b18ec860bf130bf802e8735f1f61bb41",
     "bytes": 6407
   },
   {
-    "path": "fused_sigmoid_mul_per_token_quant/test_gfx936.py",
+    "path": "fusion_gfx936/sigmoid_mul_per_token_int8_quant/test_gfx936.py",
     "sha256": "61e9495ab27e587054c0ce51262625c000e12533ae39fb18465a191aee68624d",
     "bytes": 3377
+  },
+  {
+    "path": "fusion_gfx936/silu_mul_per_token_int8_quant/README.md",
+    "sha256": "8ca316618ace498100abdef5aac0dc7292d688a181cfeec4a0091cf921d818cf",
+    "bytes": 4220
+  },
+  {
+    "path": "fusion_gfx936/silu_mul_per_token_int8_quant/build.sh",
+    "sha256": "dadc128db37f98738ac9e7196547ff0a6978812eb0b29f6784792aa5aa1c5f1c",
+    "bytes": 949
+  },
+  {
+    "path": "fusion_gfx936/silu_mul_per_token_int8_quant/check.py",
+    "sha256": "b0998e144bb20b53871694713094d46abbf180b3c1c6759e52e31dacb5e8b6c5",
+    "bytes": 2751
+  },
+  {
+    "path": "fusion_gfx936/silu_mul_per_token_int8_quant/kernels.hip",
+    "sha256": "732f1a0f16816c9b785877fcd66418b941a4bdb7eed513e70f99de7e9d7a5bea",
+    "bytes": 10400
+  },
+  {
+    "path": "fusion_gfx936/silu_mul_per_token_int8_quant/latency.png",
+    "sha256": "fcf8413064d7a6d623d2ccaa1a6d6fa4160ee6a21b40408b07c787ddbd17608a",
+    "bytes": 223003
+  },
+  {
+    "path": "fusion_gfx936/silu_mul_per_token_int8_quant/routes.inc",
+    "sha256": "c6684047bf4c0e285f595cdd211389843d36d932b2c6bba75ba3ac01b052eb6f",
+    "bytes": 2645
+  },
+  {
+    "path": "fusion_gfx936/silu_mul_per_token_int8_quant/silu_mul_int8.cpp",
+    "sha256": "c37f0561b01e41ce12fb6333589ba9dd31e7542a3c93e783ffad0facaebf3482",
+    "bytes": 3337
+  },
+  {
+    "path": "fusion_gfx936/silu_mul_per_token_int8_quant/silu_mul_int8.h",
+    "sha256": "e4c5bd812b520db383ca13ddda4d7970cc1576a8fde7cf547e274ef40350fced",
+    "bytes": 1040
+  },
+  {
+    "path": "fusion_gfx936/silu_mul_per_token_int8_quant/speedup.png",
+    "sha256": "27d0e92bc32ddec98961aeec2f7c2ae7573ffbe46c75ac4ca3242bc69245f395",
+    "bytes": 288694
   },
   {
     "path": "gated_rms_norm_per_token_fp8_quant_gfx938/README.md",
@@ -403,36 +528,6 @@
     "path": "gated_rms_norm_per_token_fp8_quant_gfx938/test_gated_rms_norm_per_token_fp8_quant.py",
     "sha256": "d4557963d483070a7cfc3da2a13ebc7acdea010a8bed3e412c00c7e0eb1db67c",
     "bytes": 3857
-  },
-  {
-    "path": "gated_rms_norm_per_token_int8_quant/README.md",
-    "sha256": "48f1e6871e4dd0ed7a9572d613c8160e150fffd2e35cc964eac1a27411f5d434",
-    "bytes": 3783
-  },
-  {
-    "path": "gated_rms_norm_per_token_int8_quant/__init__.py",
-    "sha256": "1837c85b0898160d76baf9cecda24a3fb8af432db9d6f37314cf6ce218e6e4d1",
-    "bytes": 111
-  },
-  {
-    "path": "gated_rms_norm_per_token_int8_quant/benchmark.py",
-    "sha256": "52538c7dd0ebb90addcd0c69f2221bac4aad76100f4fc783305dc7ed65889fe6",
-    "bytes": 3348
-  },
-  {
-    "path": "gated_rms_norm_per_token_int8_quant/gdn_bandwidth.png",
-    "sha256": "eec3af6e24ff29eff3b335be70d26c66874a8dadcc9827481082529cbf040566",
-    "bytes": 394290
-  },
-  {
-    "path": "gated_rms_norm_per_token_int8_quant/python_api.py",
-    "sha256": "df7e1a7dab4e67bb0ab9d1676d8b259d231f421324db062acb5b01dd11690897",
-    "bytes": 10229
-  },
-  {
-    "path": "gated_rms_norm_per_token_int8_quant/test_gated_rms_norm_per_token_int8_quant.py",
-    "sha256": "ea83f7d82ed0c529d6daaaebebd7fb225f08a75d9e56edff18c9eea81f180bab",
-    "bytes": 6293
   },
   {
     "path": "gemm_gfx936/__init__.py",
@@ -710,46 +805,6 @@
     "bytes": 6334
   },
   {
-    "path": "gemma_fused_add_rmsnorm_int8_fp32_gfx936/Makefile",
-    "sha256": "8a846f79e9a9cc2f839ed571fc4f5f6cf519a2c3a1033266fdfff6aecbd8537b",
-    "bytes": 193
-  },
-  {
-    "path": "gemma_fused_add_rmsnorm_int8_fp32_gfx936/README.md",
-    "sha256": "c82cb7499afa48d4a60093baaf4dab1978b4e30a7fe749145f1967edc1618fa6",
-    "bytes": 4730
-  },
-  {
-    "path": "gemma_fused_add_rmsnorm_int8_fp32_gfx936/benchmark.py",
-    "sha256": "44b7a6683a9f8f0d62d742f032956442f353704a79e29b5a37893f1ac723a9f1",
-    "bytes": 5293
-  },
-  {
-    "path": "gemma_fused_add_rmsnorm_int8_fp32_gfx936/gemma_fused_add_rmsnorm_int8_5120.cu",
-    "sha256": "a481be3905ebabb325dcb9cbd1151ce56cbaed99edcf07028671f422042846b2",
-    "bytes": 9567
-  },
-  {
-    "path": "gemma_fused_add_rmsnorm_int8_fp32_gfx936/latency-vs-lightop.csv",
-    "sha256": "0e640e2d45bffd537e6d1c00d54ee08e34cd5cdda6b4e9de8c1b151e99f38d79",
-    "bytes": 139673
-  },
-  {
-    "path": "gemma_fused_add_rmsnorm_int8_fp32_gfx936/latency-vs-lightop.png",
-    "sha256": "9b11418950db2fceb7d0adf9c47291dfa690460870cfa3c017a523188d7d1efd",
-    "bytes": 163018
-  },
-  {
-    "path": "gemma_fused_add_rmsnorm_int8_fp32_gfx936/python_api.py",
-    "sha256": "4e0109094c1bb0e7aa28a25252ea231c5e5c9b5f032c71462dee9c324ac19724",
-    "bytes": 2571
-  },
-  {
-    "path": "gemma_fused_add_rmsnorm_int8_fp32_gfx936/test_gemma_int8_5120.py",
-    "sha256": "1fb64c6468ab042b04565745b18c531bcd7851c834b68b9670933ee7c7b663ce",
-    "bytes": 1834
-  },
-  {
     "path": "hbm_read_gfx938/README.md",
     "sha256": "868507529f52ebc0d8ba18852a1dc1f1fad21675c03bd2183adfc32b6a8b38c0",
     "bytes": 4558
@@ -768,50 +823,5 @@
     "path": "hbm_read_gfx938/read_xr.s",
     "sha256": "52dc71b25774424717b4514942e6faf52938b682af2ae158c63fb2e14c8dcc63",
     "bytes": 4517
-  },
-  {
-    "path": "silu_mul_per_token_int8_quant_gfx936/README.md",
-    "sha256": "8ca316618ace498100abdef5aac0dc7292d688a181cfeec4a0091cf921d818cf",
-    "bytes": 4220
-  },
-  {
-    "path": "silu_mul_per_token_int8_quant_gfx936/build.sh",
-    "sha256": "dadc128db37f98738ac9e7196547ff0a6978812eb0b29f6784792aa5aa1c5f1c",
-    "bytes": 949
-  },
-  {
-    "path": "silu_mul_per_token_int8_quant_gfx936/check.py",
-    "sha256": "b0998e144bb20b53871694713094d46abbf180b3c1c6759e52e31dacb5e8b6c5",
-    "bytes": 2751
-  },
-  {
-    "path": "silu_mul_per_token_int8_quant_gfx936/kernels.hip",
-    "sha256": "732f1a0f16816c9b785877fcd66418b941a4bdb7eed513e70f99de7e9d7a5bea",
-    "bytes": 10400
-  },
-  {
-    "path": "silu_mul_per_token_int8_quant_gfx936/latency.png",
-    "sha256": "fcf8413064d7a6d623d2ccaa1a6d6fa4160ee6a21b40408b07c787ddbd17608a",
-    "bytes": 223003
-  },
-  {
-    "path": "silu_mul_per_token_int8_quant_gfx936/routes.inc",
-    "sha256": "c6684047bf4c0e285f595cdd211389843d36d932b2c6bba75ba3ac01b052eb6f",
-    "bytes": 2645
-  },
-  {
-    "path": "silu_mul_per_token_int8_quant_gfx936/silu_mul_int8.cpp",
-    "sha256": "c37f0561b01e41ce12fb6333589ba9dd31e7542a3c93e783ffad0facaebf3482",
-    "bytes": 3337
-  },
-  {
-    "path": "silu_mul_per_token_int8_quant_gfx936/silu_mul_int8.h",
-    "sha256": "e4c5bd812b520db383ca13ddda4d7970cc1576a8fde7cf547e274ef40350fced",
-    "bytes": 1040
-  },
-  {
-    "path": "silu_mul_per_token_int8_quant_gfx936/speedup.png",
-    "sha256": "27d0e92bc32ddec98961aeec2f7c2ae7573ffbe46c75ac4ca3242bc69245f395",
-    "bytes": 288694
   }
 ]

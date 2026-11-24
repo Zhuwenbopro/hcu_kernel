@@ -35,12 +35,12 @@ $$
 在 gfx936 机器上加载 DTK 环境，从仓库根目录构建。Python 入口使用 HCU 版 PyTorch。
 
 ```bash
-make -C gemma_fused_add_rmsnorm_int8_fp32_gfx936
-python3 -m pytest -q gemma_fused_add_rmsnorm_int8_fp32_gfx936/test_gemma_int8_5120.py
+make -C fusion_gfx936/gemma_add_rmsnorm_per_token_int8_quant
+python3 -m pytest -q fusion_gfx936/gemma_add_rmsnorm_per_token_int8_quant/test_gemma_int8_5120.py
 ```
 
 ```python
-from gemma_fused_add_rmsnorm_int8_fp32_gfx936.python_api import gemma_fused_add_rmsnorm_int8_fp32
+from fusion_gfx936.gemma_add_rmsnorm_per_token_int8_quant.python_api import gemma_fused_add_rmsnorm_int8_fp32
 
 q, scale = gemma_fused_add_rmsnorm_int8_fp32(x, residual, weight, epsilon=1e-6)
 ```
@@ -71,9 +71,9 @@ q, scale = gemma_fused_add_rmsnorm_int8_fp32(x, residual, weight, epsilon=1e-6)
 构建后，在仓库根目录选择 gfx936 设备并运行基准。省略 `--model` 时使用合成 BF16 权重。
 
 ```bash
-python3 -m gemma_fused_add_rmsnorm_int8_fp32_gfx936.benchmark \
+python3 -m fusion_gfx936.gemma_add_rmsnorm_per_token_int8_quant.benchmark \
   --model /path/to/Qwen3.8-27B-Channel-INT8-w8a8 \
-  --output gemma_fused_add_rmsnorm_int8_fp32_gfx936/build/latency-vs-lightop.csv
+  --output fusion_gfx936/gemma_add_rmsnorm_per_token_int8_quant/build/latency-vs-lightop.csv
 ```
 
 ## 与原 FP32 实验版及 Qwen 双核的复测

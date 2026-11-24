@@ -10,7 +10,7 @@ Run this example from the repository root on an HCU with HIP PyTorch and Triton.
 
 ```python
 import torch
-from fused_sigmoid_mul_per_token_quant import fuse_sigmoid_mul_int8_quant
+from fusion_gfx936.sigmoid_mul_per_token_int8_quant import fuse_sigmoid_mul_int8_quant
 
 M, heads, head_dim = 128, 12, 256
 D = heads * head_dim
@@ -48,8 +48,8 @@ The sweep covers every integer token count from 1 through 16,384 on BW47 with th
 Run from the repository root with HIP PyTorch and Triton. The existing reference tests also use LightOp's standalone quantizer.
 
 ```sh
-python -m pytest -q fused_sigmoid_mul_per_token_quant
-python -m fused_sigmoid_mul_per_token_quant.benchmark --hidden 3072 --dtype bfloat16 --tokens 1 160 512 4096 16384 --layout contiguous projection
+python -m pytest -q fusion_gfx936/sigmoid_mul_per_token_int8_quant
+python -m fusion_gfx936.sigmoid_mul_per_token_int8_quant.benchmark --hidden 3072 --dtype bfloat16 --tokens 1 160 512 4096 16384 --layout contiguous projection
 ```
 
 The original BF16 implementation is also documented in [LightOp PR #182](https://github.com/HYGON-AI/lightop/pull/182).
