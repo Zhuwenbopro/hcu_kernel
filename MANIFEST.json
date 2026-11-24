@@ -1,8 +1,8 @@
 [
   {
     "path": "README.md",
-    "sha256": "7ce1e7336f9d3e8cd29edfb72a195e1cc69bcbfc848725984779c1ad65b48ef5",
-    "bytes": 5082
+    "sha256": "1e076105ec4bd4313f6d9c2277ad8195c02d8234a91fcf99ecae5539f967e6a7",
+    "bytes": 5352
   },
   {
     "path": "decode_gemm_int8_gfx936/README.md",
@@ -638,6 +638,51 @@
     "path": "gemm_gfx936/lm_head_bf16_gfx936/validate.py",
     "sha256": "ecac9f6c58015a4e617b609da10a5ff6c0e9635607f5c00bf4f8c9739e4c648e",
     "bytes": 6406
+  },
+  {
+    "path": "gemm_gfx938/__init__.py",
+    "sha256": "4a68cb94fef03945363a8bdb5b4d4fb0daf6d98714cf5a397a31a46acb7b5163",
+    "bytes": 35
+  },
+  {
+    "path": "gemm_gfx938/fp8_pi32_gemm_gfx938/README.md",
+    "sha256": "5ce9a5dc3ca8cbbbd83f96dec686c0ffc3dab8d3dfd9908d6962eeb188b243cd",
+    "bytes": 3568
+  },
+  {
+    "path": "gemm_gfx938/fp8_pi32_gemm_gfx938/__init__.py",
+    "sha256": "7fc5a3103741d220c77f1524fe21d42208ee8c6b0a30c3a9e5e1ea8870a18b98",
+    "bytes": 194
+  },
+  {
+    "path": "gemm_gfx938/fp8_pi32_gemm_gfx938/build.py",
+    "sha256": "b5d898ba94fa84e82930303208450410ca3ca523b3ab9424728226ad690a91f1",
+    "bytes": 1266
+  },
+  {
+    "path": "gemm_gfx938/fp8_pi32_gemm_gfx938/dispatch.json",
+    "sha256": "a9aa0d52e6cbb87f86d904e729dc5d55503cbfba1bcc6c7aa9722ecda8509d83",
+    "bytes": 19640
+  },
+  {
+    "path": "gemm_gfx938/fp8_pi32_gemm_gfx938/kernels/fp8_pi32_gemm.cu",
+    "sha256": "acfeca3d3c38b8c650b02168dcba14ba972b6454d91afacfa940eeba74bab825",
+    "bytes": 14196
+  },
+  {
+    "path": "gemm_gfx938/fp8_pi32_gemm_gfx938/kernels/pi32_relayout.cu",
+    "sha256": "df2c5864e26d188245a956acece5886d77284bf28ffae07d07fec25b6bd8086f",
+    "bytes": 2064
+  },
+  {
+    "path": "gemm_gfx938/fp8_pi32_gemm_gfx938/python_api.py",
+    "sha256": "3cad525f84123f0b86f1394710e7032de7b49edd365e875b332706960697cfe6",
+    "bytes": 7399
+  },
+  {
+    "path": "gemm_gfx938/fp8_pi32_gemm_gfx938/validate.py",
+    "sha256": "9ea5f40dcef0694336b3e9c79dcc0c7df40ef6d4d5a90dfe0192f757d01d28a8",
+    "bytes": 6334
   },
   {
     "path": "gemma_fused_add_rmsnorm_int8_fp32_gfx936/Makefile",
