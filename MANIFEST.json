@@ -421,8 +421,8 @@
   },
   {
     "path": "gemm_gfx936/gate_up_gemm_gfx936/README.md",
-    "sha256": "97f6e19138c9d9d387575408ac4e52e612f634329f2c329e26b70e7f2903df08",
-    "bytes": 10256
+    "sha256": "d94e176d51a38a34797a74ef3c8e97c23b14d571b9238d8b1050cc0faabcc2dc",
+    "bytes": 10744
   },
   {
     "path": "gemm_gfx936/gate_up_gemm_gfx936/__init__.py",
@@ -463,6 +463,11 @@
     "path": "gemm_gfx936/gate_up_gemm_gfx936/build_tools.py",
     "sha256": "b1a05744d824741f5adf3af0a3b9460756d67cb3011fc85806e935a509cffb88",
     "bytes": 1579
+  },
+  {
+    "path": "gemm_gfx936/gate_up_gemm_gfx936/direct-x-packed-x-lightop-M1-4096.png",
+    "sha256": "c975dc47f314cae38a1fcb7ca2916b3007f69ad70a38584c262eea3089fbb506",
+    "bytes": 331989
   },
   {
     "path": "gemm_gfx936/gate_up_gemm_gfx936/int8-direct-policy.json",
