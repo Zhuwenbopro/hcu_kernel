@@ -336,13 +336,18 @@
   },
   {
     "path": "fused_sigmoid_mul_per_token_quant/README.md",
-    "sha256": "3eee7a6da918627b7130b541b3868584be781e0d574ed12c31db2fab78a44f58",
-    "bytes": 1384
+    "sha256": "d817d19f800d1484e965fd5dbf0980919687ef17294ecb6cdb7a803db64955d6",
+    "bytes": 4047
   },
   {
     "path": "fused_sigmoid_mul_per_token_quant/__init__.py",
     "sha256": "2c65d8c9647e758fb869f3580cb84d45fcb2627cb3f46b2eb1af2639f89134f3",
     "bytes": 167
+  },
+  {
+    "path": "fused_sigmoid_mul_per_token_quant/_gfx936.py",
+    "sha256": "11573b7ed1d6e0edb5d77e79f4045e14a0afdb4f0b7a0c6feb856799c05c4e6a",
+    "bytes": 2762
   },
   {
     "path": "fused_sigmoid_mul_per_token_quant/attention_sigmoid_int8_reference.py",
@@ -351,18 +356,28 @@
   },
   {
     "path": "fused_sigmoid_mul_per_token_quant/benchmark.py",
-    "sha256": "d8fe5438a11431a4af4e6bf20364ffbbb6f990dfe1ae99098dd8e034c2ddc1ea",
-    "bytes": 4812
+    "sha256": "28a8bf86ec385549d438c8bdb75bdb63b994a9a55f4f44be03812555126c244b",
+    "bytes": 3957
   },
   {
     "path": "fused_sigmoid_mul_per_token_quant/python_api.py",
-    "sha256": "6868190115f5cdb4b9cca9e9e3846e5868af8a97eb59e769ba5a5f57c2b37e98",
-    "bytes": 4715
+    "sha256": "9119381deaa89f8f85d4ababe117c9a637e4f0db31c51762f96986273d0bee7a",
+    "bytes": 6516
+  },
+  {
+    "path": "fused_sigmoid_mul_per_token_quant/sigmoid_bandwidth.png",
+    "sha256": "7197529a9d301a3a0d7b8675082973af2a396e358618594206a17cb1c41384da",
+    "bytes": 364807
   },
   {
     "path": "fused_sigmoid_mul_per_token_quant/test_fused_sigmoid_mul_per_token_quant.py",
     "sha256": "c712d42480a624493591d49adf119e16b18ec860bf130bf802e8735f1f61bb41",
     "bytes": 6407
+  },
+  {
+    "path": "fused_sigmoid_mul_per_token_quant/test_gfx936.py",
+    "sha256": "61e9495ab27e587054c0ce51262625c000e12533ae39fb18465a191aee68624d",
+    "bytes": 3377
   },
   {
     "path": "gated_rms_norm_per_token_fp8_quant_gfx938/README.md",
@@ -391,8 +406,8 @@
   },
   {
     "path": "gated_rms_norm_per_token_int8_quant/README.md",
-    "sha256": "122ffe90073ba2a2da8b3ca57651ab674371dd25130fda9f4c8ea474ed6af7b9",
-    "bytes": 1201
+    "sha256": "48f1e6871e4dd0ed7a9572d613c8160e150fffd2e35cc964eac1a27411f5d434",
+    "bytes": 3783
   },
   {
     "path": "gated_rms_norm_per_token_int8_quant/__init__.py",
@@ -401,18 +416,23 @@
   },
   {
     "path": "gated_rms_norm_per_token_int8_quant/benchmark.py",
-    "sha256": "4594b5346250031939ce3e23f6beba25ebbbc9255f5a04c21feecae7fbd1046e",
-    "bytes": 3039
+    "sha256": "52538c7dd0ebb90addcd0c69f2221bac4aad76100f4fc783305dc7ed65889fe6",
+    "bytes": 3348
+  },
+  {
+    "path": "gated_rms_norm_per_token_int8_quant/gdn_bandwidth.png",
+    "sha256": "eec3af6e24ff29eff3b335be70d26c66874a8dadcc9827481082529cbf040566",
+    "bytes": 394290
   },
   {
     "path": "gated_rms_norm_per_token_int8_quant/python_api.py",
-    "sha256": "ab55331313bdfc5a0689ef73061c263d2f15ce7696b5b8ba0deb7d3a3b8a6d61",
-    "bytes": 6340
+    "sha256": "df7e1a7dab4e67bb0ab9d1676d8b259d231f421324db062acb5b01dd11690897",
+    "bytes": 10229
   },
   {
     "path": "gated_rms_norm_per_token_int8_quant/test_gated_rms_norm_per_token_int8_quant.py",
-    "sha256": "24aacd48df90cc3bbfcf399435f6a0cee21919eb37504a6a15a4d0ca98906ea7",
-    "bytes": 3837
+    "sha256": "ea83f7d82ed0c529d6daaaebebd7fb225f08a75d9e56edff18c9eea81f180bab",
+    "bytes": 6293
   },
   {
     "path": "gemm_gfx936/__init__.py",

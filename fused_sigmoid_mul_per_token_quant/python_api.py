@@ -1,10 +1,17 @@
 # Copyright (c) 2026 Hygon Information Technology Co., Ltd.
 # SPDX-License-Identifier: Apache-2.0
 
+from functools import lru_cache
+
 import torch
 import triton
 import triton.language as tl
 from triton.language.extra import libdevice
+
+if __package__:
+    from ._gfx936 import _kernel as _gfx936_kernel
+else:
+    from _gfx936 import _kernel as _gfx936_kernel
 
 
 @triton.jit
@@ -64,6 +71,64 @@ def _sigmoid_mul_int8_3072_kernel(
     tl.store(scale_ptr + row, absmax / 127.0)
 
 
+def _launch_original(attn_output, gate, quantized, scales):
+    tokens, width = attn_output.shape
+    if not tokens:
+        return
+    head_dim = gate.shape[-1]
+    head_stride = gate.stride(1) if gate.ndim == 3 else 0
+    args = (attn_output, gate, quantized, scales, gate.stride(0), head_stride)
+    with torch.cuda.device(attn_output.device):
+        if width == 3072 and attn_output.dtype == torch.bfloat16:
+            _sigmoid_mul_int8_3072_kernel[(tokens,)](*args, head_dim, num_warps=4)
+        else:
+            _sigmoid_mul_int8_kernel[(tokens,)](
+                *args, width, head_dim, triton.next_power_of_2(width), num_warps=4
+            )
+
+
+@lru_cache(maxsize=None)
+def _is_gfx936(device):
+    if torch.version.hip is None:
+        return False
+    arch = getattr(torch.cuda.get_device_properties(device), "gcnArchName", "")
+    return arch.split(":", 1)[0] == "gfx936"
+
+
+def _launch(attn_output, gate, quantized, scales):
+    tokens, width = attn_output.shape
+    if not tokens:
+        return
+    head_dim = gate.shape[-1]
+    head_stride = gate.stride(1) if gate.ndim == 3 else head_dim
+    projected = gate.ndim == 3 and head_dim == 256 and head_stride == 512
+    if (
+        (width in (3072, 4096) or (width == 6144 and attn_output.dtype == torch.bfloat16))
+        and (gate.is_contiguous() or projected)
+        and gate.stride(0) % 8 == 0
+        and attn_output.storage_offset() % 8 == 0 and gate.storage_offset() % 8 == 0
+        and _is_gfx936(attn_output.device)
+    ):
+        if width == 3072 and attn_output.dtype == torch.float16:
+            warps = 2 if 160 < tokens <= 512 else 4
+        elif width == 3072:
+            warps = 4 if tokens <= 160 or 512 < tokens <= 2048 else 2
+        elif width == 4096:
+            warps = 8 if tokens <= 160 else 4
+            if projected and tokens >= 4096:
+                warps = 2
+        else:
+            warps = 8 if tokens <= 64 else 4
+        step = width if width == 4096 else width // 3
+        with torch.cuda.device(attn_output.device):
+            _gfx936_kernel[(tokens,)](
+                attn_output, gate, quantized, scales, gate.stride(0),
+                head_stride, head_dim, width, step, num_warps=warps,
+            )
+        return
+    _launch_original(attn_output, gate, quantized, scales)
+
+
 def fuse_sigmoid_mul_int8_quant(
     attn_output: torch.Tensor, gate: torch.Tensor
 ) -> tuple[torch.Tensor, torch.Tensor]:
@@ -88,33 +153,16 @@ def fuse_sigmoid_mul_int8_quant(
         raise ValueError("Expected contiguous 2D BF16 or FP16 attention output and a matching gate on one GPU")
 
     tokens, width = attn_output.shape
-    if gate.ndim == 2 and gate.shape == attn_output.shape and width > 0:
-        head_dim = width
-        gate_stride_head = 0
-    elif gate.ndim == 3 and gate.shape[0] == tokens and gate.shape[1] * gate.shape[2] == width > 0:
-        head_dim = gate.shape[2]
-        gate_stride_head = gate.stride(1)
-    else:
+    if width == 0 or gate.shape[0] != tokens or (
+        gate.ndim == 2 and gate.shape[1] != width
+    ) or (
+        gate.ndim == 3 and gate.shape[1] * gate.shape[2] != width
+    ):
         raise ValueError("Gate shape must match the attention output")
 
     quantized = torch.empty_like(attn_output, dtype=torch.int8)
     scales = torch.empty((tokens, 1), dtype=torch.float32, device=attn_output.device)
-    if tokens:
-        args = (
-            attn_output,
-            gate,
-            quantized,
-            scales,
-            gate.stride(0),
-            gate_stride_head,
-        )
-        with torch.cuda.device(attn_output.device):
-            if width == 3072 and attn_output.dtype == torch.bfloat16:
-                _sigmoid_mul_int8_3072_kernel[(tokens,)](*args, head_dim, num_warps=4)
-            else:
-                _sigmoid_mul_int8_kernel[(tokens,)](
-                    *args, width, head_dim, triton.next_power_of_2(width), num_warps=4
-                )
+    _launch(attn_output, gate, quantized, scales)
     return quantized, scales
 
 
