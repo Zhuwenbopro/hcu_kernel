@@ -1,6 +1,6 @@
 # gfx936 SiLU × up 与 per-token INT8 量化
 
-一个 CTA 处理一个 token，在一次 kernel 调用中完成 SiLU 查表、乘法、行内绝对最大值规约与 INT8 量化。两个入口使用同一张表，区别在于上游写入 gate 和 up 的顺序。
+一个 CTA 处理一个 token，在一次 kernel 调用中完成 SiLU 查表、乘法、行内绝对最大值规约与 INT8 量化。两个入口使用相同的 BF16 映射，区别在于上游写入 gate 和 up 的顺序。
 
 | 入口 | 每个 token 的 BF16 输入 | 输出 |
 | --- | --- | --- |
@@ -30,7 +30,9 @@ python3 check.py --library build/libsilu_mul_int8.so
 python3 check.py --library build/libsilu_mul_int8.so --check-lightop
 ```
 
-C 接口声明见 [silu_mul_int8.h](silu_mul_int8.h)。在每个设备的计算流上调用一次 `silu_mul_int8_init(stream)` 初始化查表数据。若多个流共用这张表，用 HIP event 让其它流等待初始化完成。两个入口都异步写入调用方分配的连续设备缓冲区。输入、INT8 输出和 FP32 scale 的首地址分别按 16、8 和 4 字节对齐。
+C 接口声明见 [silu_mul_int8.h](silu_mul_int8.h)。部署时把 `build/` 下的六个 `.so` 放在同一目录，调用方只需加载 `libsilu_mul_int8.so`。[构建脚本](build.sh) 将同一份 [HIP 源码](kernels.hip) 编译为五个独立设备代码对象，每个对象持有自己的 128 KiB 查表数据。每个设备调用一次 `silu_mul_int8_init(stream)` 即可初始化全部五张表。若多个流共用，使用 HIP event 让其它流等待初始化完成。
+
+两个入口都异步写入调用方分配的连续设备缓冲区。输入、INT8 输出和 FP32 scale 的首地址分别按 16、8 和 4 字节对齐。[路由表](routes.inc) 根据 D 和 M 选择对应实现。
 
 ## D = 17408 的逐点性能
 
@@ -56,4 +58,4 @@ C 接口声明见 [silu_mul_int8.h](silu_mul_int8.h)。在每个设备的计算�
 | 4096 | 491.20 | 391.52 | 386.08 |
 | 16384 | 1879.36 | 1504.96 | 1468.80 |
 
-所有 16,384 个 M 均已对照 LightOP，两个布局输出的 INT8 值和 FP32 scale 位模式逐点一致。发布版共享库中的 25 个算子特化和 1 个查表初始化内核已与实测版本逐指令核对。重新链接改变了 LUT 的 PC 相对地址偏移，指令顺序和寄存器分配一致。
+所有 16,384 个 M 均已对照 LightOP，两个布局输出的 INT8 值和 FP32 scale 位模式逐点一致。从发布版共享库提取的五个 gfx936 设备代码对象（`.hsaco`）与基准使用的对象逐字节相同，包含指令、查表数据的链接布局和内核元数据。

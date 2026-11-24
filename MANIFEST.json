@@ -751,18 +751,23 @@
   },
   {
     "path": "silu_mul_per_token_int8_quant_gfx936/README.md",
-    "sha256": "b3aba81a8031273c887f7f54a6f8b188373d053b927785677e7ec579d3a4ce27",
-    "bytes": 3920
+    "sha256": "8ca316618ace498100abdef5aac0dc7292d688a181cfeec4a0091cf921d818cf",
+    "bytes": 4220
   },
   {
     "path": "silu_mul_per_token_int8_quant_gfx936/build.sh",
-    "sha256": "8a3371e9c318883433c3221ca63b0942efb7f3b7a30c6730e9e089f21d20c818",
-    "bytes": 316
+    "sha256": "dadc128db37f98738ac9e7196547ff0a6978812eb0b29f6784792aa5aa1c5f1c",
+    "bytes": 949
   },
   {
     "path": "silu_mul_per_token_int8_quant_gfx936/check.py",
     "sha256": "b0998e144bb20b53871694713094d46abbf180b3c1c6759e52e31dacb5e8b6c5",
     "bytes": 2751
+  },
+  {
+    "path": "silu_mul_per_token_int8_quant_gfx936/kernels.hip",
+    "sha256": "732f1a0f16816c9b785877fcd66418b941a4bdb7eed513e70f99de7e9d7a5bea",
+    "bytes": 10400
   },
   {
     "path": "silu_mul_per_token_int8_quant_gfx936/latency.png",
@@ -775,14 +780,14 @@
     "bytes": 2645
   },
   {
+    "path": "silu_mul_per_token_int8_quant_gfx936/silu_mul_int8.cpp",
+    "sha256": "c37f0561b01e41ce12fb6333589ba9dd31e7542a3c93e783ffad0facaebf3482",
+    "bytes": 3337
+  },
+  {
     "path": "silu_mul_per_token_int8_quant_gfx936/silu_mul_int8.h",
     "sha256": "e4c5bd812b520db383ca13ddda4d7970cc1576a8fde7cf547e274ef40350fced",
     "bytes": 1040
-  },
-  {
-    "path": "silu_mul_per_token_int8_quant_gfx936/silu_mul_int8.hip",
-    "sha256": "75946bef8edf660fdb2a6ec53d9e77cfe37af8bbcadec7203b4375d9f43939f7",
-    "bytes": 11257
   },
   {
     "path": "silu_mul_per_token_int8_quant_gfx936/speedup.png",
