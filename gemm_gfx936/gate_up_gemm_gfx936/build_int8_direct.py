@@ -2,9 +2,9 @@
 
 import re
 
-from .build_int8 import INCLUDES, retarget
+from .build_int8 import INCLUDES, replace_once, retarget
 from .build_tools import BUILD, assemble, describe_file, write_catalog
-from .int8_direct_policy import MAX_M, N, direct_policy
+from .int8_direct_policy import MAX_M, N, direct_policy, grouped_policy
 from .kernels.direct_x import (
     coalesced_x_source,
     direct_x_source,
@@ -89,11 +89,41 @@ def build_family(name, record, dest):
     }
 
 
+def build_grouped_family(dest, base):
+    """Add a guarded M-band grid to the measured M-first 128x512 kernel."""
+    if (base["order"], base["bm"], base["bn"]) != ("m", 128, 512):
+        raise ValueError("The direct-X grouped prologue requires M-first BM128 x BN512")
+    text = (dest / base["file"]).with_suffix(".s").read_text()
+    text = replace_once(
+        text, ".amdhsa_system_sgpr_workgroup_id_z 0", ".amdhsa_system_sgpr_workgroup_id_z 1"
+    )
+    # Z arrives in s8. Preserve it before the existing kernarg load clobbers s8.
+    first_load = "s_load_dwordx4 s[8:11], s[4:5], 0"
+    text = replace_once(text, first_load, "s_mov_b32 s26, s8\n" + first_load)
+    # After lgkmcnt(0), s15 holds the band width and s14 the input row count.
+    # Exit unused CTAs in the last band before any data access or workgroup barrier.
+    grouped_prologue = """s_mul_i32 s26, s26, s15
+s_add_u32 s6, s6, s26
+s_lshl_b32 s26, s6, 7
+s_cmp_lt_u32 s26, s14
+s_cbranch_scc1 .L_valid_m_block
+s_endpgm
+.L_valid_m_block:
+s_mov_b32 s16, 64"""
+    text = replace_once(text, "s_mov_b32 s16, 64", grouped_prologue)
+    folder = dest / "grouped"
+    folder.mkdir(exist_ok=True)
+    code = assemble(folder / "group.s", text, INCLUDES)
+    return {**base, **describe_file(code, dest), "order": "grouped_m"}
+
+
 def build():
     _, families = direct_policy()
     dest = BUILD / "int8_direct"
     dest.mkdir(parents=True, exist_ok=True)
     catalog = {name: build_family(name, rec, dest) for name, rec in sorted(families.items())}
+    family, _ = grouped_policy()
+    catalog[family + "_grouped"] = build_grouped_family(dest, catalog[family])
     write_catalog(dest, catalog)
     print(f"Built {len(catalog)} direct-X INT8 kernels for M=1..{MAX_M}")
 

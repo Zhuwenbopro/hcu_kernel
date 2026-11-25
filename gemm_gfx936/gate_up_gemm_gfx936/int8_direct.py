@@ -3,7 +3,7 @@
 import torch
 import triton
 
-from .int8_direct_policy import MAX_M, N, check_m, direct_policy
+from .int8_direct_policy import MAX_M, N, check_m, direct_policy, grouped_policy
 from .policy import K
 from .runtime import (
     INT,
@@ -19,7 +19,7 @@ from .runtime import (
 class DirectXInt8GateUpGemm:
     """Compute BF16 Y without a separate X conversion or X workspace.
 
-    Supports M=1..20480, N=17408 and K=5120. X is contiguous and 16-byte
+    Supports M=1..40960, N=17408 and K=5120. X is contiguous and 16-byte
     aligned. Weights use int8.pack_int8_weight as in Int8GateUpGemm.
     The independent policy selects a direct-X variant for each M.
     """
@@ -37,6 +37,7 @@ class DirectXInt8GateUpGemm:
         self.weight = weight_packed
         self.scale_w = scale_w
         self._routes, _ = direct_policy()
+        grouped_family, self._group_widths = grouped_policy()
         kind = "int8_direct"
         catalog = build_catalog(kind)
         self._kernels = {}
@@ -46,10 +47,19 @@ class DirectXInt8GateUpGemm:
                 load_assembly(kind, self.device, spec),
                 spec,
             )
+        grouped_spec = catalog.get(grouped_family + "_grouped")
+        self._grouped_kernel = (
+            load_assembly(kind, self.device, grouped_spec) if grouped_spec else None
+        )
 
     def route(self, m):
         check_m(m)
         return self._routes[m]
+
+    def group_width(self, m):
+        """Return the number of M tiles per band, or zero for the flat grid."""
+        check_m(m)
+        return self._group_widths[m]
 
     def workspace_elements(self, m):
         self.route(m)
@@ -63,7 +73,16 @@ class DirectXInt8GateUpGemm:
         check_tensor(scale_x, (m, 1), torch.float32, self.device, 4, "scale_x")
         kernel, spec = self._kernels[name]
         mt, nt = triton.cdiv(m, spec["bm"]), self.n // spec["bn"]
-        grid = (mt, nt, 1) if spec["order"] == "m" else (nt, mt, 1)
+        width = self._group_widths[m]
+        if width:
+            if self._grouped_kernel is None:
+                raise RuntimeError(
+                    f"Rebuild the grouped kernel with python -m {__package__}.build_int8_direct"
+                )
+            kernel = self._grouped_kernel
+            grid = (width, nt, triton.cdiv(mt, width))
+        else:
+            grid = (mt, nt, 1) if spec["order"] == "m" else (nt, mt, 1)
         with torch.cuda.device(self.device):
             if out is None:
                 out = x.new_empty((m, self.n), dtype=torch.bfloat16)
@@ -74,8 +93,8 @@ class DirectXInt8GateUpGemm:
             }:
                 raise ValueError("Output requires separate storage from inputs")
             active = torch.cuda.current_stream(self.device)
-            # Retain the packed kernel ABI. The pitch slot is unused by the
-            # direct-X generated kernels; ordinary X always has stride K.
+            # The grouped kernel reads its M-tile band width from the old
+            # unused X-pitch slot. All direct-X variants read ordinary X.
             args = (
                 PTR(x.data_ptr()),
                 PTR(self.weight.data_ptr()),
@@ -83,7 +102,7 @@ class DirectXInt8GateUpGemm:
                 INT(m),
                 INT(self.n),
                 INT(K),
-                INT(m),
+                INT(width or m),
                 PTR(scale_x.data_ptr()),
                 PTR(self.scale_w.data_ptr()),
             )

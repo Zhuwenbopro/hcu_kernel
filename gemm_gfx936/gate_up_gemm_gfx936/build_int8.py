@@ -33,7 +33,16 @@ def retarget(text, spec, name, n, bn, order, *, max_m=MAX_M):
         text,
         flags=re.M,
     )
-    if count != 2 or n % bn or n * K * 2 >= 2**31 or max_m * n * 4 >= 2**31:
+    # The BF16 epilogue computes 4*(row*N+col) with v_mul_u32_u24 and
+    # v_add_u32, then logically shifts right by one before a 64-bit pointer add.
+    if (
+        count != 2
+        or n % bn
+        or n * K * 2 >= 2**31
+        or max_m > 2**24
+        or 4 * n >= 2**24
+        or max_m * n * 4 > 2**32
+    ):
         raise ValueError(f"Unsupported tile or output stride for {name}")
     text = replace_once(
         text,

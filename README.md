@@ -6,7 +6,7 @@
 
 - [gemm_gfx936/](gemm_gfx936/) 收录 gfx936 GEMM。
   - [lm_head_bf16_gfx936/](gemm_gfx936/lm_head_bf16_gfx936/) 提供 Qwen3.8-27B TP2 的单 rank BF16 LM head，所有路径共用连续 W[K,N]。支持 M=1–20480，附独立构建、正确性、基准和 ISA 审计入口。 提供可选的滚动 MMAC 与中段 CTA 分组调优。
-  - [gate_up_gemm_gfx936/](gemm_gfx936/gate_up_gemm_gfx936/) 提供 gfx936 非融合 GateUp GEMM。BF16 使用连续 W[K,N]，INT8 使用 packed W，各自用一份权重覆盖 TP1/TP2 的 M=1–4096。TP2 的 INT8 Direct X 入口支持 M=1–20480，直接读取连续 X 并输出 BF16 [M,N]。
+  - [gate_up_gemm_gfx936/](gemm_gfx936/gate_up_gemm_gfx936/) 提供 gfx936 非融合 GateUp GEMM。BF16 使用连续 W[K,N]，INT8 使用 packed W，各自用一份权重覆盖 TP1/TP2 的 M=1–4096。TP2 的 INT8 Direct X 入口支持 M=1–40960，直接读取连续 X 并输出 BF16 [M,N]。
 
 - [gemm_gfx938/](gemm_gfx938/) 收录 gfx938 GEMM。
   - [fp8_pi32_gemm_gfx938/](gemm_gfx938/fp8_pi32_gemm_gfx938/) 提供 Qwen3.8-27B Channel FP8 TP1 六类投影，复用一份 PI32 W 并直接读取行连续 X，支持 M=1–128，含独立构建与 Graph 验证。
