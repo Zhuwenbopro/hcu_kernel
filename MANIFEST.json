@@ -1,8 +1,8 @@
 [
   {
     "path": "README.md",
-    "sha256": "28813fe92fc48883876e0f9970421db34d569dedd657af89efc73fcd7ce57b46",
-    "bytes": 4944
+    "sha256": "e8c8fd763071a5356ed35d84c67d3d1eb2a25cd3068d73715990b7a8c4986b0b",
+    "bytes": 5067
   },
   {
     "path": "decode_gemm_int8_gfx936/README.md",
@@ -335,34 +335,174 @@
     "bytes": 6748
   },
   {
-    "path": "fused_sigmoid_mul_per_token_quant/README.md",
-    "sha256": "3eee7a6da918627b7130b541b3868584be781e0d574ed12c31db2fab78a44f58",
-    "bytes": 1384
+    "path": "fusion_gfx936/README.md",
+    "sha256": "c5cfd9597888ff50e2cbfa15f92b49babffa9c0d38d9ac875a33c1f249fffb46",
+    "bytes": 961
   },
   {
-    "path": "fused_sigmoid_mul_per_token_quant/__init__.py",
+    "path": "fusion_gfx936/__init__.py",
+    "sha256": "cb9795e4d1280cd41a20ae053d5274289fa40eac107b3d0725dd3e7f377ed63d",
+    "bytes": 32
+  },
+  {
+    "path": "fusion_gfx936/gated_rmsnorm_per_token_int8_quant/README.md",
+    "sha256": "584d6b4dade0864964e1b0ed2a73499219ad76085b7123854dc34638ca117ed1",
+    "bytes": 3822
+  },
+  {
+    "path": "fusion_gfx936/gated_rmsnorm_per_token_int8_quant/__init__.py",
+    "sha256": "1837c85b0898160d76baf9cecda24a3fb8af432db9d6f37314cf6ce218e6e4d1",
+    "bytes": 111
+  },
+  {
+    "path": "fusion_gfx936/gated_rmsnorm_per_token_int8_quant/benchmark.py",
+    "sha256": "52538c7dd0ebb90addcd0c69f2221bac4aad76100f4fc783305dc7ed65889fe6",
+    "bytes": 3348
+  },
+  {
+    "path": "fusion_gfx936/gated_rmsnorm_per_token_int8_quant/gdn_bandwidth.png",
+    "sha256": "eec3af6e24ff29eff3b335be70d26c66874a8dadcc9827481082529cbf040566",
+    "bytes": 394290
+  },
+  {
+    "path": "fusion_gfx936/gated_rmsnorm_per_token_int8_quant/python_api.py",
+    "sha256": "df7e1a7dab4e67bb0ab9d1676d8b259d231f421324db062acb5b01dd11690897",
+    "bytes": 10229
+  },
+  {
+    "path": "fusion_gfx936/gated_rmsnorm_per_token_int8_quant/test_gated_rms_norm_per_token_int8_quant.py",
+    "sha256": "6ee4db633d60d9e4ce6b488614187b8fff3c218685b899e8c05cf47f577a68a1",
+    "bytes": 6319
+  },
+  {
+    "path": "fusion_gfx936/gemma_add_rmsnorm_per_token_int8_quant/Makefile",
+    "sha256": "8a846f79e9a9cc2f839ed571fc4f5f6cf519a2c3a1033266fdfff6aecbd8537b",
+    "bytes": 193
+  },
+  {
+    "path": "fusion_gfx936/gemma_add_rmsnorm_per_token_int8_quant/README.md",
+    "sha256": "62ed6073002f8115c3527627b3a4898b7d4b3a76938e428f43f98a502894e106",
+    "bytes": 4790
+  },
+  {
+    "path": "fusion_gfx936/gemma_add_rmsnorm_per_token_int8_quant/benchmark.py",
+    "sha256": "44b7a6683a9f8f0d62d742f032956442f353704a79e29b5a37893f1ac723a9f1",
+    "bytes": 5293
+  },
+  {
+    "path": "fusion_gfx936/gemma_add_rmsnorm_per_token_int8_quant/gemma_fused_add_rmsnorm_int8_5120.cu",
+    "sha256": "a481be3905ebabb325dcb9cbd1151ce56cbaed99edcf07028671f422042846b2",
+    "bytes": 9567
+  },
+  {
+    "path": "fusion_gfx936/gemma_add_rmsnorm_per_token_int8_quant/latency-vs-lightop.csv",
+    "sha256": "0e640e2d45bffd537e6d1c00d54ee08e34cd5cdda6b4e9de8c1b151e99f38d79",
+    "bytes": 139673
+  },
+  {
+    "path": "fusion_gfx936/gemma_add_rmsnorm_per_token_int8_quant/latency-vs-lightop.png",
+    "sha256": "9b11418950db2fceb7d0adf9c47291dfa690460870cfa3c017a523188d7d1efd",
+    "bytes": 163018
+  },
+  {
+    "path": "fusion_gfx936/gemma_add_rmsnorm_per_token_int8_quant/python_api.py",
+    "sha256": "4e0109094c1bb0e7aa28a25252ea231c5e5c9b5f032c71462dee9c324ac19724",
+    "bytes": 2571
+  },
+  {
+    "path": "fusion_gfx936/gemma_add_rmsnorm_per_token_int8_quant/test_gemma_int8_5120.py",
+    "sha256": "b95645788f64afb6fbe95ada1c35f593dac4af0ca333d71eae1ba4b488e37d33",
+    "bytes": 1846
+  },
+  {
+    "path": "fusion_gfx936/sigmoid_mul_per_token_int8_quant/README.md",
+    "sha256": "ad01e451ef358095aca7fd851006d26fab7b64eaf7a2ce41b0dbaa09c7848d0f",
+    "bytes": 4086
+  },
+  {
+    "path": "fusion_gfx936/sigmoid_mul_per_token_int8_quant/__init__.py",
     "sha256": "2c65d8c9647e758fb869f3580cb84d45fcb2627cb3f46b2eb1af2639f89134f3",
     "bytes": 167
   },
   {
-    "path": "fused_sigmoid_mul_per_token_quant/attention_sigmoid_int8_reference.py",
+    "path": "fusion_gfx936/sigmoid_mul_per_token_int8_quant/_gfx936.py",
+    "sha256": "11573b7ed1d6e0edb5d77e79f4045e14a0afdb4f0b7a0c6feb856799c05c4e6a",
+    "bytes": 2762
+  },
+  {
+    "path": "fusion_gfx936/sigmoid_mul_per_token_int8_quant/attention_sigmoid_int8_reference.py",
     "sha256": "7ca2a16d90a836c0e0a0813db1db770a01c3027e7f2f994c57bccc95ddb66ff7",
     "bytes": 3339
   },
   {
-    "path": "fused_sigmoid_mul_per_token_quant/benchmark.py",
-    "sha256": "d8fe5438a11431a4af4e6bf20364ffbbb6f990dfe1ae99098dd8e034c2ddc1ea",
-    "bytes": 4812
+    "path": "fusion_gfx936/sigmoid_mul_per_token_int8_quant/benchmark.py",
+    "sha256": "28a8bf86ec385549d438c8bdb75bdb63b994a9a55f4f44be03812555126c244b",
+    "bytes": 3957
   },
   {
-    "path": "fused_sigmoid_mul_per_token_quant/python_api.py",
-    "sha256": "6868190115f5cdb4b9cca9e9e3846e5868af8a97eb59e769ba5a5f57c2b37e98",
-    "bytes": 4715
+    "path": "fusion_gfx936/sigmoid_mul_per_token_int8_quant/python_api.py",
+    "sha256": "9119381deaa89f8f85d4ababe117c9a637e4f0db31c51762f96986273d0bee7a",
+    "bytes": 6516
   },
   {
-    "path": "fused_sigmoid_mul_per_token_quant/test_fused_sigmoid_mul_per_token_quant.py",
+    "path": "fusion_gfx936/sigmoid_mul_per_token_int8_quant/sigmoid_bandwidth.png",
+    "sha256": "7197529a9d301a3a0d7b8675082973af2a396e358618594206a17cb1c41384da",
+    "bytes": 364807
+  },
+  {
+    "path": "fusion_gfx936/sigmoid_mul_per_token_int8_quant/test_fused_sigmoid_mul_per_token_quant.py",
     "sha256": "c712d42480a624493591d49adf119e16b18ec860bf130bf802e8735f1f61bb41",
     "bytes": 6407
+  },
+  {
+    "path": "fusion_gfx936/sigmoid_mul_per_token_int8_quant/test_gfx936.py",
+    "sha256": "61e9495ab27e587054c0ce51262625c000e12533ae39fb18465a191aee68624d",
+    "bytes": 3377
+  },
+  {
+    "path": "fusion_gfx936/silu_mul_per_token_int8_quant/README.md",
+    "sha256": "8ca316618ace498100abdef5aac0dc7292d688a181cfeec4a0091cf921d818cf",
+    "bytes": 4220
+  },
+  {
+    "path": "fusion_gfx936/silu_mul_per_token_int8_quant/build.sh",
+    "sha256": "dadc128db37f98738ac9e7196547ff0a6978812eb0b29f6784792aa5aa1c5f1c",
+    "bytes": 949
+  },
+  {
+    "path": "fusion_gfx936/silu_mul_per_token_int8_quant/check.py",
+    "sha256": "b0998e144bb20b53871694713094d46abbf180b3c1c6759e52e31dacb5e8b6c5",
+    "bytes": 2751
+  },
+  {
+    "path": "fusion_gfx936/silu_mul_per_token_int8_quant/kernels.hip",
+    "sha256": "732f1a0f16816c9b785877fcd66418b941a4bdb7eed513e70f99de7e9d7a5bea",
+    "bytes": 10400
+  },
+  {
+    "path": "fusion_gfx936/silu_mul_per_token_int8_quant/latency.png",
+    "sha256": "fcf8413064d7a6d623d2ccaa1a6d6fa4160ee6a21b40408b07c787ddbd17608a",
+    "bytes": 223003
+  },
+  {
+    "path": "fusion_gfx936/silu_mul_per_token_int8_quant/routes.inc",
+    "sha256": "c6684047bf4c0e285f595cdd211389843d36d932b2c6bba75ba3ac01b052eb6f",
+    "bytes": 2645
+  },
+  {
+    "path": "fusion_gfx936/silu_mul_per_token_int8_quant/silu_mul_int8.cpp",
+    "sha256": "c37f0561b01e41ce12fb6333589ba9dd31e7542a3c93e783ffad0facaebf3482",
+    "bytes": 3337
+  },
+  {
+    "path": "fusion_gfx936/silu_mul_per_token_int8_quant/silu_mul_int8.h",
+    "sha256": "e4c5bd812b520db383ca13ddda4d7970cc1576a8fde7cf547e274ef40350fced",
+    "bytes": 1040
+  },
+  {
+    "path": "fusion_gfx936/silu_mul_per_token_int8_quant/speedup.png",
+    "sha256": "27d0e92bc32ddec98961aeec2f7c2ae7573ffbe46c75ac4ca3242bc69245f395",
+    "bytes": 288694
   },
   {
     "path": "gated_rms_norm_per_token_fp8_quant_gfx938/README.md",
@@ -390,39 +530,14 @@
     "bytes": 3857
   },
   {
-    "path": "gated_rms_norm_per_token_int8_quant/README.md",
-    "sha256": "122ffe90073ba2a2da8b3ca57651ab674371dd25130fda9f4c8ea474ed6af7b9",
-    "bytes": 1201
-  },
-  {
-    "path": "gated_rms_norm_per_token_int8_quant/__init__.py",
-    "sha256": "1837c85b0898160d76baf9cecda24a3fb8af432db9d6f37314cf6ce218e6e4d1",
-    "bytes": 111
-  },
-  {
-    "path": "gated_rms_norm_per_token_int8_quant/benchmark.py",
-    "sha256": "4594b5346250031939ce3e23f6beba25ebbbc9255f5a04c21feecae7fbd1046e",
-    "bytes": 3039
-  },
-  {
-    "path": "gated_rms_norm_per_token_int8_quant/python_api.py",
-    "sha256": "ab55331313bdfc5a0689ef73061c263d2f15ce7696b5b8ba0deb7d3a3b8a6d61",
-    "bytes": 6340
-  },
-  {
-    "path": "gated_rms_norm_per_token_int8_quant/test_gated_rms_norm_per_token_int8_quant.py",
-    "sha256": "24aacd48df90cc3bbfcf399435f6a0cee21919eb37504a6a15a4d0ca98906ea7",
-    "bytes": 3837
-  },
-  {
     "path": "gemm_gfx936/__init__.py",
     "sha256": "38fa17f741ad4559c0907fae1be62d6cae7110a9c9f54b90c4abe115b0337640",
     "bytes": 31
   },
   {
     "path": "gemm_gfx936/gate_up_gemm_gfx936/README.md",
-    "sha256": "6c936bb833f9ae40eda599af02d0fc9800e9a0486b41922a3ac91803b098648b",
-    "bytes": 14956
+    "sha256": "7f8dd5047ac460bda23973b476113d132c0f994a9f8f01db27f5cc73efc8ae79",
+    "bytes": 15444
   },
   {
     "path": "gemm_gfx936/gate_up_gemm_gfx936/__init__.py",
@@ -463,6 +578,11 @@
     "path": "gemm_gfx936/gate_up_gemm_gfx936/build_tools.py",
     "sha256": "b1a05744d824741f5adf3af0a3b9460756d67cb3011fc85806e935a509cffb88",
     "bytes": 1579
+  },
+  {
+    "path": "gemm_gfx936/gate_up_gemm_gfx936/direct-x-packed-x-lightop-M1-4096.png",
+    "sha256": "c975dc47f314cae38a1fcb7ca2916b3007f69ad70a38584c262eea3089fbb506",
+    "bytes": 331989
   },
   {
     "path": "gemm_gfx936/gate_up_gemm_gfx936/int8-direct-policy.json",
@@ -645,43 +765,68 @@
     "bytes": 6406
   },
   {
-    "path": "gemma_fused_add_rmsnorm_int8_fp32_gfx936/Makefile",
-    "sha256": "8a846f79e9a9cc2f839ed571fc4f5f6cf519a2c3a1033266fdfff6aecbd8537b",
-    "bytes": 193
+    "path": "gemm_gfx938/__init__.py",
+    "sha256": "4a68cb94fef03945363a8bdb5b4d4fb0daf6d98714cf5a397a31a46acb7b5163",
+    "bytes": 35
   },
   {
-    "path": "gemma_fused_add_rmsnorm_int8_fp32_gfx936/README.md",
-    "sha256": "c82cb7499afa48d4a60093baaf4dab1978b4e30a7fe749145f1967edc1618fa6",
-    "bytes": 4730
+    "path": "gemm_gfx938/fp8_pi32_gemm_gfx938/README.md",
+    "sha256": "5ce9a5dc3ca8cbbbd83f96dec686c0ffc3dab8d3dfd9908d6962eeb188b243cd",
+    "bytes": 3568
   },
   {
-    "path": "gemma_fused_add_rmsnorm_int8_fp32_gfx936/benchmark.py",
-    "sha256": "44b7a6683a9f8f0d62d742f032956442f353704a79e29b5a37893f1ac723a9f1",
-    "bytes": 5293
+    "path": "gemm_gfx938/fp8_pi32_gemm_gfx938/__init__.py",
+    "sha256": "7fc5a3103741d220c77f1524fe21d42208ee8c6b0a30c3a9e5e1ea8870a18b98",
+    "bytes": 194
   },
   {
-    "path": "gemma_fused_add_rmsnorm_int8_fp32_gfx936/gemma_fused_add_rmsnorm_int8_5120.cu",
-    "sha256": "a481be3905ebabb325dcb9cbd1151ce56cbaed99edcf07028671f422042846b2",
-    "bytes": 9567
+    "path": "gemm_gfx938/fp8_pi32_gemm_gfx938/build.py",
+    "sha256": "b5d898ba94fa84e82930303208450410ca3ca523b3ab9424728226ad690a91f1",
+    "bytes": 1266
   },
   {
-    "path": "gemma_fused_add_rmsnorm_int8_fp32_gfx936/latency-vs-lightop.csv",
-    "sha256": "0e640e2d45bffd537e6d1c00d54ee08e34cd5cdda6b4e9de8c1b151e99f38d79",
-    "bytes": 139673
+    "path": "gemm_gfx938/fp8_pi32_gemm_gfx938/dispatch.json",
+    "sha256": "a9aa0d52e6cbb87f86d904e729dc5d55503cbfba1bcc6c7aa9722ecda8509d83",
+    "bytes": 19640
   },
   {
-    "path": "gemma_fused_add_rmsnorm_int8_fp32_gfx936/latency-vs-lightop.png",
-    "sha256": "9b11418950db2fceb7d0adf9c47291dfa690460870cfa3c017a523188d7d1efd",
-    "bytes": 163018
+    "path": "gemm_gfx938/fp8_pi32_gemm_gfx938/kernels/fp8_pi32_gemm.cu",
+    "sha256": "acfeca3d3c38b8c650b02168dcba14ba972b6454d91afacfa940eeba74bab825",
+    "bytes": 14196
   },
   {
-    "path": "gemma_fused_add_rmsnorm_int8_fp32_gfx936/python_api.py",
-    "sha256": "4e0109094c1bb0e7aa28a25252ea231c5e5c9b5f032c71462dee9c324ac19724",
-    "bytes": 2571
+    "path": "gemm_gfx938/fp8_pi32_gemm_gfx938/kernels/pi32_relayout.cu",
+    "sha256": "df2c5864e26d188245a956acece5886d77284bf28ffae07d07fec25b6bd8086f",
+    "bytes": 2064
   },
   {
-    "path": "gemma_fused_add_rmsnorm_int8_fp32_gfx936/test_gemma_int8_5120.py",
-    "sha256": "1fb64c6468ab042b04565745b18c531bcd7851c834b68b9670933ee7c7b663ce",
-    "bytes": 1834
+    "path": "gemm_gfx938/fp8_pi32_gemm_gfx938/python_api.py",
+    "sha256": "3cad525f84123f0b86f1394710e7032de7b49edd365e875b332706960697cfe6",
+    "bytes": 7399
+  },
+  {
+    "path": "gemm_gfx938/fp8_pi32_gemm_gfx938/validate.py",
+    "sha256": "9ea5f40dcef0694336b3e9c79dcc0c7df40ef6d4d5a90dfe0192f757d01d28a8",
+    "bytes": 6334
+  },
+  {
+    "path": "hbm_read_gfx938/README.md",
+    "sha256": "868507529f52ebc0d8ba18852a1dc1f1fad21675c03bd2183adfc32b6a8b38c0",
+    "bytes": 4558
+  },
+  {
+    "path": "hbm_read_gfx938/benchmark.py",
+    "sha256": "fd8571f5b6a201b7bae27424fcfffe7dc05b4c3c9d084af5f9957adfe0e6c26c",
+    "bytes": 11217
+  },
+  {
+    "path": "hbm_read_gfx938/build.py",
+    "sha256": "e67d8b0805b76aa24d24a887ff048ddd8814b0a3a1dec69d0eb5945a650e3ebd",
+    "bytes": 2026
+  },
+  {
+    "path": "hbm_read_gfx938/read_xr.s",
+    "sha256": "52dc71b25774424717b4514942e6faf52938b682af2ae158c63fb2e14c8dcc63",
+    "bytes": 4517
   }
 ]

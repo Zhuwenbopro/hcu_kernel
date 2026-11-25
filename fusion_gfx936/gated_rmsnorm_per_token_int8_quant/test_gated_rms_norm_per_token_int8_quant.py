@@ -5,9 +5,12 @@
 
 import pytest
 import torch
+import triton
+import triton.language as tl
 from torch.nn import functional as F
 
-from gated_rms_norm_per_token_int8_quant import gated_rms_norm_per_token_int8_quant
+from fusion_gfx936.gated_rmsnorm_per_token_int8_quant import gated_rms_norm_per_token_int8_quant
+from fusion_gfx936.gated_rmsnorm_per_token_int8_quant import python_api as impl
 
 EPS = 1e-6
 HEAD_DIM = 128
@@ -93,3 +96,50 @@ def test_graph_replays_new_input():
     graph.replay()
     _assert_matches(actual, _reference(x, gate, weight, 24))
     assert not torch.equal(before, actual[0])
+
+
+@triton.jit
+def _check_gfx936_math(gate_ref, gate_opt, inv_ref, inv_opt):
+    bits = tl.program_id(0) * 256 + tl.arange(0, 256)
+    z = (bits << 16).to(tl.float32, bitcast=True)
+    amax = tl.maximum(tl.abs(z), 1e-10)
+    tl.store(gate_ref + bits, z * tl.sigmoid(z))
+    tl.store(gate_opt + bits, impl._gfx936_silu(z))
+    tl.store(inv_ref + bits, 127.0 / amax)
+    tl.store(inv_opt + bits, impl._gfx936_quant_inverse(amax))
+
+
+def test_gfx936_finite_bf16_gate_and_scale_bits():
+    device = torch.device("cuda", torch.cuda.current_device())
+    if not impl._is_gfx936(device):
+        pytest.skip("gfx936 arithmetic")
+    tensors = [torch.empty(65536, dtype=torch.float32, device=device) for _ in range(4)]
+    _check_gfx936_math[(256,)](*tensors)
+    bits = torch.arange(65536, device=device, dtype=torch.int32)
+    finite = (bits & 0x7f80) != 0x7f80
+    for reference, actual in ((tensors[0], tensors[1]), (tensors[2], tensors[3])):
+        assert torch.equal(reference.view(torch.int32)[finite], actual.view(torch.int32)[finite])
+
+
+@pytest.mark.parametrize("tokens,heads", [(65, 24), (513, 24), (2049, 24), (128, 48)])
+def test_gfx936_projected_layout_matches_original_bits(tokens, heads, monkeypatch):
+    if not impl._is_gfx936(torch.device("cuda", torch.cuda.current_device())):
+        pytest.skip("gfx936 fast path")
+    monkeypatch.setattr(impl, "_gate_tables", {})
+    monkeypatch.setattr(impl, "_pending_gate_tables", {})
+    torch.manual_seed(8741)
+    x, _, w = _inputs(tokens, heads)
+    stride = 8192 if heads == 24 else 16384
+    z = torch.randn(tokens, stride, dtype=x.dtype, device=x.device)[:, -heads * 128 :]
+    z = z.view(tokens, heads, 128)
+    q = torch.empty(tokens, heads * 128, dtype=torch.int8, device=x.device)
+    s = torch.empty(tokens, 1, dtype=torch.float32, device=x.device)
+    if heads == 24:
+        warps = 4 if tokens <= 512 else 2
+        impl._gated_exact_heads_kernel[(tokens,)](x, z, w, q, s, EPS, 128, stride, 128, num_warps=warps)
+    else:
+        impl._gated_rmsnorm_int8_kernel[(tokens,)](x, z, w, q, s, EPS, 128, stride, 128, heads, 64, 128, num_warps=4)
+    for _ in range(2):
+        actual_q, actual_s = impl.gated_rms_norm_per_token_int8_quant(x, z, w, EPS, num_heads=heads)
+        assert torch.equal(actual_q, q)
+        assert torch.equal(actual_s.view(torch.int32), s.view(torch.int32))

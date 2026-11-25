@@ -1,7 +1,7 @@
 import pytest
 import torch
 
-from gemma_fused_add_rmsnorm_int8_fp32_gfx936.python_api import (
+from fusion_gfx936.gemma_add_rmsnorm_per_token_int8_quant.python_api import (
     WIDTH,
     gemma_fused_add_rmsnorm_int8_fp32,
 )

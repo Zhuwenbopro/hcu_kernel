@@ -163,3 +163,9 @@ M=512 使用 8-wave、BM128×BN512 的 N-split 内核。每个 K 阶段保留 4 
 | 96 | 74.79 | 77.24 |
 | 112 | 77.01 | 78.61 |
 | 128 | 79.27 | 79.85 |
+
+### Direct X、packed X 与 LightOP 性能对比（M=1–4096）
+
+图中 Direct X 使用覆盖 M=1–4096 的扩展版。在 BW47 GPU7 上逐点测试 TP2 的每个整数 M，每个 rank 的 N=17408、K=5120。上图为 GPU 延迟，下图为对照延迟除以 Direct X 延迟，高于 1 表示 Direct X 更快。packed X 的计时包含在线打包 X。
+
+![gfx936 TP2 上 Direct X、packed X 与 LightOP 在 M=1–4096 的 GPU 延迟和加速比](direct-x-packed-x-lightop-M1-4096.png)
