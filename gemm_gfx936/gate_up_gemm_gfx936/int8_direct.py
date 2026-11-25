@@ -19,9 +19,9 @@ from .runtime import (
 class DirectXInt8GateUpGemm:
     """Compute BF16 Y without a separate X conversion or X workspace.
 
-    Supports M=1..4096, N=17408 and K=5120. X is contiguous and 16-byte
+    Supports M=1..20480, N=17408 and K=5120. X is contiguous and 16-byte
     aligned. Weights use int8.pack_int8_weight as in Int8GateUpGemm.
-    The independent policy selects the measured direct-X variant per M.
+    The independent policy selects a direct-X variant for each M.
     """
 
     def __init__(self, weight_packed, scale_w):

@@ -21,7 +21,7 @@ def build_family(name, record, dest):
     text = metadata(
         patch_generated(text, layout, record["store_flags"], record["epilogue"])[0]
     )
-    text = retarget(text, layout, name, N, layout["BN"], record["order"])
+    text = retarget(text, layout, name, N, layout["BN"], record["order"], max_m=MAX_M)
     if record["mapping"] == "coalesced":
         text, audit = coalesced_x_source(
             text,

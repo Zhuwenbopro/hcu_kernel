@@ -237,7 +237,7 @@
       [3360, "dx4k_n112x512_w8_m_sp0_g2_v0_x1_d_s_wb"],
       [3840, "dx4k_n128x512_w8_m_sp2_g2_v4_x1_d_s_wb"],
       [3920, "dx4k_n112x512_w8_m_sp0_g2_v0_x1_d_s_wb"],
-      [4096, "dx4k_n128x512_w8_m_sp2_g2_v4_x1_d_s_wb"]
+      [20480, "dx4k_n128x512_w8_m_sp2_g2_v4_x1_d_s_wb"]
     ],
     "kernels": {
       "dx_m64x64_w4_n_rf0_g1_g_lds_scalar_glc": {

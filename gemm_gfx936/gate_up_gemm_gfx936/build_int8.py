@@ -19,7 +19,7 @@ def replace_once(text, old, new):
     return text.replace(old, new, 1)
 
 
-def retarget(text, spec, name, n, bn, order):
+def retarget(text, spec, name, n, bn, order, *, max_m=MAX_M):
     """Set the shard strides and CTA traversal without changing the K loop."""
     text = replace_once(text, "s_mov_b32 s17, 0x110000", f"s_mov_b32 s17, {n * 64}")
     rows = spec["PF"] if spec["direction"] == "M" else spec["SF"]
@@ -33,7 +33,7 @@ def retarget(text, spec, name, n, bn, order):
         text,
         flags=re.M,
     )
-    if count != 2 or n % bn or n * K * 2 >= 2**31 or MAX_M * n * 4 >= 2**31:
+    if count != 2 or n % bn or n * K * 2 >= 2**31 or max_m * n * 4 >= 2**31:
         raise ValueError(f"Unsupported tile or output stride for {name}")
     text = replace_once(
         text,

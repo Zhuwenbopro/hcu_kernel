@@ -5,7 +5,7 @@ from functools import lru_cache
 from .policy import policy_sections
 
 N = 17408
-MAX_M = 4096
+MAX_M = 20480
 
 
 def check_m(m):
