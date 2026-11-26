@@ -536,8 +536,8 @@
   },
   {
     "path": "gemm_gfx936/gate_up_gemm_gfx936/README.md",
-    "sha256": "1d0594e441e6d242862b294e237c1aac0f5dabad6e6ed0cc750e64cdea771e72",
-    "bytes": 19541
+    "sha256": "b7e4829927dd24de46e9250305cb4669883abbe656564ef1b57096c90b2b50a9",
+    "bytes": 21305
   },
   {
     "path": "gemm_gfx936/gate_up_gemm_gfx936/__init__.py",
@@ -658,6 +658,26 @@
     "path": "gemm_gfx936/gate_up_gemm_gfx936/policy.py",
     "sha256": "ea8893ce87689dc77bdbc1fa6651fbc86c241c77bc9f0e3de8c5355c49783ebb",
     "bytes": 2447
+  },
+  {
+    "path": "gemm_gfx936/gate_up_gemm_gfx936/results/direct-x-lightop-40k/latency.png",
+    "sha256": "f24fd888b4db67de0ddf03098d4ca31e20c7c3939db68c8d77a75db664febe50",
+    "bytes": 558221
+  },
+  {
+    "path": "gemm_gfx936/gate_up_gemm_gfx936/results/direct-x-lightop-40k/per-m.csv.gz",
+    "sha256": "4ececb4bc2b91c1e4d6d2f52d6cf861cd6106dd3f669f9e2db0bd12a717cb3d6",
+    "bytes": 680081
+  },
+  {
+    "path": "gemm_gfx936/gate_up_gemm_gfx936/results/direct-x-lightop-40k/plot.py",
+    "sha256": "9caae39f0ed720e11b9ed6768ebf2249d240cdbf8fa05a0c75ab0f0d895ebd3b",
+    "bytes": 6815
+  },
+  {
+    "path": "gemm_gfx936/gate_up_gemm_gfx936/results/direct-x-lightop-40k/speedup.png",
+    "sha256": "6fdcd893c85f89c4e9232b98943ce7ac310722292ceb671a98cf87b9c8c9c58c",
+    "bytes": 605234
   },
   {
     "path": "gemm_gfx936/gate_up_gemm_gfx936/runtime.py",

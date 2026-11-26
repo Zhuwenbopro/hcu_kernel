@@ -132,6 +132,24 @@ M 较大时使用 BM128×BN512、8-wave 内核。按 M 查表得到 `group_width
 
 M=20480 的 Direct X / LightOP 延迟为 5.258 / 6.148 ms，M=40960 为 10.424 / 12.245 ms。M=40960 时 Direct X 的单 rank 有效吞吐为 700.44 TOPS。
 
+![Direct X 和 LightOP 逐点 GPU 延迟，浅蓝为带宽模型占比，浅绿为算力利用率](results/direct-x-lightop-40k/latency.png)
+
+![LightOP 延迟除以 Direct X 延迟，浅蓝为带宽模型占比，浅绿为算力利用率](results/direct-x-lightop-40k/speedup.png)
+
+两图左侧放大 M=1–256，右侧覆盖全部 40960 点。右侧的细线保留逐点值，粗线取每 128 个连续 M 的中位数。背景读右轴，实线对应 Direct X，虚线对应 LightOP。
+
+带宽模型以字节计。INT8 输入 `X=M*K`、`W=N*K`，BF16 输出 `Y=2*M*N`。令 `BM=ceil(M/tile_m)`、`BN=ceil(N/tile_n)`，每种实现使用该 M 实际调度的 tile。HBM 计入 X、W 各一次首读和 Y 一次写回，L2 计入 W 在 M 方向、X 在 N 方向的重读。模型仅计这三个矩阵。下式使用十进制 TB/s，实测延迟 `t` 以秒计。
+
+```text
+T_bw = (X + W + Y) / 1.5e12 + ((BM - 1)*W + (BN - 1)*X) / 6e12
+带宽模型占比 = T_bw / t
+INT8 算力利用率 = 2*M*N*K / (784e12*t)
+```
+
+M=40960 时，Direct X 与 LightOP 的带宽模型占比分别为 67.56% 和 47.80%，算力利用率分别为 89.34% 和 76.06%。Direct X 的带宽模型峰值在 M=79。此时模型中 HBM 和 L2 分别耗时 61.52 µs 和 18.27 µs，两项相加再除以实测的 72.24 µs 得到 110.45%。这个比值衡量模型耗时与实测的关系，物理带宽占用需由硬件计数器测量。
+
+[逐点数据（CSV.gz）](results/direct-x-lightop-40k/per-m.csv.gz) 含每个 M 的两条实测延迟（µs）和两种实现各自的 tile 行列数。在数据目录中运行 `python plot.py` 可重算上述指标，并将英文标注的两张图写入 `redrawn/`。[绘图脚本](results/direct-x-lightop-40k/plot.py) 依赖 NumPy 和 Matplotlib。
+
 #### M=4097–20480 的原始网格基线（77c5b8c）
 
 此版本沿用 M=4096 的 BM128×BN512、8-wave 内核，每个 CTA 计算 128 行、512 列。末块按实际行数读 X 和写 Y。M=20480 时沿 M 启动 160 个 CTA，沿 N 启动 34 个 CTA，单次 launch 写出 680 MiB 的 BF16 结果。
