@@ -1,0 +1,9 @@
+*.csv -text whitespace=cr-at-eol
+*.json text eol=lf
+SHA256SUMS text eol=lf
+*.gz binary
+*.png binary
+*.sh text eol=lf
+*.py text eol=lf
+*.cpp text eol=lf
+*.inc text eol=lf

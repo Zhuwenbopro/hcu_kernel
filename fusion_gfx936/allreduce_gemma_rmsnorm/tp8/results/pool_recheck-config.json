@@ -1,0 +1,1 @@
+{"stage": "pool_recheck", "sizes": [2, 5, 10, 21, 66, 130, 264, 513, 1022, 2049, 3071, 4095], "k": 8, "rounds": 9, "methods": ["aiter", "direct", "sharded"], "blocks": 64, "cutoff": null}

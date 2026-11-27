@@ -1,0 +1,11 @@
+{
+  "world_size": 8,
+  "measured_shared_library_sha256": "a0e7d5bffdb6872d8c9eb575b9d288ed23a74db634be50ede2f4f7cb9c10bbaa",
+  "aiter_shared_library_sha256": "4b2eaec537f432492096ca126c8148a01922949b20108319f7d78b433e8c0da1",
+  "native_source_sha256": {
+    "native/build.sh": "e5258baacc57adb7cfb5c860c2c969216cbc2a30b102570d2846202b3c54a65f",
+    "native/tp8.cpp": "8fc4a218e5b6750244c166d6b1f29a2ef50e6f238261535740eae3d7222ceaf4",
+    "native/gemma_exact.inc": "e61b0523438c74e82190b721681a75ac8f5373a9583198f31296739efef38ea4"
+  },
+  "measured_wrapper_sha256": "2112e6e8520a974621a339e27731043107dfd1c73ced2992994aa7e9b4faba71"
+}

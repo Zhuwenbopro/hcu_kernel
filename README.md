@@ -15,7 +15,7 @@
 
 - `decode_gemm_int8_gfx936/`：gfx936 INT8 decode GEMM，含14种HIP配置、独立编译/Python入口、正确性与冷权重池基准，以及TP1/2/4/8、bs1–1024结果摘要
 
-- [fusion_gfx936/](fusion_gfx936/) 收录四个逐 token INT8 融合算子，包括 Attention sigmoid × mul、GDN gated RMSNorm、Gemma add + RMSNorm 和 SiLU × up。各子目录提供调用说明与性能对比图。
+- [fusion_gfx936/](fusion_gfx936/) 收录四个逐 token INT8 融合算子，以及单机 [TP2/4/8 AllReduce + residual add + Gemma RMSNorm](fusion_gfx936/allreduce_gemma_rmsnorm/)。后者提供 BF16 HIP 实现、对 AITER 两段的逐比特校验和 M=1–4096 的逐点实测。
 - [gated_rms_norm_per_token_fp8_quant_gfx938/](gated_rms_norm_per_token_fp8_quant_gfx938/) 提供 gfx938 的 GDN gated RMSNorm、SiLU gate 和 per-token FP8 E4M3FN 融合，含正确性测试和两段式对照基准。
 - [hbm_read_gfx938/](hbm_read_gfx938/) 提供 gfx938 的 BF16 LM head 权重纯读基准，含 CU mask、CTA 时间戳和 XProf 复测。
 

@@ -1,8 +1,8 @@
 [
   {
     "path": "README.md",
-    "sha256": "3207efe93b7724f6f7c10a48a5fb49add522729ed67ebfaa4ee4b062fc9b5c04",
-    "bytes": 5133
+    "sha256": "6bb1797622c2c709af2ef850d464e3d288de7ed6ac5c7a4ca52782f4fe7d9e80",
+    "bytes": 5195
   },
   {
     "path": "decode_gemm_int8_gfx936/README.md",
@@ -336,13 +336,468 @@
   },
   {
     "path": "fusion_gfx936/README.md",
-    "sha256": "c5cfd9597888ff50e2cbfa15f92b49babffa9c0d38d9ac875a33c1f249fffb46",
-    "bytes": 961
+    "sha256": "6eacc9148b968ae1597d61ed0988b2d9cb1c52da210edeeaab5a3705e5d360e7",
+    "bytes": 1205
   },
   {
     "path": "fusion_gfx936/__init__.py",
     "sha256": "cb9795e4d1280cd41a20ae053d5274289fa40eac107b3d0725dd3e7f377ed63d",
     "bytes": 32
+  },
+  {
+    "path": "fusion_gfx936/allreduce_gemma_rmsnorm/.gitattributes",
+    "sha256": "97b8d342cac2a681bfbccd411174c66c653cd88683f51fe25b4e80e58c03f65c",
+    "bytes": 170
+  },
+  {
+    "path": "fusion_gfx936/allreduce_gemma_rmsnorm/README.md",
+    "sha256": "e83d77997955ce77e4ce4b28e2b66add1ec316fd13bdba272edfb6cddf55e6e0",
+    "bytes": 7077
+  },
+  {
+    "path": "fusion_gfx936/allreduce_gemma_rmsnorm/compare.py",
+    "sha256": "3198a42405568f0b95348eacabe0b0d07d28beb823355050d1271f7a6b5a8c6f",
+    "bytes": 3069
+  },
+  {
+    "path": "fusion_gfx936/allreduce_gemma_rmsnorm/speedup-by-tp.png",
+    "sha256": "ee2eabae0d9e761ab677c441ea01ee70e2ea0caa9b9657ab46af136a0fe09cd6",
+    "bytes": 188516
+  },
+  {
+    "path": "fusion_gfx936/allreduce_gemma_rmsnorm/tp2/README.md",
+    "sha256": "71e533a6f916154e14621de1a2c2840b37da265fb2cb5bd7f1f01b31180224e2",
+    "bytes": 4732
+  },
+  {
+    "path": "fusion_gfx936/allreduce_gemma_rmsnorm/tp2/benchmark.py",
+    "sha256": "eb5294f8e166cfc29ae1e844445b07c478104f0dff4e640162f050c616a5e9ea",
+    "bytes": 10157
+  },
+  {
+    "path": "fusion_gfx936/allreduce_gemma_rmsnorm/tp2/build.sh",
+    "sha256": "18c426e463c5a04ba8b6fca8ae64483daa7085fdfcad6ce2b9471eb97243845e",
+    "bytes": 336
+  },
+  {
+    "path": "fusion_gfx936/allreduce_gemma_rmsnorm/tp2/check_switching.py",
+    "sha256": "291b01ae7fadd71d55a7f31c64e37befa65a3d5186262c24266a1e9841d89818",
+    "bytes": 1800
+  },
+  {
+    "path": "fusion_gfx936/allreduce_gemma_rmsnorm/tp2/native/fixed.cpp",
+    "sha256": "21b95a17deedfdae77eedf523112d5f9256923933070fc6e874d9c449ffbf3ac",
+    "bytes": 9977
+  },
+  {
+    "path": "fusion_gfx936/allreduce_gemma_rmsnorm/tp2/native/gemma_row.inc",
+    "sha256": "7578e3ce99bf9261071453b668d7f1daa54e6e4f31bd3ff5151936b53a056a91",
+    "bytes": 7600
+  },
+  {
+    "path": "fusion_gfx936/allreduce_gemma_rmsnorm/tp2/native/tuned.cpp",
+    "sha256": "40226b2f4943301a33e1178203a6fb42c3b056462704e85a6758650edfc7e38c",
+    "bytes": 11458
+  },
+  {
+    "path": "fusion_gfx936/allreduce_gemma_rmsnorm/tp2/plot.py",
+    "sha256": "9a1f5ded833cb7dc8cacabb44983fad962af8ee958ce56c4f15cb9416e7960a0",
+    "bytes": 6970
+  },
+  {
+    "path": "fusion_gfx936/allreduce_gemma_rmsnorm/tp2/provenance.json",
+    "sha256": "0fe737f36b8e41b54bb643f9d195fcf2e673e33bb8a8900e05f0b3b978cb34b7",
+    "bytes": 2115
+  },
+  {
+    "path": "fusion_gfx936/allreduce_gemma_rmsnorm/tp2/results/dense/by-m.csv",
+    "sha256": "2ce2a2788b56da32788d5d4a6ec7f3b98302463b0f401f1c56a2177402f9258e",
+    "bytes": 549121
+  },
+  {
+    "path": "fusion_gfx936/allreduce_gemma_rmsnorm/tp2/results/dense/full-raw.csv.gz",
+    "sha256": "20fb26e702eff693e76d2118eccb7056f84f0201657534358197348a2d3d835d",
+    "bytes": 1926643
+  },
+  {
+    "path": "fusion_gfx936/allreduce_gemma_rmsnorm/tp2/results/dense/full.csv.gz",
+    "sha256": "d3996246ec20a8ee75ee074d3e0429de3fef72f7d0f602d59d29222dba758b88",
+    "bytes": 354908
+  },
+  {
+    "path": "fusion_gfx936/allreduce_gemma_rmsnorm/tp2/results/dense/latency.png",
+    "sha256": "d209c7c11a7cb6a24f23fa5a9db0efdd5b56a29b96b89035a3f7cc21e9922c67",
+    "bytes": 201587
+  },
+  {
+    "path": "fusion_gfx936/allreduce_gemma_rmsnorm/tp2/results/dense/speedup.png",
+    "sha256": "b3be7acc93a73935738c5b73e67d9fb2eeb50a561b375c7c08a413bef5f09d41",
+    "bytes": 237457
+  },
+  {
+    "path": "fusion_gfx936/allreduce_gemma_rmsnorm/tp2/results/dense/summary.json",
+    "sha256": "190b3b8f6cb07c8108ff6dfd1e44188bfac5b38ada0e41fb535aa09d3b462d3e",
+    "bytes": 6045
+  },
+  {
+    "path": "fusion_gfx936/allreduce_gemma_rmsnorm/tp2/results/range/proposed-mixed.json",
+    "sha256": "750c5740571cbc98b6a9dc330631e09d046de8e83036b74b27ae3d55767f8972",
+    "bytes": 188
+  },
+  {
+    "path": "fusion_gfx936/allreduce_gemma_rmsnorm/tp2/results/range/range-raw.csv.gz",
+    "sha256": "b1b2ef44a46333ce8890f623b6d690d46a7780d673e9aa3feaf0d86cb0e4743e",
+    "bytes": 305875
+  },
+  {
+    "path": "fusion_gfx936/allreduce_gemma_rmsnorm/tp2/results/range/range.csv",
+    "sha256": "5de1d05fc877c65f3721a1a5aebb49c69bac54e68e0af12a2b4a6f40715d823f",
+    "bytes": 132004
+  },
+  {
+    "path": "fusion_gfx936/allreduce_gemma_rmsnorm/tp2/results/range/summary.json",
+    "sha256": "eea79925663b048658caae4ba1b36ace84166b68433762a05a3cc9eb6ec5cb09",
+    "bytes": 5644
+  },
+  {
+    "path": "fusion_gfx936/allreduce_gemma_rmsnorm/tp2/results/range/windows-mixed.json",
+    "sha256": "750c5740571cbc98b6a9dc330631e09d046de8e83036b74b27ae3d55767f8972",
+    "bytes": 188
+  },
+  {
+    "path": "fusion_gfx936/allreduce_gemma_rmsnorm/tp2/summarize.py",
+    "sha256": "83dfaacd4f8d6638abccfa92ea2b52d23d35a6860db4249c740a7c49df4a813d",
+    "bytes": 3872
+  },
+  {
+    "path": "fusion_gfx936/allreduce_gemma_rmsnorm/tp2/summarize_range.py",
+    "sha256": "f734ae2015bf30c1382e44d8c7266078e33383dbe66f45e217f8a2bd00e54d51",
+    "bytes": 2321
+  },
+  {
+    "path": "fusion_gfx936/allreduce_gemma_rmsnorm/tp2/tp2_ar.py",
+    "sha256": "45dfcd9f5b69f43135b1dcb334599f71eeca3f51bbc7e16245ee3605bf010aeb",
+    "bytes": 12384
+  },
+  {
+    "path": "fusion_gfx936/allreduce_gemma_rmsnorm/tp4/README.md",
+    "sha256": "6d7bab830471ca24b3c40f4b36ee3acc66254f458f9c100cb21875aa5b53afd6",
+    "bytes": 698
+  },
+  {
+    "path": "fusion_gfx936/allreduce_gemma_rmsnorm/tp4/benchmark_runtime.py",
+    "sha256": "cd945f4e3dd888571ff2e8b3458a53936d6d260c1c00024c02a84859cb76776c",
+    "bytes": 917
+  },
+  {
+    "path": "fusion_gfx936/allreduce_gemma_rmsnorm/tp4/enqueue_benchmark.py",
+    "sha256": "97fc4dad106dd6cd1f1b2390953317dfc72aa4617615dae823a65aa9a844a416",
+    "bytes": 2383
+  },
+  {
+    "path": "fusion_gfx936/allreduce_gemma_rmsnorm/tp4/extended.py",
+    "sha256": "d51b8d4ba3cda5c2165d2f25169f86f507348c323beb0eb409a96a4e66a8703c",
+    "bytes": 10335
+  },
+  {
+    "path": "fusion_gfx936/allreduce_gemma_rmsnorm/tp4/extended.sh",
+    "sha256": "90e8bd4e60e32711aa297feff534a2cffe6a91b092178c45344a1e2576ad372d",
+    "bytes": 1704
+  },
+  {
+    "path": "fusion_gfx936/allreduce_gemma_rmsnorm/tp4/native/build.sh",
+    "sha256": "d8a944fa5dc5ee9056024b334cf1b0a45c3a34bf26c6c57477fec73ebc3878a4",
+    "bytes": 186
+  },
+  {
+    "path": "fusion_gfx936/allreduce_gemma_rmsnorm/tp4/native/gemma_exact.inc",
+    "sha256": "e61b0523438c74e82190b721681a75ac8f5373a9583198f31296739efef38ea4",
+    "bytes": 4530
+  },
+  {
+    "path": "fusion_gfx936/allreduce_gemma_rmsnorm/tp4/native/tp4.cpp",
+    "sha256": "607b9c7ca31bad89b1a2fef633f39fa3feb8a212acad701fea76b16bb95dba21",
+    "bytes": 9599
+  },
+  {
+    "path": "fusion_gfx936/allreduce_gemma_rmsnorm/tp4/plot_results.py",
+    "sha256": "9495b84d70a33fcab771285f82d3d6874bf8689fdc746bf5e211376a5ee956d1",
+    "bytes": 9469
+  },
+  {
+    "path": "fusion_gfx936/allreduce_gemma_rmsnorm/tp4/results/SHA256SUMS",
+    "sha256": "38a74c2a050d711fa1ce805dacd138e89ca020b989febac08516d5e823f0b200",
+    "bytes": 1259
+  },
+  {
+    "path": "fusion_gfx936/allreduce_gemma_rmsnorm/tp4/results/by-m.csv",
+    "sha256": "9665a42a573513081cc30a98ac13073c857d2e688a3ba9fe99df790e35777fb6",
+    "bytes": 1150789
+  },
+  {
+    "path": "fusion_gfx936/allreduce_gemma_rmsnorm/tp4/results/confirm-config.json",
+    "sha256": "a028547e1ccd5e496e45a8ef5ac70284482eaa83c0e4837831792105eb30d18b",
+    "bytes": 351
+  },
+  {
+    "path": "fusion_gfx936/allreduce_gemma_rmsnorm/tp4/results/confirm-timings.jsonl.gz",
+    "sha256": "25d64730b57bbe54678346a70b311610ff38561a7913738023c37eaf42cdec07",
+    "bytes": 47208
+  },
+  {
+    "path": "fusion_gfx936/allreduce_gemma_rmsnorm/tp4/results/full-config.json",
+    "sha256": "17bd8d9d546c972e800bcfba4c43fcc56302f8825a1f9d9a8d123c4ae16cc95a",
+    "bytes": 23591
+  },
+  {
+    "path": "fusion_gfx936/allreduce_gemma_rmsnorm/tp4/results/full-timings.jsonl.gz",
+    "sha256": "1dcbe59f9465ed426812b478c18caa5a5eaa5be086162bef22277a20287afe06",
+    "bytes": 2655855
+  },
+  {
+    "path": "fusion_gfx936/allreduce_gemma_rmsnorm/tp4/results/latency.png",
+    "sha256": "4676802b9d2f374766ff9b7cacf93a60b31cf7a173758c9abc56434c4b935507",
+    "bytes": 209626
+  },
+  {
+    "path": "fusion_gfx936/allreduce_gemma_rmsnorm/tp4/results/pilot-config.json",
+    "sha256": "598651d91abcf2c6c857e021675ba5e6ba18d39f075714cda075a8ce7e5539cf",
+    "bytes": 462
+  },
+  {
+    "path": "fusion_gfx936/allreduce_gemma_rmsnorm/tp4/results/pilot-timings.jsonl.gz",
+    "sha256": "aa18126c17d119baaa052cafac2392c2f701f6d99f3b1bf9f977d42afcdf85de",
+    "bytes": 46162
+  },
+  {
+    "path": "fusion_gfx936/allreduce_gemma_rmsnorm/tp4/results/profile-summary.json",
+    "sha256": "64577b614a2f296cc458f8ef4fd2437e516d0a04b7ebeb492d8df1c8747c6a0a",
+    "bytes": 2233
+  },
+  {
+    "path": "fusion_gfx936/allreduce_gemma_rmsnorm/tp4/results/provenance.json",
+    "sha256": "307baa2a276ae723bc89ca340e2c47ec508e2399b34079a9de906410be46cb3b",
+    "bytes": 635
+  },
+  {
+    "path": "fusion_gfx936/allreduce_gemma_rmsnorm/tp4/results/routing.json",
+    "sha256": "eada9b81ab2e52076ee2305e18bb916a8b8294ffc588b18e34512bb7f3c40255",
+    "bytes": 440
+  },
+  {
+    "path": "fusion_gfx936/allreduce_gemma_rmsnorm/tp4/results/special-checks.jsonl.gz",
+    "sha256": "bf180b7dbecd18bdc559076bb4c423e0175e9b785f8f51c637c718ec0b828895",
+    "bytes": 4157
+  },
+  {
+    "path": "fusion_gfx936/allreduce_gemma_rmsnorm/tp4/results/speedup.png",
+    "sha256": "51e2d427ef0e910c34effb2ec969d4b28fd8d7001b891af7cc5fd2180137eff9",
+    "bytes": 225276
+  },
+  {
+    "path": "fusion_gfx936/allreduce_gemma_rmsnorm/tp4/results/summary.json",
+    "sha256": "f9447fc96c62266f4c2cb68817fb78da6382c3844c845629f678efd766db1578",
+    "bytes": 7892
+  },
+  {
+    "path": "fusion_gfx936/allreduce_gemma_rmsnorm/tp4/results/validation-summary.json",
+    "sha256": "548e8a80a62063dbf39f4af0b1c6c2ed4f77c29e3d54c874193666a5f9409066",
+    "bytes": 406
+  },
+  {
+    "path": "fusion_gfx936/allreduce_gemma_rmsnorm/tp4/run.sh",
+    "sha256": "cfa42cfb1b01708c89ab6b27ca5e18b3e6e8af74d3cb025c09b59ea556b6c95b",
+    "bytes": 1805
+  },
+  {
+    "path": "fusion_gfx936/allreduce_gemma_rmsnorm/tp4/suite.py",
+    "sha256": "9b44c91ef5b5eb828bd0bca072817214cfab63e3edbb0733676f7d1f1fd9c930",
+    "bytes": 6382
+  },
+  {
+    "path": "fusion_gfx936/allreduce_gemma_rmsnorm/tp4/tp4_ar.py",
+    "sha256": "ec6a95eb0b57321232537f91b59cfa17183767140245f690596755e14a11e4d1",
+    "bytes": 9019
+  },
+  {
+    "path": "fusion_gfx936/allreduce_gemma_rmsnorm/tp4/worker.py",
+    "sha256": "20e5d920f6119dfa6471c4b79c871a3c2db8acc62ff45e1117cb5f6d573b903c",
+    "bytes": 2684
+  },
+  {
+    "path": "fusion_gfx936/allreduce_gemma_rmsnorm/tp8/README.md",
+    "sha256": "663344a1170862ae5342c92b55e773163801be9c725399b442d295b2b1c1b044",
+    "bytes": 810
+  },
+  {
+    "path": "fusion_gfx936/allreduce_gemma_rmsnorm/tp8/benchmark_runtime.py",
+    "sha256": "cd945f4e3dd888571ff2e8b3458a53936d6d260c1c00024c02a84859cb76776c",
+    "bytes": 917
+  },
+  {
+    "path": "fusion_gfx936/allreduce_gemma_rmsnorm/tp8/enqueue_benchmark.py",
+    "sha256": "d65818f1987e1d5fc279c50c7cc05ecd9b9392b250d5c5cbe930bbb69bc93942",
+    "bytes": 2395
+  },
+  {
+    "path": "fusion_gfx936/allreduce_gemma_rmsnorm/tp8/extended.py",
+    "sha256": "dad3143b040a0dd5a644681684c92605bca6a3cabff32bc4e4fb4bf5dbdd6367",
+    "bytes": 12115
+  },
+  {
+    "path": "fusion_gfx936/allreduce_gemma_rmsnorm/tp8/extended.sh",
+    "sha256": "eee16747b8d5e09905299a6c43bc1cfcbd10dadad3c8cc00cdaae322b71f48b3",
+    "bytes": 1853
+  },
+  {
+    "path": "fusion_gfx936/allreduce_gemma_rmsnorm/tp8/native/build.sh",
+    "sha256": "e5258baacc57adb7cfb5c860c2c969216cbc2a30b102570d2846202b3c54a65f",
+    "bytes": 186
+  },
+  {
+    "path": "fusion_gfx936/allreduce_gemma_rmsnorm/tp8/native/gemma_exact.inc",
+    "sha256": "e61b0523438c74e82190b721681a75ac8f5373a9583198f31296739efef38ea4",
+    "bytes": 4530
+  },
+  {
+    "path": "fusion_gfx936/allreduce_gemma_rmsnorm/tp8/native/tp8.cpp",
+    "sha256": "8fc4a218e5b6750244c166d6b1f29a2ef50e6f238261535740eae3d7222ceaf4",
+    "bytes": 10208
+  },
+  {
+    "path": "fusion_gfx936/allreduce_gemma_rmsnorm/tp8/pilot_cutoff.py",
+    "sha256": "41ab5e6e82160601bfdc38ff864254e103b09dfa8ea1c0ebc1073b40121743e5",
+    "bytes": 1497
+  },
+  {
+    "path": "fusion_gfx936/allreduce_gemma_rmsnorm/tp8/plot_results.py",
+    "sha256": "abeb1466c2cd294e6f645fc4b4627400e9172db6eb05e903d34dd7d600278bdb",
+    "bytes": 9577
+  },
+  {
+    "path": "fusion_gfx936/allreduce_gemma_rmsnorm/tp8/results/SHA256SUMS",
+    "sha256": "b4be37221f0ea642bede13291a26d8ed70de9211527aa379fbe14cc5fcd0eb6a",
+    "bytes": 1724
+  },
+  {
+    "path": "fusion_gfx936/allreduce_gemma_rmsnorm/tp8/results/by-m.csv",
+    "sha256": "1e3f56834e090470ed961119823427d427d8bff691714c227caf98bb88043df3",
+    "bytes": 1152325
+  },
+  {
+    "path": "fusion_gfx936/allreduce_gemma_rmsnorm/tp8/results/confirm-config.json",
+    "sha256": "a028547e1ccd5e496e45a8ef5ac70284482eaa83c0e4837831792105eb30d18b",
+    "bytes": 351
+  },
+  {
+    "path": "fusion_gfx936/allreduce_gemma_rmsnorm/tp8/results/confirm-timings.jsonl.gz",
+    "sha256": "3674fcc753495389ba3ab466f241a7933c0e437c357a77bd6e99b3adb3e96830",
+    "bytes": 89368
+  },
+  {
+    "path": "fusion_gfx936/allreduce_gemma_rmsnorm/tp8/results/full-config.json",
+    "sha256": "17bd8d9d546c972e800bcfba4c43fcc56302f8825a1f9d9a8d123c4ae16cc95a",
+    "bytes": 23591
+  },
+  {
+    "path": "fusion_gfx936/allreduce_gemma_rmsnorm/tp8/results/full-timings.jsonl.gz",
+    "sha256": "a30754dffd5367e17c18fab9c41a367760b74ed3991bddb1fe5c90afb4d0a458",
+    "bytes": 5914340
+  },
+  {
+    "path": "fusion_gfx936/allreduce_gemma_rmsnorm/tp8/results/latency.png",
+    "sha256": "09f2d4d5dd26d63714dd26b111e24aed9b99e3c7d4de20bc344ea2bca92100a9",
+    "bytes": 214584
+  },
+  {
+    "path": "fusion_gfx936/allreduce_gemma_rmsnorm/tp8/results/loss_recheck-config.json",
+    "sha256": "a548a614a7b1190daee37f773bc0cd1350f837514b75cac6c78fb004440ecf24",
+    "bytes": 221
+  },
+  {
+    "path": "fusion_gfx936/allreduce_gemma_rmsnorm/tp8/results/loss_recheck-timings.jsonl.gz",
+    "sha256": "933c7b03bdbc3863195ac8706d9c4f5a7ab5f28b0a3ddc76bcd28054e17e86aa",
+    "bytes": 43526
+  },
+  {
+    "path": "fusion_gfx936/allreduce_gemma_rmsnorm/tp8/results/pilot-config.json",
+    "sha256": "598651d91abcf2c6c857e021675ba5e6ba18d39f075714cda075a8ce7e5539cf",
+    "bytes": 462
+  },
+  {
+    "path": "fusion_gfx936/allreduce_gemma_rmsnorm/tp8/results/pilot-timings.jsonl.gz",
+    "sha256": "b6b8c7de60d14c10a4a6d08269c000ebaa8422bdb5377b1e199b62a888eb9965",
+    "bytes": 87544
+  },
+  {
+    "path": "fusion_gfx936/allreduce_gemma_rmsnorm/tp8/results/pool_recheck-config.json",
+    "sha256": "2c4201097aebf62aaf3d16a7a2022ec944a196eaa0e8dd36745d551930702690",
+    "bytes": 187
+  },
+  {
+    "path": "fusion_gfx936/allreduce_gemma_rmsnorm/tp8/results/pool_recheck-timings.jsonl.gz",
+    "sha256": "1137fde3e10e6c52ddda77b07834eb42137b2b0a7fdb7a735c1e4c28f566b677",
+    "bytes": 16947
+  },
+  {
+    "path": "fusion_gfx936/allreduce_gemma_rmsnorm/tp8/results/profile-summary.json",
+    "sha256": "4519191c34652ecc8e5b02f551b6aad9e58f87e05200a34d56418e6006acd762",
+    "bytes": 2230
+  },
+  {
+    "path": "fusion_gfx936/allreduce_gemma_rmsnorm/tp8/results/provenance.json",
+    "sha256": "60189dc0c759e857b0337c93144ac3ee7229ffe9357ec2d316cc69577a1f042b",
+    "bytes": 635
+  },
+  {
+    "path": "fusion_gfx936/allreduce_gemma_rmsnorm/tp8/results/replication-summary.json",
+    "sha256": "39b824b770dc08c456798c70cf1bde45845c97c62560e700ec789fcffa725f97",
+    "bytes": 2244
+  },
+  {
+    "path": "fusion_gfx936/allreduce_gemma_rmsnorm/tp8/results/routing.json",
+    "sha256": "c23f11d6116586b7abe339d81206d9c10d1b03ce1dd7d3c1c98bb12e0ae9cfa9",
+    "bytes": 356
+  },
+  {
+    "path": "fusion_gfx936/allreduce_gemma_rmsnorm/tp8/results/special-checks.jsonl.gz",
+    "sha256": "94cc3e4e02b96869c764302a406104a2780e297f8e3c3d70c0f1aa7ad8260ab3",
+    "bytes": 10491
+  },
+  {
+    "path": "fusion_gfx936/allreduce_gemma_rmsnorm/tp8/results/speedup.png",
+    "sha256": "fde931165052feaab70975d9763a59e41d65731fa10cdaa81b894764f12b6b76",
+    "bytes": 222499
+  },
+  {
+    "path": "fusion_gfx936/allreduce_gemma_rmsnorm/tp8/results/summary.json",
+    "sha256": "f4e1e21d2e83b2ff49fc8064687215c5fd3366d139b86ef48894ad6612e8fa50",
+    "bytes": 7987
+  },
+  {
+    "path": "fusion_gfx936/allreduce_gemma_rmsnorm/tp8/results/validation-summary.json",
+    "sha256": "8ce30e99e195319e468378d2e5c71be572945fb4fea8b89f5bf2046fe40bcdbd",
+    "bytes": 406
+  },
+  {
+    "path": "fusion_gfx936/allreduce_gemma_rmsnorm/tp8/run.sh",
+    "sha256": "f7c6159cd0b288b21e1a0b5bbe7cbffb4dc106dcaea10c27c77ca8550ecbcd4d",
+    "bytes": 1813
+  },
+  {
+    "path": "fusion_gfx936/allreduce_gemma_rmsnorm/tp8/suite.py",
+    "sha256": "fa0b94e633d0285d2ef0956b525b70b851a4237c72348625cbd4c45e0ccb5b47",
+    "bytes": 7820
+  },
+  {
+    "path": "fusion_gfx936/allreduce_gemma_rmsnorm/tp8/tp8_ar.py",
+    "sha256": "5d80359f5ca4be6e2781adefb05d58a4644b3efec0dbe36dadd2a03328cf0686",
+    "bytes": 9626
+  },
+  {
+    "path": "fusion_gfx936/allreduce_gemma_rmsnorm/tp8/worker.py",
+    "sha256": "2bf9f3aa7ddfdccd182248f529be394810b3de1e798c48dfe8a4556656d071e9",
+    "bytes": 3061
   },
   {
     "path": "fusion_gfx936/gated_rmsnorm_per_token_int8_quant/README.md",

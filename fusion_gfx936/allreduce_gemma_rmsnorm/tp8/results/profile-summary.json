@@ -1,0 +1,92 @@
+[
+  {
+    "M": 7,
+    "gpu_events": [
+      {
+        "category": "gpu_memcpy",
+        "name": "Memcpy DtoD (Device -> Device)",
+        "ts": 4875555627574.257,
+        "dur_us": 3.199,
+        "bytes": 71680,
+        "stream": 1
+      },
+      {
+        "category": "kernel",
+        "name": "_ZN5aiter26cross_device_reduce_1stageIDF16bLi8ELb0EEEvPNS_8RankDataES2_NS_11RankSignalsEPNS_6SignalEPT_ii",
+        "ts": 4875555627644.497,
+        "dur_us": 73.279,
+        "bytes": null,
+        "stream": 1
+      },
+      {
+        "category": "kernel",
+        "name": "_fused_add_rmsnorm_kernel",
+        "ts": 4875555627912.657,
+        "dur_us": 5.279,
+        "bytes": null,
+        "stream": 1
+      }
+    ],
+    "captured": true
+  },
+  {
+    "M": 8,
+    "gpu_events": [
+      {
+        "category": "gpu_memcpy",
+        "name": "Memcpy DtoD (Device -> Device)",
+        "ts": 4875555633369.565,
+        "dur_us": 3.039,
+        "bytes": 81920,
+        "stream": 1
+      },
+      {
+        "category": "kernel",
+        "name": "_ZN5aiter26cross_device_reduce_2stageIDF16bLi8ELb0ELb0EEEvPNS_8RankDataES2_NS_11RankSignalsEPNS_6SignalEPT_ii",
+        "ts": 4875555633376.925,
+        "dur_us": 39.519,
+        "bytes": null,
+        "stream": 1
+      },
+      {
+        "category": "kernel",
+        "name": "_fused_add_rmsnorm_kernel",
+        "ts": 4875555633505.725,
+        "dur_us": 5.759,
+        "bytes": null,
+        "stream": 1
+      }
+    ],
+    "captured": true
+  },
+  {
+    "M": 257,
+    "gpu_events": [
+      {
+        "category": "gpu_memcpy",
+        "name": "Memcpy DtoD (Device -> Device)",
+        "ts": 4875555638047.394,
+        "dur_us": 6.079,
+        "bytes": 2631680,
+        "stream": 1
+      },
+      {
+        "category": "kernel",
+        "name": "_ZN5aiter26cross_device_reduce_2stageIDF16bLi8ELb0ELb1EEEvPNS_8RankDataES2_NS_11RankSignalsEPNS_6SignalEPT_ii",
+        "ts": 4875555638053.474,
+        "dur_us": 167.839,
+        "bytes": null,
+        "stream": 1
+      },
+      {
+        "category": "kernel",
+        "name": "_fused_add_rmsnorm_kernel",
+        "ts": 4875555638221.314,
+        "dur_us": 13.919,
+        "bytes": null,
+        "stream": 1
+      }
+    ],
+    "captured": true
+  }
+]

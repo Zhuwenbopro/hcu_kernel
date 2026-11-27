@@ -1,0 +1,30 @@
+{
+  "source": "pilot",
+  "objective": "sum of per-M policy_us / aiter_us across pilot sizes",
+  "pilot_points": 75,
+  "cutoff": 19,
+  "score": 59.29946946107772,
+  "top5": [
+    [
+      59.29946946107772,
+      19
+    ],
+    [
+      59.30472707556992,
+      20
+    ],
+    [
+      59.31528563764077,
+      18
+    ],
+    [
+      59.31826229634478,
+      21
+    ],
+    [
+      59.343184410506936,
+      22
+    ]
+  ],
+  "pilot_all_zero": true
+}

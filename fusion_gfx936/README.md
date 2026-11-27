@@ -1,6 +1,12 @@
 # gfx936 融合算子
 
-这四个算子都输出逐 token 量化的 INT8 激活和 FP32 scale。子目录按 `<算子>_per_token_int8_quant` 命名。下表链接到各算子的调用示例、构建或测试命令及性能图。
+## 跨卡归约
+
+[AllReduce + residual add + Gemma RMSNorm](allreduce_gemma_rmsnorm/) 在单个 HIP kernel 内完成单机 TP2、TP4 或 TP8 归约和归一化，输出 BF16 激活与更新后的 BF16 残差。目录包含构建和调用方法、三组逐 M 数据及对比图。
+
+## 逐 token INT8 量化
+
+下列四个算子输出逐 token 量化的 INT8 激活和 FP32 scale。各子目录提供调用示例、构建或测试命令及性能图。
 
 | 算子 | 实现 | 输入与行为 |
 | --- | --- | --- |

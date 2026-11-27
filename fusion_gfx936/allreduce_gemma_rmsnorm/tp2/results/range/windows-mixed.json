@@ -1,0 +1,14 @@
+[
+  {
+    "rank": 0,
+    "bf16_values": 2329344000,
+    "mismatches": 0,
+    "calls": 486
+  },
+  {
+    "rank": 1,
+    "bf16_values": 2329344000,
+    "mismatches": 0,
+    "calls": 486
+  }
+]

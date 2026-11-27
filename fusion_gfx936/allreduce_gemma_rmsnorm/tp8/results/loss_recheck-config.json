@@ -1,0 +1,1 @@
+{"stage": "loss_recheck", "sizes": [1, 7, 8, 12, 13, 14, 15, 16, 17, 18, 32, 1024, 1035, 1036, 1037, 1038, 1039, 2048, 4096], "k": 12, "rounds": 19, "methods": ["aiter", "direct", "sharded"], "blocks": 64, "cutoff": null}

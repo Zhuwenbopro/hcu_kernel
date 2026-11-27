@@ -1,0 +1,26 @@
+{
+  "order_eager": {
+    "rows": 576,
+    "norm": 0,
+    "residual": 0,
+    "ref_order": 0
+  },
+  "order_graph_double_replay": {
+    "rows": 576,
+    "norm": 0,
+    "residual": 0,
+    "ref_order": 0
+  },
+  "mixed_eager": {
+    "rows": 576,
+    "norm": 0,
+    "residual": 0,
+    "ref_order": 0
+  },
+  "mixed_graph_double_replay": {
+    "rows": 576,
+    "norm": 0,
+    "residual": 0,
+    "ref_order": 0
+  }
+}

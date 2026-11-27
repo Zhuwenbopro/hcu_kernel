@@ -1,0 +1,47 @@
+{
+  "host": "BW47",
+  "architecture": "gfx936",
+  "physical_devices": [
+    1,
+    2
+  ],
+  "cpu_group": "Gloo",
+  "baseline": "AITER IPC copy-in followed by SGLang GemmaRMSNorm with residual",
+  "weight_key": "model.language_model.layers.0.post_attention_layernorm.weight",
+  "eps": 1e-06,
+  "dense_run": "tuned-full-sweep/run-Og3TcXFG",
+  "range_run": "fusion-range-switch/run-opfRXjN5",
+  "native_sources": {
+    "native/fixed.cpp": {
+      "source": "m1-4096-compare/native/hip_oneshot2.cpp",
+      "sha256": "21b95a17deedfdae77eedf523112d5f9256923933070fc6e874d9c449ffbf3ac"
+    },
+    "native/tuned.cpp": {
+      "source": "grid-tune/native-dynamic/hip_oneshot2.cpp",
+      "sha256": "40226b2f4943301a33e1178203a6fb42c3b056462704e85a6758650edfc7e38c"
+    },
+    "native/gemma_row.inc": {
+      "source": "m1-4096-compare/native/gemma_row.inc",
+      "sha256": "7578e3ce99bf9261071453b668d7f1daa54e6e4f31bd3ff5151936b53a056a91"
+    }
+  },
+  "tested_libraries": {
+    "fixed": {
+      "original_library_sha256": "2919b27d12b8c2eaa621002dea2a6f5495e635bd66a4aa08d73d2e66c70639b0",
+      "same_gfx936_code_object_sha256": "e41ec22882d4bc3cc14eced8b6cd4b3b61c695b03641b12a7568c1233769c43f"
+    },
+    "tuned": {
+      "original_library_sha256": "1de9a2ce918aee68842dedd48f86ca2d4045851bade83119ae5c2bb8482373d3",
+      "same_gfx936_code_object_sha256": "789d75ac597b57ea94c6f2a4092568f7177de648f5d13f2a17bca9d2259f208c"
+    }
+  },
+  "data_sha256_uncompressed": {
+    "dense/by-m.csv": "2ce2a2788b56da32788d5d4a6ec7f3b98302463b0f401f1c56a2177402f9258e",
+    "dense/latency.png": "d209c7c11a7cb6a24f23fa5a9db0efdd5b56a29b96b89035a3f7cc21e9922c67",
+    "dense/speedup.png": "b3be7acc93a73935738c5b73e67d9fb2eeb50a561b375c7c08a413bef5f09d41",
+    "dense/full-raw.csv": "f37fd77bd249fed848247614bb3cdfb68182f9888005be774c9d6fbb8d9212dc",
+    "dense/full.csv": "8755f542f20a4d5ac81dcbe85739e423a01460ca6745120c447ff849f618d173",
+    "range/range.csv": "5de1d05fc877c65f3721a1a5aebb49c69bac54e68e0af12a2b4a6f40715d823f",
+    "range/range-raw.csv": "56efd60b361c9d1873aadaf1ed5dfb28287d5e1a6ea67c572b4ebf331814f5fb"
+  }
+}
