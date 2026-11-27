@@ -2,6 +2,8 @@
 
 单机 TP2、TP4、TP8 的 HIP 实现。每个 rank 输入连续 BF16 张量 `x[M, 5120]`、本地残差 `residual[M, 5120]` 和 Gemma 权重 `weight[5120]`。一次 kernel 调用返回归一化输出和更新后的残差，两者均为 BF16。权重沿用 Gemma 的 `1 + weight` 约定。
 
+TP2 另有显式的 `fused_int8()` 入口，返回 INT8 激活、FP32 per-token scale 和 BF16 residual。选择 INT8 入口后默认使用逐比特模式，也可传入 `fast=True` 选择 FP32 单轮归约。[TP2 双卡调用示例](tp2/README.md)
+
 ## 对 AITER 两段的实测
 
 基线在相同 TP、相同 M 下先执行 AITER IPC AllReduce（含输入拷贝），再执行 SGLang 的 residual add + Gemma RMSNorm。输入预先就位，计时覆盖算子 Graph。每轮在 Graph 内连续调用 8 次，取同轮最慢 rank 的每次耗时，再取 9 轮中位数。三组实验使用 Qwen3.6-27B 的真实归一化权重、epsilon 为 `1e-6`。核心频率为 1500 MHz，HBM 为 1800 MHz。

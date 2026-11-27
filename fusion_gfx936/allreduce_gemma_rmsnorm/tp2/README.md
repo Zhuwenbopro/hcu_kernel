@@ -1,22 +1,66 @@
 # TP2 · gfx936 AllReduce + residual add + Gemma RMSNorm
 
-每张卡输入连续 BF16 `[M, 5120]` 的局部和、同形状 residual，以及宽度 5120 的 Gemma 权重。返回两个新 BF16 张量，分别为归一化结果和更新后的 residual。两张 gfx936 卡需支持同机 HIP IPC，并在各自的单一流上按相同顺序进入 collective。两个 rank 共同构造通信器并在退出前共同调用 `close()`。
+两张 gfx936 卡各自输入 BF16 `[M, 5120]` 的局部和及同形状 residual。TP2 提供两个入口，按下游需要的激活类型选择。
 
-## 构建和调用
+| 下游需要 | 调用 | 返回值 |
+|---|---|---|
+| BF16 归一化激活 | `comm.fused(partial, residual, weight, eps)` | `(norm, updated_residual)`，两者都是 BF16 `[M, 5120]` |
+| INT8 激活，默认逐比特模式 | `comm.fused_int8(partial, residual, weight, eps)` | `(q, scale, updated_residual)`，分别是 INT8 `[M, 5120]`、FP32 `[M, 1]` 和 BF16 `[M, 5120]` |
+| INT8 激活，FP32 单轮归约 | `comm.fused_int8(partial, residual, weight, eps, fast=True)` | 与默认 INT8 模式相同的形状和类型 |
 
-在含 gfx936 目标的 DTK 中，从 `fusion_gfx936/allreduce_gemma_rmsnorm` 运行 `bash tp2/build.sh`。独立算子只需要 HIP 运行时和支持 HIP、Gloo 的 PyTorch。以下示例从 `tp2` 目录导入，在两个已经初始化的 Gloo rank 上运行。
+两个入口都返回新张量。调用方可以继续把 `fused()` 的 BF16 `norm` 交给原下游。使用 `fused_int8()` 时，支持预量化输入的 W8A8 下游直接消费 `q` 和 `scale`。两种入口的 `updated_residual` 都供下一层使用。
 
-```python
-from tp2_ar import TunedOneShotAllreduce
+## 构建并在两张卡上运行
 
-comm = TunedOneShotAllreduce(group, device, max_size=4096 * 5120 * 2)
-try:
-    norm_output, updated_residual = comm.fused(partial, residual, weight, eps=1e-6)
-finally:
-    comm.close()
+两张卡需要同机 HIP IPC 和 P2P，PyTorch 需要支持 HIP 和 Gloo。两端使用同一次构建的库。从仓库根目录进入算子目录，在含 gfx936 目标的 DTK 中构建。
+
+```bash
+cd fusion_gfx936/allreduce_gemma_rmsnorm/tp2
+bash build.sh
 ```
 
-`max_size` 是每个通信槽的最大字节数。每卡使用两个 uncached 槽和 64 KiB 信号。M 上限为 4096 时，每槽 40 MiB，每卡共 80 MiB 数据槽。各线程块从对端槽拉取数据，按 AITER 的 FP32 加法和 BF16 舍入得到 AR 结果，再按 Gemma 的计算顺序处理 residual 和归一化。测试使用 BF16 权重。
+将以下示例保存为当前目录下的 `example_tp2.py`。每个 rank 的 `partial` 代表本地计算结果。实际调用传入本层原始 Gemma 权重 `w`，kernel 内计算 `1 + w`。
+
+```python
+import os
+from contextlib import ExitStack
+
+import torch
+import torch.distributed as dist
+
+from tp2_ar import TunedOneShotAllreduce
+
+local_rank = int(os.environ["LOCAL_RANK"])
+device = torch.device("cuda", local_rank)
+torch.cuda.set_device(device)
+
+with ExitStack() as cleanup:
+    dist.init_process_group("gloo")
+    cleanup.callback(dist.destroy_process_group)
+    comm = TunedOneShotAllreduce(dist.group.WORLD, device, max_size=128 * 5120 * 2)
+    cleanup.callback(comm.close)
+
+    partial = torch.full((128, 5120), local_rank + 1, device=device, dtype=torch.bfloat16)
+    residual = torch.zeros_like(partial)
+    weight = torch.zeros(5120, device=device, dtype=torch.bfloat16)
+    norm, updated_bf16 = comm.fused(partial, residual, weight, eps=1e-6)
+    q, scale, updated_int8 = comm.fused_int8(partial, residual, weight, eps=1e-6)
+    q_fast, scale_fast, updated_fast = comm.fused_int8(
+        partial, residual, weight, eps=1e-6, fast=True,
+    )
+    if local_rank == 0:
+        print(norm.dtype, q.dtype, scale.dtype, updated_int8.dtype)
+```
+
+从当前目录启动两个 rank。将示例设备号改为预留的两张卡。
+
+```bash
+HIP_VISIBLE_DEVICES=0,1 torchrun --standalone --nproc-per-node=2 example_tp2.py
+```
+
+`partial` 和 `residual` 必须是本卡连续且 16 字节对齐的 BF16 `[M, 5120]`，其中 `1 <= M <= 4096`。原始 `weight` 是本卡连续且 16 字节对齐的 BF16 或 FP32 `[5120]`。按批量上限设置 `max_size`，至少为 `M_max * 5120 * 2` 字节。每卡有两个通信槽和 64 KiB 信号区。M 上限为 4096 时，每槽 40 MiB，每卡共 80 MiB 数据槽。
+
+两个 rank 共同初始化和关闭通信器。每次调用在两端使用同一入口、形状和模式，并按相同顺序提交到各自的单一有序流。Graph capture 时选定入口和 `fast`，重放用的是捕获时的模式。通信器和捕获的输入输出缓冲在最后一次 Graph 重放完成前需保持有效。
 
 | 实现 | 调度 | 记录中的列 |
 |---|---|---|
@@ -26,20 +70,11 @@ finally:
 
 `RangeSelector(fixed, tuned)` 在 M=65–512 时调用 tuned，其余调用 fixed。`RangeSelector(fixed, tuned, windows_only=True)` 只在上述四个区间调用 tuned。调用方在两端分别创建并持有两个通信器。单独的 [521 形状切换实验](results/range/summary.json) 比较了这两种路由与 fixed，并验证了多种 M 在同一张 Graph 中交替重放。主图的 tuned 曲线是单个调优通信器的全量实测。
 
-已有服务集成对符合条件的 decode 和 target verify 使用固定 64 块的融合，上限 M=1024，每卡两个 10 MiB 槽。服务把超出上限的整批交给框架原有路径。这里的 M=4096 是独立实验配置。
+已有服务集成对符合条件的 decode 和 target verify 使用固定 64 块的 BF16 融合，上限 M=1024，每卡两个 10 MiB 槽。服务把超出上限的整批交给框架原有路径。这里的 M=4096 是独立算子配置。INT8 由下游显式调用 `fused_int8()` 启用。
 
-## 融合 per-token INT8
+## INT8 模式和验证
 
-重新运行 `bash tp2/build.sh` 并让两端都加载新版库后，固定和调优通信器都可以调用 `fused_int8`。输入与 `fused` 相同。返回 INT8 归一化结果 `q[M, 5120]`、FP32 `scale[M, 1]` 和 BF16 `updated_residual[M, 5120]`。残差输出使用新张量。下例可放在上面示例的 `try` 块中。
-
-```python
-q, scale, updated_residual = comm.fused_int8(partial, residual, weight, eps=1e-6)
-q_fast, scale_fast, updated_fast = comm.fused_int8(
-    partial, residual, weight, eps=1e-6, fast=True,
-)
-```
-
-默认模式沿用 `fused` 的 Gemma RMSNorm 计算顺序，保留归一化输出的 BF16 舍入，再用这些值计算每行的最大绝对值和 INT8 码。显式传入 `fast=True` 时，归一化分子和量化使用 FP32 中间值，并在同一轮 CTA 归约中计算平方和与带权绝对最大值。INT8 码和 scale 都可能改变。两种模式的 AllReduce 结果和更新后的 residual 均舍入至 BF16，INT8 量化均按最近偶数舍入。每次调用在两端须使用相同的形状、通信器和模式，并按相同顺序提交到各自的流。
+固定和调优通信器都支持 INT8。默认模式沿用 BF16 `fused()` 的 Gemma RMSNorm 计算顺序，保留归一化激活的 BF16 舍入，再用舍入后的值求每行 `amax` 和 INT8 码。逐比特对照是 AITER IPC AllReduce、Triton Gemma RMSNorm、LightOp INT8。显式传入 `fast=True` 时，归一化分子和量化使用 FP32 中间值，在一轮 CTA 归约内计算平方和与带权 `amax`。这个模式的 INT8 码和 scale 可能不同。两种模式都以 FP32 累加 AllReduce 并舍入至 BF16，residual 也写成 BF16，INT8 转换均按最近偶数舍入。
 
 通信器初始化时按模式交换两张卡的 CTA 常驻上限。若所选 grid 超过较小的上限，两端都会在提交 INT8 kernel 前报错。
 
