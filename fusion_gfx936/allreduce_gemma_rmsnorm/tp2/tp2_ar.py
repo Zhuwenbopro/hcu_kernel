@@ -30,6 +30,14 @@ class _OsarLib:
         if tuned:
             lib.osar_run_fused_grid.restype = i
             lib.osar_run_fused_grid.argtypes = [p, p, p, p, p, p, i, i, i, f, p, i]
+        self.run_fused_int8 = getattr(lib, "osar_run_fused_int8", None)
+        if self.run_fused_int8 is not None:
+            self.run_fused_int8.restype = i
+            self.run_fused_int8.argtypes = [p, p, p, p, p, p, p, i, i, i, f, p, i, i]
+        self.fused_int8_block_limit = getattr(lib, "osar_fused_int8_block_limit", None)
+        if self.fused_int8_block_limit is not None:
+            self.fused_int8_block_limit.restype = i
+            self.fused_int8_block_limit.argtypes = [p, i]
         self.has_dual_staging = hasattr(lib, "osar_staging_alloc") and hasattr(lib, "osar_set_regbuf_dual")
         if self.has_dual_staging:
             lib.osar_staging_alloc.argtypes = [i]
@@ -67,11 +75,13 @@ class HipOneShotAllreduce:
             raise ValueError("gfx936 OSAR requires a two-rank CPU Gloo group")
         self.device = None
         self.max_size = max_size
+        self._block_cap = blocks
         self._ctx = ctypes.c_void_p()
         self._local = []
         self._opened = []
         self._osar = None
         self._ready = False
+        self._int8_block_limits = None
         self._close_mappings_together = False
         local_error = None
         handles = []
@@ -114,6 +124,7 @@ class HipOneShotAllreduce:
                 raise RuntimeError(f"incompatible IPC group settings: {[offer[2:] for offer in offers]}")
             lib = self._osar.lib
             with torch.cuda.device(self.device):
+                local_int8_limits = None
                 try:
                     tables = []
                     for idx in range(2):
@@ -131,16 +142,22 @@ class HipOneShotAllreduce:
                     if self._osar.set_staging(self._ctx, self._local[1], tables[1], max_size):
                         raise RuntimeError("osar_set_regbuf_sized failed")
                     self._opened.pop()  # the context now owns the peer staging mapping
+                    int8_block_limit = self._osar.fused_int8_block_limit
+                    if self._osar.run_fused_int8 is not None and int8_block_limit is not None:
+                        local_int8_limits = (int8_block_limit(self._ctx, 0), int8_block_limit(self._ctx, 1))
                 except Exception as error:
                     local_error = str(error)
-                errors = [None, None]
-                dist.all_gather_object(errors, local_error, group=self.group)
+                reports = [None, None]
+                dist.all_gather_object(reports, (local_error, local_int8_limits), group=self.group)
                 # Both ranks have now attempted to map peer memory. Even a
                 # partially initialized mapping must close before the exporter
                 # releases that allocation.
                 self._close_mappings_together = True
+                errors, int8_limits = zip(*reports)
                 if any(errors):
                     raise RuntimeError(f"IPC group setup failed: {errors}")
+                if all(limits is not None for limits in int8_limits):
+                    self._int8_block_limits = tuple(min(limits) for limits in zip(*int8_limits))
                 self._ready = True
         except BaseException:
             self.close()
@@ -170,7 +187,7 @@ class HipOneShotAllreduce:
             raise ValueError("ineligible BF16 IPC input tensor")
         return out
 
-    def fused(self, inp, residual, weight, eps, *, blocks=None):
+    def _check_fused_args(self, inp, residual, weight, blocks):
         if blocks is not None and self._kernel != "tuned":
             raise ValueError("the fixed-grid library does not support a per-call grid cap")
         if not (
@@ -181,6 +198,9 @@ class HipOneShotAllreduce:
             and weight.dtype in (torch.bfloat16, torch.float32) and weight.data_ptr() % 16 == 0
         ):
             raise ValueError("ineligible gfx936 fused AR/add/Gemma RMSNorm arguments")
+
+    def fused(self, inp, residual, weight, eps, *, blocks=None):
+        self._check_fused_args(inp, residual, weight, blocks)
         with torch.cuda.device(self.device):
             out, updated = torch.empty_like(inp), torch.empty_like(residual)
             launch = self._osar.lib.osar_run_fused if blocks is None else self._osar.lib.osar_run_fused_grid
@@ -193,6 +213,40 @@ class HipOneShotAllreduce:
         if rc:
             raise RuntimeError(f"osar_run_fused failed ({rc})")
         return out, updated
+
+    def fused_int8(self, inp, residual, weight, eps, *, fast=False, blocks=None):
+        """Return INT8 output, FP32 per-token scales and the updated BF16 residual.
+
+        Both ranks must use the same mode, grid and input shape at each call.
+        """
+        if self._int8_block_limits is None:
+            raise RuntimeError("fused_int8 requires rebuilt libraries on both ranks")
+        if type(fast) is not bool:
+            raise TypeError("fast must be a bool")
+        self._check_fused_args(inp, residual, weight, blocks)
+        cap = self._block_cap if blocks is None else blocks
+        if not 1 <= cap <= self._block_cap:
+            raise ValueError(f"fused_int8 grid cap must be in 1..{self._block_cap}")
+        mode = int(fast)
+        grid = min(cap, inp.shape[0])
+        if grid > self._int8_block_limits[mode]:
+            raise RuntimeError(
+                f"fused_int8 needs {grid} resident CTAs, but the group supports "
+                f"{self._int8_block_limits[mode]} in this mode"
+            )
+        with torch.cuda.device(self.device):
+            q = torch.empty_like(inp, dtype=torch.int8)
+            scale = torch.empty((inp.shape[0], 1), device=self.device, dtype=torch.float32)
+            updated = torch.empty_like(residual)
+            rc = self._osar.run_fused_int8(
+                self._ctx, inp.data_ptr(), residual.data_ptr(), weight.data_ptr(), q.data_ptr(),
+                scale.data_ptr(), updated.data_ptr(), inp.shape[0], inp.shape[1],
+                2 if weight.dtype == torch.bfloat16 else 1, eps,
+                torch.cuda.current_stream(self.device).cuda_stream, 0 if blocks is None else blocks, mode,
+            )
+        if rc:
+            raise RuntimeError(f"osar_run_fused_int8 failed ({rc})")
+        return q, scale, updated
 
     @contextmanager
     def capture(self):
@@ -218,6 +272,7 @@ class HipOneShotAllreduce:
             if self._close_mappings_together:
                 dist.barrier(group=self.group)
             self._ready = False
+            self._int8_block_limits = None
             self._close_mappings_together = False
             for ptr in self._local:
                 lib.osar_meta_free(ptr)
@@ -246,6 +301,10 @@ class TunedOneShotAllreduce(HipOneShotAllreduce):
     def fused(self, inp, residual, weight, eps):
         rows = inp.shape[0] if inp.ndim == 2 else 0
         return super().fused(inp, residual, weight, eps, blocks=fused_grid(rows))
+
+    def fused_int8(self, inp, residual, weight, eps, *, fast=False):
+        rows = inp.shape[0] if inp.ndim == 2 else 0
+        return super().fused_int8(inp, residual, weight, eps, fast=fast, blocks=fused_grid(rows))
 
 
 class RangeSelector:

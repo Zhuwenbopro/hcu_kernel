@@ -29,6 +29,8 @@ struct Context {
     Peers peers{};
     int rank;
     int cap;
+    int cus;
+    int int8_caps[2]{};
     size_t bytes = 0;
 };
 
@@ -120,6 +122,9 @@ __global__ __launch_bounds__(threads) void plain_ar(Peers peers, int rank,
 bool aligned(const void* p) {
     return p && !(reinterpret_cast<uintptr_t>(p) % alignof(Pack));
 }
+
+#include "gemma_row_int8.inc"
+
 size_t slot_packs_for(size_t logical_bytes) {
     return (logical_bytes + sizeof(Pack) - 1) / sizeof(Pack);
 }
@@ -152,6 +157,10 @@ int set_staging(void* ctx, void* self, void* const* bufs, int bytes, bool dual) 
     for (int i = 0; i < 2; ++i) c->peers.stage[i] = static_cast<Pack*>(bufs[i]);
     c->peers.slot_packs = slot_packs;
     c->bytes = bytes;
+    if (dual)
+        set_int8_block_limits<true>(c);
+    else
+        set_int8_block_limits<false>(c);
     return 0;
 }
 }  // namespace
@@ -193,6 +202,7 @@ void* osar_init(int rank, int ws, void* self, void* const* metas, int blocks) {
     if (!c) return nullptr;
     c->rank = rank;
     c->cap = blocks;
+    c->cus = cus;
     c->peers.epoch_width = blocks;
     for (int i = 0; i != 2; ++i) c->peers.signal[i] = static_cast<Signal*>(metas[i]);
     return c;
@@ -238,6 +248,18 @@ int osar_run_fused(void* ctx, void* inp, void* resid, void* w, void* out_norm,
     if (!c) return -1;
     return osar_run_fused_grid(ctx, inp, resid, w, out_norm, out_resid, rows, cols,
                                copyin, eps, stream, c->cap);
+}
+int osar_run_fused_int8(void* ctx, void* input, void* residual, void* weight, void* q,
+                       float* scales, void* residual_output, int rows, int cols, int copyin,
+                       float epsilon, void* stream, int selected_cap, int quant_mode) {
+    return run_fused_int8<true>(ctx, input, residual, weight, q, scales, residual_output, rows,
+                               cols, copyin, epsilon, stream, selected_cap, quant_mode);
+}
+int osar_fused_int8_block_limit(void* ctx, int mode) {
+    const auto* c = static_cast<const Context*>(ctx);
+    if (!c || (mode != 0 && mode != 1))
+        return 0;
+    return c->int8_caps[mode];
 }
 int osar_dev_synchronize() { return static_cast<int>(hipDeviceSynchronize()); }
 int osar_dispose(void* ctx) {

@@ -28,7 +28,30 @@ finally:
 
 已有服务集成对符合条件的 decode 和 target verify 使用固定 64 块的融合，上限 M=1024，每卡两个 10 MiB 槽。服务把超出上限的整批交给框架原有路径。这里的 M=4096 是独立实验配置。
 
+## 融合 per-token INT8
+
+重新运行 `bash tp2/build.sh` 并让两端都加载新版库后，固定和调优通信器都可以调用 `fused_int8`。输入与 `fused` 相同。返回 INT8 归一化结果 `q[M, 5120]`、FP32 `scale[M, 1]` 和 BF16 `updated_residual[M, 5120]`。残差输出使用新张量。下例可放在上面示例的 `try` 块中。
+
+```python
+q, scale, updated_residual = comm.fused_int8(partial, residual, weight, eps=1e-6)
+q_fast, scale_fast, updated_fast = comm.fused_int8(
+    partial, residual, weight, eps=1e-6, fast=True,
+)
+```
+
+默认模式沿用 `fused` 的 Gemma RMSNorm 计算顺序，保留归一化输出的 BF16 舍入，再用这些值计算每行的最大绝对值和 INT8 码。显式传入 `fast=True` 时，归一化分子和量化使用 FP32 中间值，并在同一轮 CTA 归约中计算平方和与带权绝对最大值。INT8 码和 scale 都可能改变。两种模式的 AllReduce 结果和更新后的 residual 均舍入至 BF16，INT8 量化均按最近偶数舍入。每次调用在两端须使用相同的形状、通信器和模式，并按相同顺序提交到各自的流。
+
+通信器初始化时按模式交换两张卡的 CTA 常驻上限。若所选 grid 超过较小的上限，两端都会在提交 INT8 kernel 前报错。
+
+在装有 AITER、SGLang HCU 插件和 LightOp 的环境中，从 `tp2` 目录运行以下命令。默认模式分别比较 INT8、FP32 scale 和 BF16 residual 的原始位，快速模式与 FP32 参考对拍。测试覆盖 eager 和更换输入后的 Graph 重放。
+
+```bash
+torchrun --standalone --nproc-per-node=2 test_fused_int8.py --variant both
+```
+
 ## 结果与复现
+
+以下延迟和正确性记录对应 `fused` 的 BF16 输出路径。
 
 [逐 M 数据](results/dense/by-m.csv)覆盖 1–4096 的所有整数 M。[延迟图](results/dense/latency.png)与[加速比图](results/dense/speedup.png)对应同一次采样。相对于 AITER IPC AllReduce 加 SGLang Gemma residual RMSNorm，单通信器调优版本在 4096 个点均更快，几何平均 1.357×，中位数 1.349×。在 104 个调优窗口点上，调优相对原固定融合均更快，中位加速 1.088×。两种输出在 eager 和更换输入后的 Graph 重放中逐 BF16 位比较，记录的差异均为零。
 
