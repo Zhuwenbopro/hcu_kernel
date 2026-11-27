@@ -84,6 +84,22 @@ HIP_VISIBLE_DEVICES=0,1 torchrun --standalone --nproc-per-node=2 example_tp2.py
 torchrun --standalone --nproc-per-node=2 test_fused_int8.py --variant both
 ```
 
+## INT8 融合性能实测
+
+![BW47 gfx936 TP2 的 M=1–4096 逐点延迟和加速比](results/int8/latency-and-speedup.png)
+
+[M=1–4096 的逐点 CSV](results/int8/by-m.csv) 包含每个整数 M 的三条路径延迟（µs）、每张 Graph 的调用次数和测量轮数。两种 INT8 融合均在 4096 个点上快于基线。逐比特模式和 FP32 单轮归约模式的加速比几何平均分别为 **1.114×** 和 **1.120×**。
+
+| 路径 | 计时包含的 kernel | CSV 列 |
+|---|---|---|
+| 两次发射基线 | `fused()` 对应的 `osar_run_fused_grid` 完成 AllReduce、residual add 和 Gemma RMSNorm 并写出 BF16 norm，再由 LightOp 的 `_per_token_quant_int8` 量化 | `ar_norm_then_quant_us` |
+| 默认逐比特融合 | `fused_int8()` 的单个 kernel，保留 norm 到量化之间的 BF16 舍入 | `exact_us` |
+| FP32 单轮归约融合 | `fused_int8(..., fast=True)` 的单个 kernel，用 FP32 中间值在同一轮归约中计算平方和与带权 `amax` | `fast_us` |
+
+实测使用 BW47 的物理 2、3 卡，核心 1500 MHz、HBM 1800 MHz。三条路径使用相同的 TP2 调优 grid，每卡输入和 residual 为合成 BF16 `[M, 5120]`，权重来自 Qwen3.6-27B-Channel-INT8-w8a8 的第 0 层 `post_attention_layernorm`，`eps=1e-6`。测试算子版本为 [`791226a`](https://github.com/Zhuwenbopro/hcu_kernel/commit/791226a8f8df5c48ab00d70b026f178130c6ede5)。
+
+输入输出预分配，按固定随机顺序遍历所有整数 M。每个 M、每条路径各自捕获 HIP Graph 并预热重放一次，计时仅覆盖后续 Graph 重放。M=1–128、129–512、513–4096 时，图内分别连续执行 16、8、4 次对应路径。每点轮换三条路径的测量顺序，采 9 轮。每轮用 GPU event 记录重放耗时，除以图内调用次数后取两 rank 中较慢的值，最终取 9 轮的中位数。加速比为同一个 M 上的基线中位数除以融合中位数。
+
 ## 结果与复现
 
 以下延迟和正确性记录对应 `fused` 的 BF16 输出路径。
